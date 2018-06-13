@@ -1,0 +1,30 @@
+
+Todo:
+  ✔ Convert weather center to a class @done(18-06-11 19:27)
+  ☐ Store irrigation controller location in config file
+  ☐ It shouldn't be harcoded, so maybe we need a system config vs zone configs section
+  ✔ Determine where and how to track activation of a zone @done(18-06-11 19:27)
+  ☐ Enable Push notification on critical errors, events (Configurable)
+  ☐ Create push notification engine that supports multiple providers
+  ☐ Make push notifications configurable (what notifications to send)
+  ☐ Create a system settings ConfigParser, notification settings Table?
+  ☐ Create a static/configurable file for all push notification provider (names, urls, etc). ConfigParser
+  ☐ Find out how and where to log all errors
+  ✔ Log everything through a centralized class @done(18-06-11 19:24)
+  ☐ Add database logging of errors
+  ☐ Create a portal to view/filter all errors
+  ☐ Consider an OAuth implementation if this is going public [Need to research permissioning]
+  ☐ Integration to Google home (Turn on Zone by ID, by name. Check status of watering, get History)
+  ☐ What kind of API gateway to manage access control in front of Flask
+  ✔ Look into try catches to protect the code @done(18-06-11 19:28)
+  ✔ Add the ability to setup the Raspberry PI available Pins and mapping to Relay. Need to think how the zone value will be edited as a result. @done(18-06-11 19:28)
+  ☐ Add ability to set the frequency of each schedule (every X days, by days of week)
+  ☐ Need to think through data model to store every X Days/Days of week
+  ☐ deactivate all zones on engine initialization to ensure a reboot turns off everything
+  ☐ Store system settings in a config object ( https://wiki.python.org/moin/ConfigParserExamples )
+  ☐ Implement ActivationHistory Table (Activations/Deactivations)
+  ☐ Implement DecisionHistory Table (All the decisions made on every enabled zone)
+  
+
+
+

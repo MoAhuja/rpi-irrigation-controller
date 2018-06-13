@@ -1,0 +1,174 @@
+<html>
+    <head>
+            <title>Create Zone</title>
+            <link rel= "stylesheet" type= "text/css" href= "/static/css/global.css?id=3">
+            <script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+            <script type="text/javascript" src="/static/js/jquery-ui-1.12.1/jquery-ui.js"></script>
+            <script type="text/javascript" src="/static/js/timepicker/jquery.timepicker.js"></script>
+            <script type="text/javascript" src="/static/js/timepicker/lib/bootstrap-datepicker.js"></script>
+            <script type="text/javascript" src="/static/js/jquery.serialize-object.min.js"></script>
+            <link rel= "stylesheet" type= "text/css" href= "/static/js/timepicker/jquery.timepicker.css">
+            <link rel= "stylesheet" type= "text/css" href= "/static/js/timepicker/lib/bootstrap-datepicker.css">
+            
+            
+            <script>
+                $(document).ready(function(){
+                    var scheduleCounter = 0;
+
+                    // $('.time').timepicker();
+
+                   $('body').on('click', '.time', function() {
+                       $(this).timepicker({'step': 10, 'timeFormat': 'H:i'});
+                   });
+                    
+
+                    //This needs to be done on teh live function in order for dynamically added components to be recognized
+                    // $('.delButton').click(function() {
+                    //     $(this).parent().remove();
+                    // });
+
+                    $('body').on('click', '.delButton', function() {
+                        var id  = $(this).attr('id');
+                        console.log(id);
+
+                        //If they hit delete on the schedule button, then we need to decrement the counter
+                        if(id == "scheduleDelButton")
+                        {
+                            scheduleCounter--;
+                            console.log("Schedule Counter == " + scheduleCounter);
+                        }
+                        $(this).parent().parent().remove();
+
+
+                    });
+                    
+
+                    $('#btnAddSchedule').click(function(){
+                        
+                        $('#ScheduleTable').append('<tr><td><span>Start Time:</span><span><input class ="time" type="text" name="schedule[' + scheduleCounter + '][startTime]" placeholder="6:00 am"/></span></td><td><span>End Time:</span><span><input class="time" type="text" name="schedule[' + scheduleCounter + '][endTime]" placeholder="7:00 am"/></span></td><td class="cellDynamicButton"><button id="scheduleDelButton" class="delButton">Delete</button></td></tr>');
+                        scheduleCounter++;
+
+                    });
+
+
+                    $("form").submit(function(e){
+                        
+                        e.preventDefault();
+                        var jsonData = $("form#formData").serializeJSON();
+                        console.log(jsonData);
+
+
+                        $.ajax({
+                            url: 'http://127.0.0.1:5000/service_hub/zones/create_zone', // url where to submit the request
+                            type : "POST", // type of action POST || GET
+                            dataType : 'json', // data type
+                            data : jsonData, // post data || get data
+                            success : function(result) {
+                                // you can see the result from the console
+                                // tab of the developer tools
+                                console.log(result);
+                            },
+                            error: function(xhr, resp, text) {
+                                console.log(text);
+                            }
+                        });
+                    });
+                    
+                   
+
+                    
+                        
+
+
+                });
+
+                
+
+                
+
+
+            </script>
+    </head>
+
+    <body>
+        
+        
+
+        
+        <form id="formData">
+        <table class="mainTable" id="form">
+            <tr class="OverviewSection">
+                <th>Zone Name:</th>
+                <td><input type="text" name="input_zone_name" class="regularInput" placeholder="Zone Name"/></td>
+            </tr>
+            <tr class="OverviewSection">
+                <th>Zone Description:</th>
+                <td><input type="text" name="input_zone_description" class="regularInput" placeholder="Zone Description"/></td>
+            </tr>
+            <tr class="ScheduleSection">
+                <th colspan="2">Schedule
+                <button class="dynamic_add_button cellDynamicButton floatButton" id="btnAddSchedule">+</button></th>
+            </tr>
+            <tr class="ScheduleSection">
+                <td colspan="2">
+                    <table id="ScheduleTable">
+                        
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="RainSection">
+                <th colspan="2">Environment - Forecast Rain Rules - Do not water when expected rain amount exceeds
+                <button class="dynamic_add_button cellDynamicButton floatButton" id="btnAddRainRule">+</button></th>
+            </tr>
+            <tr class="RainSection">
+                <td colspan="2">
+                    <table id="RainTable">
+                        <tr>
+                            <td>
+                                <span>3 hour expected amount > </span>
+                                <span><input type="text" name="rain[shortTermExpectedRain]" placeholder="20"/></span>
+                                <span>mm</span>
+                            </td>
+
+                            <td>
+                                    <span>24 Hour expected amount > </span>
+                                    <span><input type="text" name="rain[dailyExpectedRainAmount]" placeholder="20"/></span>
+                                    <span>mm</span>
+                                </td>
+                            <td class="cellDynamicButton"><button class="delButton" id="rainDelButton">Delete</button></td>  
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="TempSection">
+                <th colspan="2">Environment - Temperature Rules - Only Water In This Range
+                <button class="dynamic_add_button cellDynamicButton floatButton" id="btnAddRainRule">+</button></th>
+            </tr>
+            <tr class="TempSection">
+                <td colspan="2">
+                    <table id="TempTable">
+                        <tr>
+                            <td>
+                                <span>Min Temp:</span>
+                                <span><input type="text" name="temperature[min]" placeholder="20"/></span>
+                                <span>celsius</span>
+                            </td>
+
+                            <td>
+                                <span>Max Temp:</span>
+                                <span><input type="text" name="temperature[max]" placeholder="30"/></span>
+                                <span>celsius</span>
+                            </td>
+                            <td class="cellDynamicButton"><button  class="delButton" id="tempDelButton">Delete</button></td>  
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <button id="SaveButton">Save</button>
+        </form>
+    </body>
+</html>
