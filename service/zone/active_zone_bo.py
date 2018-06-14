@@ -3,14 +3,16 @@ class ActiveZone():
    
     def __init__(self):
         self.zone = None
-        self.shutoff_time = None
+        self.start_time = None
+        self.end_time = None
 
     @classmethod 
-    def initialize(cls, zone, shutoff_time):
+    def initialize(cls, zone, start_time, end_time):
         cl = cls()
 
         cl.zone = zone
-        cl. shutoff_time = shutoff_time
+        cl.start_time = start_time
+        cl.end_time = end_time
 
         return cl
 

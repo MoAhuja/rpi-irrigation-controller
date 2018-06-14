@@ -1,11 +1,13 @@
-from service.zone.zone_bo import ZoneBO
+# from service.zone.zone_bo import ZoneBO
 
 from service.database.db_schema import Base, Zone, TemperatureRule, Schedule
 from service.database.zone_dbo import ZoneDBO
 from service.utilities.conversion import Conversions
 from pprint import pprint
 from service.utilities.logger import Logger
+from service.database.db_schema import Zone
 import sys
+
 # TODO: consider putting in a failsafe for all zones where if they are activated for X period of time, they auto shut off.
 # TODO: Consider making the auto-shutoff configurable as a system setting
 # TODO: WHat do we do if pyowm can't retrieve the weather? Do we still turn on?
@@ -31,29 +33,9 @@ class ZoneManager():
         Logger.debug(self, "ZoneManager - createZone begin")
 
         try:
-            # First we need to create a zone business object
-            zoneBO =  ZoneBO.initializeWithJSON(jsonData)
-            # pprint(vars(zoneBO))
-
-            # Create the zone
-            zoneID = self.ops.insertZone( zoneBO.zone_name, zoneBO.zone_description)
-            # pprint("Zone ID == " + str(zoneID))
-
-            # create the temperature rule
-            temperatureID = self.ops.insertTemperatureRule( zoneID, zoneBO.temperature.lower_limit, zoneBO.temperature.upper_limit, zoneBO.temperature.enabled)
-            # pprint("Temperature ID == " + str(temperatureID))
-
-            #create rain rule
-            rainID = self.ops.insertRainRule( zoneID, zoneBO.rain.threeHourLimit, zoneBO.rain.fullDayLimit, zoneBO.rain.enabled)
-            # pprint("Rain ID == " + str(rainID))
-
-            # TODO: Remove this and make it dynamic
-            pin_config = self.ops.mapZoneToRelay( zoneID, 1)
-
-            for sch in zoneBO.schedule:
-                schID = self.ops.insertSchedule( zoneID, sch.getStartDBTime(), sch.getEndDBTime(), sch.enabled)
-                # pprint("Schedule ID == " + str(schID))
-
+            # # First we need to create a zone business object
+            zone =  Zone.initializeWithJSON(jsonData)
+            self.ops.createZone(zone)
             self.ops.saveAndClose()
             Logger.info(self, "Successfully added zone")
         except:
@@ -69,33 +51,26 @@ class ZoneManager():
     def retrieveAllZones(self):
       
         #retrieve a DO object
-        zonesBO = []
-
+        
         zonesDO = self.ops.fetchAllZones()
 
-        for zone in zonesDO:
-            bo = ZoneBO.initializeWithZoneDO(zone)
-            zonesBO.append(bo)
+        # for zone in zonesDO:
+        #     bo = ZoneBO.initializeWithZoneDO(zone)
+        #     zonesBO.append(bo)
             
-        return zonesBO
+        return zonesDO
 
     def retrieveZone(self, zone_id):
         zoneDO = self.ops.fetchZone( zone_id)
-        zoneBO = ZoneBO.initializeWithZoneDO(zoneDO)
-        return zoneBO
+        return zoneDO
     
     def retrieveAllEnabledZones(self):
-        zonesBO = []
+        # zonesBO = []
 
         zonesDO = self.ops.fetchAllEnabledZones()
+    
+        return zonesDO
 
-        for zone in zonesDO:
-            bo = ZoneBO.initializeWithZoneDO(zone)
-            zonesBO.append(bo)
-            
-        return zonesBO
-
-        #normalize to a BO object
     # def deleteZone(id?)
     # def editZone(id, jsonData) -- Need to figure out how to find assoicated objects and update them?
     # def fetchZone(id):

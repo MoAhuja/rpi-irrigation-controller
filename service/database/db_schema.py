@@ -7,6 +7,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from pprint import pprint
 from datetime import datetime
+from service.utilities.conversion import Conversions
 import enum
  
 # TODO: Split the schema into separate files??
@@ -29,7 +30,24 @@ class Zone(Base):
     pin_config = relationship("RpiPinMapper", uselist=False, back_populates="zone")
 
     # TODO: do we want to back-populate this? It's going to be a ton of data to load even if we don't need it
-    decision_history = relationship("DecisionHistory", uselist=True, back_populates="zone") 
+    decision_history = relationship("DecisionHistory", uselist=True, back_populates="zone")
+    
+    @classmethod
+    def initializeWithJSON(cls, jsonData):
+
+        cl = cls()
+
+        cl.description=jsonData["input_zone_description"]
+        cl.name=jsonData["input_zone_name"]
+        cl.enabled=True
+        
+        cl.temperature = TemperatureRule.initializeWithJSON(jsonData["temperature"], cl)
+        cl.rain = RainRule.initializeWithJSON(jsonData["rain"], cl)
+        
+        for schedule in jsonData["schedule"]:
+            cl.schedules.append(Schedule.initializeWithTimes(schedule["startTime"], schedule["endTime"], cl))
+
+        return cl
 
 class TemperatureRule(Base):
     __tablename__ = 'temperature_rules'
@@ -43,6 +61,17 @@ class TemperatureRule(Base):
     zone_id = Column('zone_id', Integer, ForeignKey('zone.id'), nullable=False)
     zone=relationship("Zone", back_populates="temperature_rule")
 
+    @classmethod
+    def initializeWithJSON(cls, jsonData, zone):
+        cl = cls()
+        cl.lower_limit = jsonData["min"]
+        cl.upper_limit = jsonData["max"]
+        cl.enabled = True
+        cl.zone = zone
+        # TODO: make this dynamic??
+
+        return cl
+
 class RainRule(Base):
     __tablename__ = 'rain_rules'
     id = Column('id', Integer, primary_key=True)
@@ -55,6 +84,15 @@ class RainRule(Base):
     zone_id = Column('zone_id', Integer, ForeignKey('zone.id'), nullable=False)
     zone=relationship("Zone", back_populates="rain_rule")
     
+    @classmethod
+    def initializeWithJSON(cls, jsonData, zone):
+        cl = cls()
+        cl.short_term_limit = jsonData["shortTermExpectedRain"]
+        cl.daily_limit = jsonData["dailyExpectedRainAmount"]
+        cl.enabled = True
+        cl.zone = zone
+
+        return cl
 
 class Schedule(Base):
     __tablename__ = 'schedules'
@@ -64,6 +102,23 @@ class Schedule(Base):
     enabled = Column('enabled', Boolean, default=False)
     zone_id = Column('zone_id', Integer, ForeignKey('zone.id'), nullable=False)
     zone=relationship("Zone", back_populates="schedules")
+
+    @classmethod
+    def initializeWithTimes(cls, iStart, iStop, zone):
+        cl = cls()
+        # print("Creating schedule DO")
+        cl.start_time = Conversions.convertHumanReadableTimetoDBTime(iStart)
+        cl.end_time = Conversions.convertHumanReadableTimetoDBTime(iStop)
+        cl.enabled = True
+        cl.zone = zone
+
+        return cl
+
+    def getStartTime(self):
+        return Conversions.convertDBTimeToHumanReadableTime(self.start_time)
+    
+    def getEndTime(self):
+         return Conversions.convertDBTimeToHumanReadableTime(self.end_time)
 
 class EnumDecisionCodes(enum.Enum):
     ActivateZone = 0
@@ -90,7 +145,7 @@ class DecisionHistory(Base):
     event_time = Column('event_time', DateTime, nullable=False, default=datetime.utcnow)
     
     # Current conditions
-    current_temperature = Column('current_temperature', Boolean, nullable=False)
+    current_temperature = Column('current_temperature', Integer, nullable=True)
     current_3hour_forecast = Column('current_3hour_forecast', Integer, nullable=True)
     current_daily_forecast = Column('current_daily_forecast', Integer, nullable=True)
 

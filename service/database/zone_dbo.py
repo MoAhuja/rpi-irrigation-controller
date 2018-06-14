@@ -14,59 +14,31 @@ class ZoneDBO(BaseDBOperations):
         # BaseDBOperations.__init__(self)
         self.event_pub = event_publisher
 
-    def insertTemperatureRule(self, zone_id, lower_limit, upper_limit, enabled):
-        #initialize
-        self.initialize()
-        temp_rule = TemperatureRule(zone_id=zone_id, lower_limit=lower_limit, upper_limit=upper_limit, enabled=enabled)
-        self.session.add(temp_rule)
-        self.session.flush()
         
-        return temp_rule.id
-
-
-    def insertRainRule(self, zone_id, short_term_limit, daily_limit, enabled):
-        #initialize
+    def createZone(self, zone):
         self.initialize()
-        rain_rule = RainRule(zone_id=zone_id, short_term_limit=short_term_limit, daily_limit=daily_limit, enabled=enabled)
-        self.session.add(rain_rule)
-        self.session.flush()
-        
-        return rain_rule.id
-
-    def insertZone(self, name, description):
-        #initialize
-        self.initialize()
-        zone = Zone(name=name, description=description)
         self.session.add(zone)
         self.session.flush()
 
-        return zone.id
-
-    def insertSchedule(self,zone_id, startTime, endTime, enabled):
-        
-        self.initialize()
-        schedule = Schedule(zone_id=zone_id, start_time=startTime, end_time=endTime, enabled=enabled)
-        self.session.add(schedule)
-        self.session.flush()
-
-        return schedule.id
-        
-        #retrieve the zone_id
+    #     #retrieve the zone_id
     def fetchAllZones(self ):
 
         self.initialize()
         allZones = self.session.query(Zone).all()
+        self.session.flush()
         return allZones
     
     def fetchAllEnabledZones(self):
 
         self.initialize()
         allZones = self.session.query(Zone).filter(Zone.enabled==True).all()
+        self.session.flush()
         return allZones
     
     def fetchZone(self, zone_id):
         self.initialize()
         zoneDO = self.session.query(Zone).filter(Zone.id==zone_id).first()
+        self.session.flush()
         return zoneDO
 
     def insertRPItoPINConfig(self, relay_id, rpi_pin):

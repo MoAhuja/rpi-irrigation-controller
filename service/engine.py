@@ -3,6 +3,11 @@ from service.weather_hub.weather_center import WeatherCenter
 from service.zone.zone_controller import ZoneController
 from service.utilities.conversion import Conversions
 from service.zone.active_zone_bo import ActiveZone
+from service.database.decision_dbo import DecisionDBO
+
+# Not sure i should be accessing DAO's at this layer, but it seems unneccessary to create a new object to track the same data
+from service.database.db_schema import DecisionHistory, EnumDecisionCodes, EnumReasonCodes
+
 # from pprint import pprint
 from datetime import datetime
 from service.utilities.logger import Logger
@@ -11,6 +16,7 @@ import threading
 class Engine():
 
     zone_manager = None
+    decisionHistoryDBO = None
     zone_controller = None
     enabledZones = None
     isDirty = False
@@ -25,6 +31,7 @@ class Engine():
         # Register for notifications 
         event_publisher.register(self)
         self.zone_manager = ZoneManager(event_publisher)
+        self.decisionHistoryDBO = DecisionDBO()
         self.zone_controller = ZoneController()
         self.activeZones = {}
         self.weather_centre = WeatherCenter()
@@ -54,7 +61,7 @@ class Engine():
     def deactivateAllZones(self):
         Logger.debug(self,"Deactivating All Zones")
         for key, activeZone in self.activeZones.items():
-            Logger.debug(self, "Deactivating -> " + key)
+            Logger.debug(self, "Deactivating -> " + key + "-->" + value.zone.name)
             self.zone_controller.deactivateZone(activeZone.zone)
         
         # Reset back to an empty hashmap
@@ -68,8 +75,17 @@ class Engine():
         currentTime = datetime.now().time()
 
         for key, activeZone in self.activeZones.items():
-            Logger.debug(self,"Deactivation Check: [Zone Name] = " + key + ", [CurrentTime] = " + Conversions.convertDBTimeToHumanReadableTime(currentTime)+ ", [Deactivation Time] =  " + Conversions.convertDBTimeToHumanReadableTime(activeZone.shutoff_time))
-            if currentTime > activeZone.shutoff_time:
+            dh =  DecisionHistory()
+
+            Logger.debug(self,"Deactivation Check: [Zone ID] = " + str(key) + ", [CurrentTime] = " + Conversions.convertDBTimeToHumanReadableTime(currentTime)+ ", [Deactivation Time] =  " + Conversions.convertDBTimeToHumanReadableTime(activeZone.end_time))
+            if currentTime > activeZone.end_time:
+                dh.zone = activeZone.zone
+                dh.start_time = activeZone.start_time
+                dh.end_time = activeZone.end_time
+                dh.decision = EnumDecisionCodes.DeactivateZone
+                dh.reason = EnumReasonCodes.AllConditionsPassed
+
+                self.decisionHistoryDBO.insertDecisionEvent(dh)
                 
                 Logger.debug(self, "Zone will be deactivated")
                 # Add to list so we can remove it from our list of active zones
@@ -99,18 +115,19 @@ class Engine():
             Logger.debug(self,"Finished loading zones")
 
             # Get Time
-            currentTime = datetime.now().time()
+            currentDateTime = datetime.now()
+            currentTime = currentDateTime.time()
             Logger.debug(self, "Current Time is: " + Conversions.convertDBTimeToHumanReadableTime(currentTime))
             currentTemp = self.getCurrentTemp()
             Logger.debug(self, "Current Temperature is: " + str(currentTemp))
-            # TODO: create a event object here, set to None.
             
             # Foreach enabled zone
             Logger.debug(self, "There are " + str(len(self.enabledZones)) + " enabled zones")
             for zone in self.enabledZones:
                 
+                Logger.debug(self, "Evaluating Zone: " + zone.name)
                 # Check if this zone is already active
-                if zone.zone_name in self.activeZones:
+                if zone.id in self.activeZones:
                     Logger.debug(self,"Zone already active. Skipping evaluation.")
                     break
 
@@ -119,27 +136,37 @@ class Engine():
                 tempRuleMet = False
             
                 # For each enabled schedule
-                for sch in zone.schedule:
+                for sch in zone.schedules:
 
-                    Logger.debug(self, "Evaluating Schedule: [Enabled] = " + str(sch.enabled) + ", [Start] = " + sch.start + ", [End] = " + sch.stop)
+                    Logger.debug(self, "Evaluating Schedule: [Enabled] = " + str(sch.enabled) + ", [Start] = " + sch.getStartTime() + ", [End] = " + sch.getEndTime())
                     # Schedule must be enabled
                     if sch.enabled is True:
 
-                        # If time is between start and end time
-                        if  sch.getStartDBTime() <= currentTime <= sch.getEndDBTime():
+                        
 
+                        # If time is between start and end time
+                        if  sch.start_time <= currentTime <= sch.end_time:
+
+                            # Create a decision event w/ current info
+                            decisionEvent = None
+                            decisionEvent = DecisionHistory(zone=zone, event_time=currentDateTime, start_time=sch.start_time, end_time=sch.end_time)
+                        
                             Logger.debug(self, "Current Time within boundries")
                             
                             #Check conditions
-                            tempRuleMet = self.meetsTemperatureConditions(zone.temperature)
-                            rainRuleMet = self.meetsRainConditions(zone.rain)
+                            tempRuleMet = self.meetsTemperatureConditions(zone.temperature_rule, decisionEvent)
+                            rainRuleMet = self.meetsRainConditions(zone.rain_rule, decisionEvent)
                             
                             activateZone = tempRuleMet * rainRuleMet
+                            
                             if activateZone:
-                                self.activateZone(zone, sch.getEndDBTime())
+                                self.activateZone(zone, sch.start_time, sch.end_time)
+                                decisionEvent.decision = EnumDecisionCodes.ActivateZone
+                                decisionEvent.reason = EnumReasonCodes.AllConditionsPassed
 
-                            # TODO: Log an event, if one is available to be logged.
-
+                            #Log an event, if one is available to be logged.
+                            self.decisionHistoryDBO.insertDecisionEvent(decisionEvent)
+                            self.decisionHistoryDBO.saveAndClose()
 
                             # Since the current time can only fall in one schedule, we can stop evaluating
                             # schedules for this zone
@@ -148,11 +175,11 @@ class Engine():
             # Reset the evaluating zones flag so someone else can evaluate it next time.
             self.evaluatingZones = False
     
-    def activateZone(self, zone, shutoff_time):
+    def activateZone(self, zone, start_time, end_time):
 
-        Logger.debug(self,"Adding zone '" + zone.zone_name + "' to list of active zones")
+        Logger.debug(self,"Adding zone '" + zone.name + "' to list of active zones")
         # add this zone to a list of activated zones
-        self.activeZones[zone.zone_name] = ActiveZone.initialize(zone, shutoff_time)
+        self.activeZones[zone.id] = ActiveZone.initialize(zone, start_time, end_time)
 
         Logger.debug(self,"Activating Zone")
         # call the zone controller and activate the zone
@@ -167,38 +194,58 @@ class Engine():
         # Run the heartbeat every minute
         threading.Timer(3, self.heartbeat).start()
 
-    def meetsTemperatureConditions(self, temperature_bo):
+    def meetsTemperatureConditions(self, temperature_bo, decisionEvent):
 
         # Logger.debug(self,vars(temperature_bo))
 
         if temperature_bo.enabled == True:
             # current_temp = getCurrentTemp()
             Logger.debug(self,"Temperature Check Enabled. Evaluation if --> " + str(temperature_bo.lower_limit ) + "<=" + str(self.getCurrentTemp()) + " <= " + str(temperature_bo.upper_limit))
+            decisionEvent.temperature_enabled = True
+            decisionEvent.temperature_lower_limit = temperature_bo.lower_limit
+            decisionEvent.temperature_upper_limit = temperature_bo.upper_limit
+            decisionEvent.current_temperature = self.getCurrentTemp()
                 
-            if temperature_bo.lower_limit <= self.getCurrentTemp() <= temperature_bo.upper_limit:
-                Logger.debug(self,"Temperature is within range")
-                return True
-            else:
-                Logger.debug(self,"Temperature is NOT within range")
+            if  self.getCurrentTemp() <temperature_bo.lower_limit:
+                Logger.debug(self,"Temperature is BELOW lower limit. Will not activate.")
+                decisionEvent.reason = EnumReasonCodes.TemperatureBelowMin
+                decisionEvent.decision = EnumDecisionCodes.DontActivateZone
                 return False
+            elif  self.getCurrentTemp() > temperature_bo.upper_limit:
+                Logger.debug(self,"Temperature is ABOVE max limit. Will not activate")
+                decisionEvent.reason = EnumReasonCodes.TemperatureAboveMax
+                decisionEvent.decision = EnumDecisionCodes.DontActivateZone
         else:
-            return True
+            decisionEvent.temperature_enabled = False
 
-        return False
 
-    def meetsRainConditions(self, rain_do):
+        return True
 
-        if rain_do.enabled == True:
-            Logger.debug(self,"Rain Check Enabled. 3 hour check . Is " + str(self.getShortTermRain()) + "<= " + str(rain_do.threeHourLimit ))
-            Logger.debug(self,"Rain Check Enabled. 24 hour check . Is " + str(self.getDailyRain()) + "<= " + str(rain_do.fullDayLimit ))
+    def meetsRainConditions(self, rain_rule, decisionEvent):
+
+        if rain_rule.enabled == True:
+            Logger.debug(self,"Rain Check Enabled. 3 hour check . Is " + str(self.getShortTermRain()) + "<= " + str(rain_rule.short_term_limit ))
+            Logger.debug(self,"Rain Check Enabled. 24 hour check . Is " + str(self.getDailyRain()) + "<= " + str(rain_rule.daily_limit ))
             
-            if self.getShortTermRain() < rain_do.threeHourLimit:
-                Logger.debug(self,"Short term rain rule passed")
-                if self.getDailyRain() < rain_do.fullDayLimit:
-                    Logger.debug(self,"Daily term rain rule passed")
-                    return True
-                else:
-                    return False
+            decisionEvent.rain_enabled = True
+            decisionEvent.rain_short_term_limit = rain_rule.short_term_limit
+            decisionEvent.rain_daily_limit = rain_rule.daily_limit
+            decisionEvent.current_3hour_forecast = self.getShortTermRain()
+            decisionEvent.current_daily_forecast = self.getDailyRain()
+
+            if self.getShortTermRain() > rain_rule.short_term_limit:
+
+                Logger.debug(self,"Short term rain rule FAILED. Will not activate.")
+                decisionEvent.reason = EnumReasonCodes.ShortTermRainExpected
+                decisionEvent.decision = EnumDecisionCodes.DontActivateZone
+                return False
+            elif self.getDailyRain() > rain_rule.daily_limit:
+                Logger.debug(self,"Daily  rain rule FAILED. Will not activate.")
+                decisionEvent.reason = EnumReasonCodes.LongTermRainExpected
+                decisionEvent.decision = EnumDecisionCodes.DontActivateZone
+                return False    
+        else:
+            decisionEvent.rain_enabled = False
                 
             
 
