@@ -1,0 +1,196 @@
+<html>
+    <head>
+            <title>Flexbox Test</title>
+            <link rel= "stylesheet" type= "text/css" href= "/static/css/flex.css">
+            <script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script>
+            <script type="text/javascript" src="/static/js/jquery-ui-1.12.1/jquery-ui.js"></script>
+            <script type="text/javascript" src="/static/js/timepicker/jquery.timepicker.js"></script>
+            <script type="text/javascript" src="/static/js/timepicker/lib/bootstrap-datepicker.js"></script>
+            <script type="text/javascript" src="/static/js/jquery.serialize-object.min.js"></script>
+            <link rel= "stylesheet" type= "text/css" href= "/static/js/timepicker/jquery.timepicker.css">
+            <link rel= "stylesheet" type= "text/css" href= "/static/js/timepicker/lib/bootstrap-datepicker.css">
+            <link rel="stylesheet" type="text/css" href="/static/css/content_manager.css?id=1">
+            
+            <script>
+                $(document).ready(function(){
+
+                    currentlyShowingPanel = $("#content_dashboard")
+
+                    // Logic to show the right panel based on the nav item
+                    $(".nav li").click(function() {
+                        id = ($(this).attr('id'))
+                        
+                        //Find the class that's currently showing and toggle it off
+                        // $("div.show").hide()
+                        $(currentlyShowingPanel).hide()
+
+                        //Find the panel and toggle teh show class
+                        panelID = "#" + id.replace("btn", "content")
+                        // $(panelID).toggleClass("show")
+                        $(panelID).show("puff")
+                        currentlyShowingPanel = panelID
+                        
+
+                    })
+
+                    var scheduleCounter = 0;
+
+                    // $('.time').timepicker();
+
+                   $('body').on('click', '.time', function() {
+                       $(this).timepicker({'step': 10, 'timeFormat': 'H:i'});
+                   });
+                    
+
+                    //This needs to be done on teh live function in order for dynamically added components to be recognized
+                    // $('.delButton').click(function() {
+                    //     $(this).parent().remove();
+                    // });
+
+                    $('body').on('click', '.delButton', function() {
+                        var id  = $(this).attr('id');
+                        console.log(id);
+
+                        //If they hit delete on the schedule button, then we need to decrement the counter
+                        if(id == "scheduleDelButton")
+                        {
+                            scheduleCounter--;
+                            console.log("Schedule Counter == " + scheduleCounter);
+                        }
+                        $(this).parent().parent().remove();
+
+
+                    });
+                    
+
+                    $('#btnAddSchedule').click(function(){
+                        
+                        $('#ScheduleTable').append('<tr><td><span>Start Time:</span><span><input class ="time" type="text" name="schedule[' + scheduleCounter + '][startTime]" placeholder="6:00 am"/></span></td><td><span>End Time:</span><span><input class="time" type="text" name="schedule[' + scheduleCounter + '][endTime]" placeholder="7:00 am"/></span></td><td class="cellDynamicButton"><button id="scheduleDelButton" class="delButton">Delete</button></td></tr>');
+                        scheduleCounter++;
+
+                    });
+
+
+                    $("form").submit(function(e){
+                        
+                        e.preventDefault();
+                        var jsonData = $("form#formData").serializeJSON();
+                        console.log(jsonData);
+
+
+                        $.ajax({
+                            url: 'http://127.0.0.1:5000/service_hub/zones/create_zone', // url where to submit the request
+                            type : "POST", // type of action POST || GET
+                            dataType : 'json', // data type
+                            data : jsonData, // post data || get data
+                            success : function(result) {
+                                // you can see the result from the console
+                                // tab of the developer tools
+                                console.log(result);
+                            },
+                            error: function(xhr, resp, text) {
+                                console.log(text);
+                            }
+                        });
+                    });
+                    
+                   
+
+                    
+                        
+
+
+                });
+
+                
+
+                
+
+
+            </script>
+    </head>
+
+    <body>
+        <div class="flex-container">
+            <header>
+                <h1 class="title">Lawn Watcher</h1>
+                <ul class="nav">
+                        <!-- <ul class="nav"> -->
+                        <li id="btn_dashboard"><a href="#">Dashboard</a></li>
+                        <li class="bar">|</li>
+                        <li id="btn_manager"><a href="#" >Manager</a></li>
+                        <li class="bar">|</li>
+                        <li id="btn_controller"><a href="#">Controller</a></li>
+                        <li class="bar">|</li>
+                        <li id="btn_logs"><a href="#" >Logs</a></li>
+                        <li class="bar">|</li>
+                        <li id="btn_settings"><a href="#" >System Settings</a></li>
+                        <!-- </ul> -->
+                    </ul>
+            </header>
+
+            <content>
+                <div id="content_dashboard" class="show">Dashboard Content</div>
+                
+                <!-- manager content -->
+                <div id="content_manager">
+                    <ul class="sub_nav">
+                        <li>View Zones</li>
+                        <li>Create Zone</li>
+                    </ul>    
+                    <content>
+                        <dashboard>
+                            I am the dashboard
+                        </dashboard>
+                    </content>
+                </div>
+
+
+                <div id="content_controller">Controller</div>
+            </content>
+
+            <footer>Sticky footer</footer>
+        </div>
+        
+    </body>
+    <!-- <body>
+        
+        
+            <div class="header">
+                <h1 class="title">Irrigation Controller</h1>
+            
+                <ul class="nav">
+                    <li><i class="fa fa-home"></i>Home</li>
+                    <li><i class="fa fa-bell-o"></i>Notifications</li>
+                    <li><i class="fa fa-envelope-o"></i>Messages</li>
+                    <li><i class="fa fa-twitter"></i></li>
+                    <li><form><input placeholder="search twitter"/><i class="fa fa-search"></i></form></li>
+                    <li><i class="fa fa-user-circle-o"></i></li>
+                    <li><button>tweet</button></li>
+                </ul>
+            </div>
+
+            <div class="section">
+                This is the main content area
+            </div>
+
+            <div class="footer">
+                This is the footer
+            </div>
+         -->
+        <!-- <div class="form">
+            <form action="#">
+              <div>
+                <p class="title">Registration Form</p>
+                <p><label for="first name">First Name :</label> <input autofocus="" id=
+                "first_name" type="text"></p>
+                <p><label for="last name">Last name :</label> <input id="last_name" type=
+                "last_name"></p>
+                <p><label for="email">E-mail :</label> <input id="email" type=
+                "email"></p>
+                <p><input class="btn" type="submit" value="Register"></p>
+              </div>
+            </form>
+          </div> -->
+    </body>
+</html>

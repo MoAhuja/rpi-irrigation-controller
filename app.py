@@ -28,6 +28,13 @@ def create_zone():
 	# return render_template('landing.html')
 	return app.send_static_file('screens/portal/create_zone.html')
 
+@app.route('/portal/flexbox')
+def flexbox():
+	# Check query string for the zone ID. If so, we'll retrieve that zone data first and then load the page
+	# return render_template('landing.html')
+	return app.send_static_file('screens/portal/flexbox_test.html')
+
+
 @app.route('/service_hub/zones/create_zone', methods=['POST'])
 def service_create_zone():
 

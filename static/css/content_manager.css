@@ -1,0 +1,31 @@
+#content_manager {
+    display: flex;
+    flex: 1;
+}
+
+#content_manager > ul.sub_nav {
+    
+    /* border: 1px solid black; */
+    margin: 0;
+    padding: 5px;
+    text-transform: uppercase;
+    
+}
+
+#content_manager ul.sub_nav li {
+    display: block;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
+
+#content_manager content {
+    flex: 1;
+    height: auto;
+    padding-left: 15px;
+    border-left: 1px solid #a2a2a2;
+    
+    
+}
+
