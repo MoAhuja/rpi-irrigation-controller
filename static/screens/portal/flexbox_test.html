@@ -15,7 +15,8 @@
                 $(document).ready(function(){
 
                     currentlyShowingPanel = $("#content_dashboard")
-
+                    
+                    
                     // Logic to show the right panel based on the nav item
                     $(".nav li").click(function() {
                         id = ($(this).attr('id'))
@@ -134,14 +135,158 @@
                 
                 <!-- manager content -->
                 <div id="content_manager">
-                    <ul class="sub_nav">
-                        <li>View Zones</li>
-                        <li>Create Zone</li>
-                    </ul>    
+                    <ul class="sub_nav content_nav">
+                        <li><a href="#viewzones">View Zones</a></li>
+                        <li><a href="#creatzone">Create Zones</a></li>
+                    </ul>
                     <content>
-                        <dashboard>
-                            I am the dashboard
-                        </dashboard>
+                        <zonecard>
+                            <zonesegment>Segment 1</zonesegment>
+                            <zonesegment class="middle">
+                                I am text in the middle
+                            </zonesegment>
+                            <zonesegment class="end">
+                                <ul class="action">
+                                    <li><a href="#">Edit</a></li>
+                                    <li><a href="#">Details</a></li>
+                                    <li><a href="#">Refresh</a></li>
+                                    <li class="bottom_item"><a href="#">History</a></li>
+                                </ul>
+                            </zonesegment>
+                        </zonecard>
+                        <zonecard>
+                            <zonesegment>Segment 1</zonesegment>
+                            <zonesegment class="middle">
+
+                            </zonesegment>
+                            <zonesegment class="end">
+                                <ul class="action">
+                                    <li><a href="#">Edit</a></li>
+                                    <li><a href="#">Details</a></li>
+                                    <li><a href="#">Refresh</a></li>
+                                    <li class="bottom_item"><a href="#">History</a></li>
+                                </ul>
+                            </zonesegment>
+                        </zonecard>
+
+                        <zonecard>
+                            <zonesegment>Segment 1</zonesegment>
+                            <zonesegment class="middle">
+
+                            </zonesegment>
+                            <zonesegment class="end">
+                                <ul class="action">
+                                    <li><a href="#">Edit</a></li>
+                                    <li><a href="#">Details</a></li>
+                                    <li><a href="#">Refresh</a></li>
+                                    <li class="bottom_item"><a href="#">History</a></li>
+                                </ul>
+                            </zonesegment>
+                        </zonecard>
+                        <zonecard>
+                            <zonesegment>Segment 1</zonesegment>
+                            <zonesegment class="middle">
+
+                            </zonesegment>
+                            <zonesegment class="end">
+                                <ul class="action">
+                                    <li><a href="#">Edit</a></li>
+                                    <li><a href="#">Details</a></li>
+                                    <li><a href="#">Refresh</a></li>
+                                    <li class="bottom_item"><a href="#">History</a></li>
+                                </ul>
+                            </zonesegment>
+                        </zonecard>
+
+                        <zonecard>
+                                <zonesegment>Segment 1</zonesegment>
+                                <zonesegment class="middle">
+    
+                                </zonesegment>
+                                <zonesegment class="end">
+                                    <ul class="action">
+                                        <li><a href="#">Edit</a></li>
+                                        <li><a href="#">Details</a></li>
+                                        <li><a href="#">Refresh</a></li>
+                                        <li class="bottom_item"><a href="#">History</a></li>
+                                    </ul>
+                                </zonesegment>
+                            </zonecard>
+                            <zonecard>
+                                <zonesegment>Segment 1</zonesegment>
+                                <zonesegment class="middle">
+    
+                                </zonesegment>
+                                <zonesegment class="end">
+                                    <ul class="action">
+                                        <li><a href="#">Edit</a></li>
+                                        <li><a href="#">Details</a></li>
+                                        <li><a href="#">Refresh</a></li>
+                                        <li class="bottom_item"><a href="#">History</a></li>
+                                    </ul>
+                                </zonesegment>
+                            </zonecard>
+
+
+                            <zonecard>
+                                    <zonesegment>Segment 1</zonesegment>
+                                    <zonesegment class="middle">
+        
+                                    </zonesegment>
+                                    <zonesegment class="end">
+                                        <ul class="action">
+                                            <li><a href="#">Edit</a></li>
+                                            <li><a href="#">Details</a></li>
+                                            <li><a href="#">Refresh</a></li>
+                                            <li class="bottom_item"><a href="#">History</a></li>
+                                        </ul>
+                                    </zonesegment>
+                                </zonecard>
+                                <zonecard>
+                                    <zonesegment>Segment 1</zonesegment>
+                                    <zonesegment class="middle">
+        
+                                    </zonesegment>
+                                    <zonesegment class="end">
+                                        <ul class="action">
+                                            <li><a href="#">Edit</a></li>
+                                            <li><a href="#">Details</a></li>
+                                            <li><a href="#">Refresh</a></li>
+                                            <li class="bottom_item"><a href="#">History</a></li>
+                                        </ul>
+                                    </zonesegment>
+                                </zonecard>
+
+                                <zonecard>
+                                        <zonesegment>Segment 1</zonesegment>
+                                        <zonesegment class="middle">
+            
+                                        </zonesegment>
+                                        <zonesegment class="end">
+                                            <ul class="action">
+                                                <li><a href="#">Edit</a></li>
+                                                <li><a href="#">Details</a></li>
+                                                <li><a href="#">Refresh</a></li>
+                                                <li class="bottom_item"><a href="#">History</a></li>
+
+                                            </ul>
+                                        </zonesegment>
+                                    </zonecard>
+
+                                    <zonecard>
+                                            <zonesegment>Segment 1</zonesegment>
+                                            <zonesegment class="middle">
+                
+                                            </zonesegment>
+                                            <zonesegment class="end">
+                                                <ul class="action">
+                                                    <li><a href="#">Edit</a></li>
+                                                    <li><a href="#">Details</a></li>
+                                                    <li><a href="#">Refresh</a></li>
+                                                    <li class="bottom_item"><a href="#">History</a></li>
+                                                </ul>
+                                            </zonesegment>
+                                        </zonecard>
                     </content>
                 </div>
 

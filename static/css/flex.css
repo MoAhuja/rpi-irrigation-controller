@@ -1,4 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
+@import url(https://fonts.googleapis.com/css?family=Josefin+Slab:100,300,400,600,700);
+@import url(colors.css);
+/* overcast */
 
 * {
     box-sizing: border-box
@@ -22,6 +25,7 @@ body {
     width: 80vw;
     height: 100%;
     margin: auto;
+    overflow: auto;
     /* justify-content: center */
 
 }
@@ -36,7 +40,7 @@ footer {
 
 header {
     /* border: 2px solid #a2a2a2; */
-    background-color: #f4f4f4;
+    background-color: var(--color-primary);
     -webkit-box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.75);
     -moz-box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.75);
     box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.75);
@@ -47,19 +51,21 @@ header {
     text-transform: uppercase;
     display:flex;
     flex-direction: column;
+    background-image: url("https://www.transparenttextures.com/patterns/binding-dark.png");
 
 }
 
 header h1 {
     font-size: 3em;
-    color: #34495e;
+    color: var(--color-primary-text1);
     text-align: center;
 }
 
 footer {
-    background: #f4f4f4;
+    background: var(--color-primary);
     height: auto;
-    border-top: 1px solid black;
+    border-top: 1px solid #a2a2a2;
+    margin: 0;
 }
 
 /* Adjust navigation styling */
@@ -68,11 +74,11 @@ footer {
     display: flex;
     border-width: 1px 0px 1px 0px;
     border-style: solid;
-    border-color:  rgba(238,238,238 ,1);
+    border-color:  rgba(238,238,238 ,0.5);
     border-radius: 5px;
     align-items: center; /* This determines the vertical positioning of the list items */
     justify-content:space-around; /* This determines the horizontal distribution of the list items */
-    color: rgba(117,117,117 ,1);
+    color: var(--color-primary-text1);
     padding-bottom: 5px;
     padding-top: 0px;
     margin: 0; /* remove the margin so it's snug against the other components */
@@ -81,32 +87,26 @@ footer {
 
 /* Remove bullet and add some padding for list items within the header */
 .nav li {
-    /* border: 1px solid red; */
     padding: 10px 15px;
     display: block; 
 }
 
 .nav li.bar {
-    /* border: 1px solid green; */
     font-size: 1.25em;
-    /* text-align: justify; */
     padding: 0;
-    /* display:block; */
-}
+    }
 
 .nav a {
-    color: #34495e;
+    color: var(--color-primary-text1);
     font-size: .99em;
+    text-decoration: none;
+    
 }
 
 .nav a:hover {
-    color: #718daa;
+    color: var(--color-primary-text2);
+    font-weight: bolder;
 }
-
-.nav a {
-    text-decoration: none;
-}
-
 
 
 /*****************
@@ -117,6 +117,7 @@ Manage all the content
 content {
     flex: 1;
     display: flex;
+    overflow: auto;
 }
 
 content div {
@@ -125,4 +126,32 @@ content div {
 content div.show {
     display: block;
 }
+
+.content_nav {
+    background-color: var(--color-primary);
+    border-right: 1px solid #a2a2a2;
+    margin-top:0px;
+    margin-bottom: 0px;
+    padding: 5px;
+    text-transform: uppercase; 
+      
+}
+
+.content_nav li {
+    display: block;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
+.content_nav a {
+    text-decoration: none;
+    color: var(--color-primary-text1);
+    font-size: .99em;
+}
+
+.content_nav a:hover {
+    color: var(--color-primary-text2);
+}
+
 
