@@ -1,0 +1,46 @@
+<form id="formData">
+
+<ul class="create_zone_fields">
+    <li><h1>Zones</h1></li>
+    <li>
+        <label for="input_zone_name">Zone Name</label>
+        <input type="text" name="input_zone_name" id="input_zone_name" placeholder="Enter the zone name here">
+    </li>
+    <li>
+        <label for="input_zone_description">Zone Description</label>
+        <input type="text" name="input_zone_description" id="input_zone_description" placeholder="Enter a description of this zone">
+    </li>
+    <hr />
+    <li><h1>Rain</h1></li>
+    <li>
+        <label for="short_term_rain">Short Term Rain Limit</label>
+        <input type="text" id="short_term_rain" name="rain[shortTermExpectedRain]" placeholder="Enter the amount of rain in millimeters that would prevent watering (short term)">
+    </li>
+    <li>
+        <label for="daily_rain">Daily Rain Limit</label>
+        <input type="text" id="daily_rain" name="rain[dailyExpectedRainAmount]" placeholder="Enter the amount of rain in millimeters that would prevent watering (daily)">
+    </li>
+
+    <hr />
+    <li><h1>Temperature</h1></li>
+    <li>
+        <label for="temp_min">Minimum Temperature</label>
+        <input type="text"  id="temp_min" name="temperature[min]" placeholder="Enter the minimum environmental temperature for the sprinkler to activate">
+    </li>
+    <li>
+        <label for="temp_max">Maximum Temperature</label>
+        <input type="text" id="temp_max" name="temperature[max]" placeholder="Enter the maximum environmental temperature for the sprinkler to activate">
+    </li>
+
+    <li><h1>Schedules</h1><button id="btnAddSchedule">Add Schedule</button></li>
+    
+    <ul class="create_zone_fields" id="schedule_area">
+        
+    </ul>
+    
+    <li>
+        <button id="btnCreateZone">Submit</button>
+    </li>
+              
+</ul>
+</form>

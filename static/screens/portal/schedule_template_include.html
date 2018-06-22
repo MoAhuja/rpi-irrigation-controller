@@ -1,0 +1,63 @@
+<li/>
+<hr />
+<li>Schedule 1</li><button id="btnDeleteSchedule">Delete Schedule</button>
+<li />
+<hr />
+
+<li>
+    <label for="start_time[NUMBER_HOLDER]">Start Time</label>
+    <input type="text" class="time"  id="start_time[NUMBER_HOLDER]" name="schedule[NUMBER_HOLDER][startTime]" placeholder="What time to start watering">
+</li>
+<li>
+    <label for="end_time[NUMBER_HOLDER]">End Time</label>
+    <input type="text" class="time" id="end_time[NUMBER_HOLDER]" name="schedule[NUMBER_HOLDER][endTime]" placeholder="What time to stop watering">
+</li>
+
+<li>
+    <label for="schedule_type[NUMBER_HOLDER]">Scheduling Type</label>
+    <select id="schedule_type[NUMBER_HOLDER]" name="schedule[NUMBER_HOLDER][schedule_type]">
+        <option value="DayAndTime">Day And Time</option>
+        <option value="TimeAndFrequency">Time And Frequency</option>
+    </select>
+</li>
+<li>
+    <label>Select all days</label>
+    <ul id="dowlist">
+        <li>
+            <label for="Monday[NUMBER_HOLDER]">Mon</label>
+            <input type="checkbox" class="fancycheckbox" name="schedule[NUMBER_HOLDER][days][]" id="Monday[NUMBER_HOLDER]" value="0">
+            <label for="Monday[NUMBER_HOLDER]" class="checkboxframe"></label>
+        </li>
+        <li>
+            <label for="Tuesday[NUMBER_HOLDER]">Tue</label>
+            <input type="checkbox" class="fancycheckbox" name="schedule[NUMBER_HOLDER][days][]" id="Tuesday[NUMBER_HOLDER]" value="1">
+            <label for="Tuesday[NUMBER_HOLDER]" class="checkboxframe"></label>
+        </li>
+        <li>
+            <label for="Wednesday[NUMBER_HOLDER]">Wed</label>
+            <input type="checkbox" class="fancycheckbox" name="schedule[NUMBER_HOLDER][days][]" id="Wednesday[NUMBER_HOLDER]" value="2">
+            <label for="Wednesday[NUMBER_HOLDER]" class="checkboxframe"></label>
+        </li>
+        <li>
+            <label for="Thursday[NUMBER_HOLDER]">Thurs</label>
+            <input type="checkbox" class="fancycheckbox" name="schedule[NUMBER_HOLDER][days][]" id="Thursday[NUMBER_HOLDER]" value="3">
+            <label for="Thursday[NUMBER_HOLDER]" class="checkboxframe"></label>
+        </li>
+        <li>
+            <label for="Friday[NUMBER_HOLDER]">Fri</label>
+            <input type="checkbox" class="fancycheckbox" name="schedule[NUMBER_HOLDER][days][]" id="Friday[NUMBER_HOLDER]" value="4">
+            <label for="Friday[NUMBER_HOLDER]" class="checkboxframe"></label>
+        </li>
+        <li>
+            <label for="Saturday[NUMBER_HOLDER]">Sat</label>
+            <input type="checkbox" class="fancycheckbox" name="schedule[NUMBER_HOLDER][days][]" id="Saturday[NUMBER_HOLDER]" value="5">
+            <label for="Saturday[NUMBER_HOLDER]" class="checkboxframe"></label>
+        </li>
+        <li>
+            <label for="Sunday[NUMBER_HOLDER]">Sun</label>
+            <input type="checkbox" class="fancycheckbox" name="schedule[NUMBER_HOLDER][days][]" id="Sunday[NUMBER_HOLDER]" value="6">
+            <label for="Sunday[NUMBER_HOLDER]" class="checkboxframe"></label>
+        </li>
+                    
+    </ul>
+</li>

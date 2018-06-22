@@ -97,13 +97,113 @@ zonesegment ul.action li a {
     color: var(--color-tertiary-text1);
 }
 
-/* zonesegment ul.action li a:hover {
-    color: var(--color-secondary);
-} */
-
 zonesegment ul.action li:hover {
-
     background: var(--color-secondary-text1);
 }
+
+createzone {
+    /* display: flex; */
+    flex: 1;
+    /* border: 1px solid red; */
+    overflow: auto;
+}
+
+.create_zone_fields {
+    flex-direction: column;
+    text-transform: uppercase;
+    flex: 1;
+}
+
+/* Label Fields */
+.create_zone_fields > li > label {
+    min-width: 150px;
+}
+
+/* Input fields */
+.create_zone_fields > li > input,select {
+     flex: 1;
+     height: 45px;
+     padding: 5px;
+     margin-top: 5px;
+     font-family: 'Montserrat', sans-serif;
+ }
+
+.create_zone_fields > li > label, 
+.create_zone_fields > li > p {
+    flex: 1 0 120px;
+    max-width: 220px;
+}
+.create_zone_fields > li{
+    display: flex;
+    flex:1;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+.create_zone_fields > li > label {
+    flex: 2;
+}
+
+#dowlist {
+    display: flex;
+    /* padding: 10px; */
+    flex:1;
+    min-height: 300px;
+    flex-wrap: wrap;
+    flex-direction: column;
+    /* border: 2px solid black; */
+    flex-wrap: wrap;
+    
+} 
+
+#dowlist > li {
+    flex: 1;
+    padding: 10px;
+    display: flex;
+    /* border: 1px solid red; */
+}
+
+
+
+#dowlist > li > label:first-child{
+ 
+    width: 80px;
+
+}
+
+/* All elements after the label field */
+.create_zone_fields > li > label + * {
+  flex: 1 0 220px;
+  /* border: 1px solid red; */
+
+}
+
+.create_zone_fields input[type=text]{
+    padding-left: 10px;
+}
+
+.create_zone_fields input[type=text]:focus {
+    border: 1px solid var(--color-primary);
+}
+
+hr {
+	height: 10px;
+	border: 0;
+    box-shadow: 0 10px 10px -10px #8c8b8b inset;
+    clear: both;
+}
+
+
+
+
+#schedule_area {
+    margin: 0px;
+    padding: 0px;
+}
+
+
+
 
 

@@ -9,14 +9,109 @@
             <script type="text/javascript" src="/static/js/jquery.serialize-object.min.js"></script>
             <link rel= "stylesheet" type= "text/css" href= "/static/js/timepicker/jquery.timepicker.css">
             <link rel= "stylesheet" type= "text/css" href= "/static/js/timepicker/lib/bootstrap-datepicker.css">
-            <link rel="stylesheet" type="text/css" href="/static/css/content_manager.css?id=1">
-            
+            <link rel="stylesheet" type="text/css" href="/static/css/content_zone_manager.css?id=1">
+            <link rel="stylesheet" type="text/css" href="/static/css/checkbox.css">
             <script>
-                $(document).ready(function(){
+               String.prototype.replaceAll = function(search, replacement) {
+                    var target = this;
+                    return target.replace(new RegExp(search, 'g'), replacement);
+                };
 
-                    currentlyShowingPanel = $("#content_dashboard")
+                $(document).ready(function(){
                     
+                    scheduleCounter = 0;
+                    currentlyShowingPanel = $("#content_manager")
+
+                    $("createzone").load("/static/screens/portal/create_zone_include.html");
+
+
+                    $("#nav_create_zone").click(function(){
+                        // hide the others
+                        $("zonecards").hide()
+                        $("createzone").show()
+
+                    });
+
                     
+
+                    $(function(){
+                        
+                        $("#content_dashboard").hide() 
+                        $("zonecards").hide()
+                        $("createzone").show()
+
+                        // Load teh schedule section
+                        $.get("/static/screens/portal/schedule_template_include.html", function(data){
+                            // alert(data);
+                            var data2 = data.replaceAll("NUMBER_HOLDER", scheduleCounter)
+                            $("#schedule_area").append(data2);
+                            scheduleCounter++
+                        });
+                        
+                    });
+
+                    $('body').on('click', '#btnAddSchedule', function() {
+                        $.get("/static/screens/portal/schedule_template_include.html", function(data){
+                            var data2 = data.replaceAll("NUMBER_HOLDER", scheduleCounter)
+                            $("#schedule_area").append(data2);
+                            scheduleCounter++
+                        });
+                   });
+
+                   $('body').on('submit', 'form', function(e) {
+                        e.preventDefault();
+                        // var jsonData = $("#formData").serializeJSON();
+                        // console.log(jsonData);
+
+
+                        // $.ajax({
+                        //     url: 'http://127.0.0.1:5000/service_hub/zones/create_zone', // url where to submit the request
+                        //     type : "POST", // type of action POST || GET
+                        //     dataType : 'json', // data type
+                        //     data : jsonData, // post data || get data
+                        //     success : function(result) {
+                        //         // you can see the result from the console
+                        //         // tab of the developer tools
+                        //         console.log(result);
+                        //     },
+                        //     error: function(xhr, resp, text) {
+                        //         console.log(text);
+                        //     }
+                        // });
+                    });
+
+                   $('body').on('click', '#btnCreateZone', function() {
+                        // e.preventDefault();
+                        var jsonData = $("#formData").serializeJSON();
+                        console.log(jsonData);
+
+
+                        $.ajax({
+                            url: 'http://127.0.0.1:5000/service_hub/zones/create_zone', // url where to submit the request
+                            type : "POST", // type of action POST || GET
+                            dataType : 'json', // data type
+                            data : jsonData, // post data || get data
+                            success : function(result) {
+                                // you can see the result from the console
+                                // tab of the developer tools
+                                console.log(result);
+                            },
+                            error: function(xhr, resp, text) {
+                                console.log(text);
+                            }
+                        });
+                    });
+                  
+
+    
+
+                    $("#nav_view_zone").click(function(){
+                        // hide the others
+                        $("zonecards").show()
+                        $("createzone").hide()
+
+                    });
+
                     // Logic to show the right panel based on the nav item
                     $(".nav li").click(function() {
                         id = ($(this).attr('id'))
@@ -64,35 +159,32 @@
                     });
                     
 
-                    $('#btnAddSchedule').click(function(){
-                        
-                        $('#ScheduleTable').append('<tr><td><span>Start Time:</span><span><input class ="time" type="text" name="schedule[' + scheduleCounter + '][startTime]" placeholder="6:00 am"/></span></td><td><span>End Time:</span><span><input class="time" type="text" name="schedule[' + scheduleCounter + '][endTime]" placeholder="7:00 am"/></span></td><td class="cellDynamicButton"><button id="scheduleDelButton" class="delButton">Delete</button></td></tr>');
-                        scheduleCounter++;
-
-                    });
+                    
 
 
-                    $("form").submit(function(e){
-                        
+                    $("#formData").submit(function(e){
+                        // alert("x");
                         e.preventDefault();
-                        var jsonData = $("form#formData").serializeJSON();
-                        console.log(jsonData);
+                        alert("y");
+                        
+                        // var jsonData = $("form#formData").serializeJSON();
+                        // console.log(jsonData);
 
 
-                        $.ajax({
-                            url: 'http://127.0.0.1:5000/service_hub/zones/create_zone', // url where to submit the request
-                            type : "POST", // type of action POST || GET
-                            dataType : 'json', // data type
-                            data : jsonData, // post data || get data
-                            success : function(result) {
-                                // you can see the result from the console
-                                // tab of the developer tools
-                                console.log(result);
-                            },
-                            error: function(xhr, resp, text) {
-                                console.log(text);
-                            }
-                        });
+                        // $.ajax({
+                        //     url: 'http://127.0.0.1:5000/service_hub/zones/create_zone', // url where to submit the request
+                        //     type : "POST", // type of action POST || GET
+                        //     dataType : 'json', // data type
+                        //     data : jsonData, // post data || get data
+                        //     success : function(result) {
+                        //         // you can see the result from the console
+                        //         // tab of the developer tools
+                        //         console.log(result);
+                        //     },
+                        //     error: function(xhr, resp, text) {
+                        //         console.log(text);
+                        //     }
+                        // });
                     });
                     
                    
@@ -119,7 +211,7 @@
                         <!-- <ul class="nav"> -->
                         <li id="btn_dashboard"><a href="#">Dashboard</a></li>
                         <li class="bar">|</li>
-                        <li id="btn_manager"><a href="#" >Manager</a></li>
+                        <li id="btn_manager"><a href="#" >Zone Manager</a></li>
                         <li class="bar">|</li>
                         <li id="btn_controller"><a href="#">Controller</a></li>
                         <li class="bar">|</li>
@@ -136,72 +228,21 @@
                 <!-- manager content -->
                 <div id="content_manager">
                     <ul class="sub_nav content_nav">
-                        <li><a href="#viewzones">View Zones</a></li>
-                        <li><a href="#creatzone">Create Zones</a></li>
+                        <li id="nav_view_zone"><a href="#">View Zones</a></li>
+                        <li id="nav_create_zone"><a href="#">Create Zone</a></li>
                     </ul>
                     <content>
-                        <zonecard>
-                            <zonesegment>Segment 1</zonesegment>
-                            <zonesegment class="middle">
-                                I am text in the middle
-                            </zonesegment>
-                            <zonesegment class="end">
-                                <ul class="action">
-                                    <li><a href="#">Edit</a></li>
-                                    <li><a href="#">Details</a></li>
-                                    <li><a href="#">Refresh</a></li>
-                                    <li class="bottom_item"><a href="#">History</a></li>
-                                </ul>
-                            </zonesegment>
-                        </zonecard>
-                        <zonecard>
-                            <zonesegment>Segment 1</zonesegment>
-                            <zonesegment class="middle">
 
-                            </zonesegment>
-                            <zonesegment class="end">
-                                <ul class="action">
-                                    <li><a href="#">Edit</a></li>
-                                    <li><a href="#">Details</a></li>
-                                    <li><a href="#">Refresh</a></li>
-                                    <li class="bottom_item"><a href="#">History</a></li>
-                                </ul>
-                            </zonesegment>
-                        </zonecard>
-
-                        <zonecard>
-                            <zonesegment>Segment 1</zonesegment>
-                            <zonesegment class="middle">
-
-                            </zonesegment>
-                            <zonesegment class="end">
-                                <ul class="action">
-                                    <li><a href="#">Edit</a></li>
-                                    <li><a href="#">Details</a></li>
-                                    <li><a href="#">Refresh</a></li>
-                                    <li class="bottom_item"><a href="#">History</a></li>
-                                </ul>
-                            </zonesegment>
-                        </zonecard>
-                        <zonecard>
-                            <zonesegment>Segment 1</zonesegment>
-                            <zonesegment class="middle">
-
-                            </zonesegment>
-                            <zonesegment class="end">
-                                <ul class="action">
-                                    <li><a href="#">Edit</a></li>
-                                    <li><a href="#">Details</a></li>
-                                    <li><a href="#">Refresh</a></li>
-                                    <li class="bottom_item"><a href="#">History</a></li>
-                                </ul>
-                            </zonesegment>
-                        </zonecard>
-
-                        <zonecard>
+                        <!-- Create Zone content-->
+                        <createzone>
+                            <!-- see: create_zone_include.html -->
+                        </createzone>
+                        <!-- View Zones content -->
+                        <zonecards>
+                            <zonecard>
                                 <zonesegment>Segment 1</zonesegment>
                                 <zonesegment class="middle">
-    
+                                    I am text in the middle
                                 </zonesegment>
                                 <zonesegment class="end">
                                     <ul class="action">
@@ -215,7 +256,7 @@
                             <zonecard>
                                 <zonesegment>Segment 1</zonesegment>
                                 <zonesegment class="middle">
-    
+
                                 </zonesegment>
                                 <zonesegment class="end">
                                     <ul class="action">
@@ -227,66 +268,24 @@
                                 </zonesegment>
                             </zonecard>
 
-
                             <zonecard>
-                                    <zonesegment>Segment 1</zonesegment>
-                                    <zonesegment class="middle">
-        
-                                    </zonesegment>
-                                    <zonesegment class="end">
-                                        <ul class="action">
-                                            <li><a href="#">Edit</a></li>
-                                            <li><a href="#">Details</a></li>
-                                            <li><a href="#">Refresh</a></li>
-                                            <li class="bottom_item"><a href="#">History</a></li>
-                                        </ul>
-                                    </zonesegment>
-                                </zonecard>
-                                <zonecard>
-                                    <zonesegment>Segment 1</zonesegment>
-                                    <zonesegment class="middle">
-        
-                                    </zonesegment>
-                                    <zonesegment class="end">
-                                        <ul class="action">
-                                            <li><a href="#">Edit</a></li>
-                                            <li><a href="#">Details</a></li>
-                                            <li><a href="#">Refresh</a></li>
-                                            <li class="bottom_item"><a href="#">History</a></li>
-                                        </ul>
-                                    </zonesegment>
-                                </zonecard>
+                                <zonesegment>Segment 1</zonesegment>
+                                <zonesegment class="middle">
 
-                                <zonecard>
-                                        <zonesegment>Segment 1</zonesegment>
-                                        <zonesegment class="middle">
-            
-                                        </zonesegment>
-                                        <zonesegment class="end">
-                                            <ul class="action">
-                                                <li><a href="#">Edit</a></li>
-                                                <li><a href="#">Details</a></li>
-                                                <li><a href="#">Refresh</a></li>
-                                                <li class="bottom_item"><a href="#">History</a></li>
+                                </zonesegment>
+                                <zonesegment class="end">
+                                    <ul class="action">
+                                        <li><a href="#">Edit</a></li>
+                                        <li><a href="#">Details</a></li>
+                                        <li><a href="#">Refresh</a></li>
+                                        <li class="bottom_item"><a href="#">History</a></li>
+                                    </ul>
+                                </zonesegment>
+                            </zonecard>
+                           
 
-                                            </ul>
-                                        </zonesegment>
-                                    </zonecard>
 
-                                    <zonecard>
-                                            <zonesegment>Segment 1</zonesegment>
-                                            <zonesegment class="middle">
-                
-                                            </zonesegment>
-                                            <zonesegment class="end">
-                                                <ul class="action">
-                                                    <li><a href="#">Edit</a></li>
-                                                    <li><a href="#">Details</a></li>
-                                                    <li><a href="#">Refresh</a></li>
-                                                    <li class="bottom_item"><a href="#">History</a></li>
-                                                </ul>
-                                            </zonesegment>
-                                        </zonecard>
+                        </zonecards>
                     </content>
                 </div>
 
@@ -298,44 +297,5 @@
         </div>
         
     </body>
-    <!-- <body>
-        
-        
-            <div class="header">
-                <h1 class="title">Irrigation Controller</h1>
-            
-                <ul class="nav">
-                    <li><i class="fa fa-home"></i>Home</li>
-                    <li><i class="fa fa-bell-o"></i>Notifications</li>
-                    <li><i class="fa fa-envelope-o"></i>Messages</li>
-                    <li><i class="fa fa-twitter"></i></li>
-                    <li><form><input placeholder="search twitter"/><i class="fa fa-search"></i></form></li>
-                    <li><i class="fa fa-user-circle-o"></i></li>
-                    <li><button>tweet</button></li>
-                </ul>
-            </div>
 
-            <div class="section">
-                This is the main content area
-            </div>
-
-            <div class="footer">
-                This is the footer
-            </div>
-         -->
-        <!-- <div class="form">
-            <form action="#">
-              <div>
-                <p class="title">Registration Form</p>
-                <p><label for="first name">First Name :</label> <input autofocus="" id=
-                "first_name" type="text"></p>
-                <p><label for="last name">Last name :</label> <input id="last_name" type=
-                "last_name"></p>
-                <p><label for="email">E-mail :</label> <input id="email" type=
-                "email"></p>
-                <p><input class="btn" type="submit" value="Register"></p>
-              </div>
-            </form>
-          </div> -->
-    </body>
 </html>
