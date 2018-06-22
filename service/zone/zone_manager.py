@@ -6,21 +6,22 @@ from service.utilities.conversion import Conversions
 from pprint import pprint
 from service.utilities.logger import Logger
 from service.database.db_schema import Zone
+from service import shared
 import sys
 
 # TODO: consider putting in a failsafe for all zones where if they are activated for X period of time, they auto shut off.
 # TODO: Consider making the auto-shutoff configurable as a system setting
 # TODO: WHat do we do if pyowm can't retrieve the weather? Do we still turn on?
 
-# This class is for managing a zone and it's information. 
+# This class is for managing a zone and it's information, or manipulation of the zone behavior (activation/deactivation)
 class ZoneManager():
 
     # def __init__(self):
     #     self.ops = ZoneDBO()
     #     self.ops.insertRPItoPINConfig(1,10)
     
-    def __init__(self, event_publisher):
-        self.ops = ZoneDBO(event_publisher)
+    def __init__(self):
+        self.ops = ZoneDBO()
         
         # TODO: Remove this later
         self.ops.insertRPItoPINConfig( 1,10)
@@ -70,6 +71,31 @@ class ZoneManager():
         zonesDO = self.ops.fetchAllEnabledZones()
     
         return zonesDO
+
+    def manuallyActivateZone(self, json_data):
+        # TODO: Validate the zone is enabled
+        zone_id = json_data['id']
+        duration = json_data['duration']
+        
+        # TODO: Fetch zone using ID
+        zone = self.retrieveZone(zone_id)
+
+        end_time = ""
+        # call the manual ativation function on the engine
+        shared.engine.manuallyActivateZone(zone, end_time)
+
+
+        return False
+    
+    def manuallyDeactivateZone(self, json_data):
+        # TODO: Validate the zone is enabled
+        zone_id = json_data['id']
+        
+        # TODO: Fetch zone using ID
+        zone = self.retrieveZone(zone_id)
+
+        # call the manual ativation function on the engine
+        shared.engine.manuallyDeactivateZone(zone)
 
     # def deleteZone(id?)
     # def editZone(id, jsonData) -- Need to figure out how to find assoicated objects and update them?

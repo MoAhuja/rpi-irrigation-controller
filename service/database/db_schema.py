@@ -45,7 +45,7 @@ class Zone(Base):
         cl.rain = RainRule.initializeWithJSON(jsonData["rain"], cl)
         
         for schedule in jsonData["schedule"]:
-            cl.schedules.append(Schedule.initializeWithTimes(schedule["startTime"], schedule["endTime"], cl))
+            cl.schedules.append(Schedule.initializeWithJSON(schedule, cl))
 
         return cl
 
@@ -94,21 +94,46 @@ class RainRule(Base):
 
         return cl
 
+class EnumScheduleType(enum.Enum):
+    DayAndTime = 0
+    TimeAndFrequency= 1
+
 class Schedule(Base):
-    __tablename__ = 'schedules'
+    __tablename__ = 'schedule'
     id = Column('id', Integer, primary_key=True)
+    schedule_type = Column('schedule_type', Enum(EnumScheduleType), nullable=False)
     start_time = Column('start_time', Time, nullable=False)
     end_time = Column('end_time', Time, nullable=False)
     enabled = Column('enabled', Boolean, default=False)
     zone_id = Column('zone_id', Integer, ForeignKey('zone.id'), nullable=False)
     zone=relationship("Zone", back_populates="schedules")
+    days = relationship("ScheduleDays", uselist=True, back_populates="schedule")
 
+    # @classmethod
+    # def initializeWithTimes(cls, iStart, iStop, zone):
+    #     cl = cls()
+    #     # print("Creating schedule DO")
+    #     cl.start_time = Conversions.convertHumanReadableTimetoDBTime(iStart)
+    #     cl.end_time = Conversions.convertHumanReadableTimetoDBTime(iStop)
+    #     cl.enabled = True
+    #     cl.zone = zone
+
+    #     return cl
+    
     @classmethod
-    def initializeWithTimes(cls, iStart, iStop, zone):
+    def initializeWithJSON(cls, json_data, zone):
         cl = cls()
         # print("Creating schedule DO")
-        cl.start_time = Conversions.convertHumanReadableTimetoDBTime(iStart)
-        cl.end_time = Conversions.convertHumanReadableTimetoDBTime(iStop)
+        cl.start_time = Conversions.convertHumanReadableTimetoDBTime(json_data['startTime'])
+        cl.end_time = Conversions.convertHumanReadableTimetoDBTime(json_data['endTime'])
+        cl.schedule_type = EnumScheduleType(int(json_data["schedule_type"]))
+        # cl.schedule_type = EnumScheduleType.DayAndTime
+
+        if cl.schedule_type is EnumScheduleType.DayAndTime:
+            # Iteratre over each selected day and add it to teh days array
+            for val in json_data["days"]:
+                cl.days.append(ScheduleDays(dayOfWeek = EnumDayOfWeek(int(val))))
+
         cl.enabled = True
         cl.zone = zone
 
@@ -119,6 +144,29 @@ class Schedule(Base):
     
     def getEndTime(self):
          return Conversions.convertDBTimeToHumanReadableTime(self.end_time)
+        
+    def getHoursAndMinutesFromStartTime(self):
+        return self.start_time.hour, self.start_time.minute
+
+class EnumDayOfWeek(enum.Enum):
+    Monday = 0
+    Tuesday = 1
+    Wednesday = 2
+    Thursday =3
+    Friday = 4
+    Saturday = 5
+    Sunday = 6
+
+class ScheduleDays(Base):
+    __tablename__ = "schedule_days"
+    id = Column('id', Integer, primary_key=True)
+
+    # The main attribute, which day.
+    dayOfWeek = Column('day_of_week', Enum(EnumDayOfWeek), unique=True, nullable=False)
+    schedule_id = Column('schedule_id', Integer, ForeignKey('schedule.id'), nullable=False)
+    schedule=relationship("Schedule", back_populates="days")
+
+    
 
 class EnumDecisionCodes(enum.Enum):
     ActivateZone = 0
@@ -184,6 +232,19 @@ class RpiPinMapper(Base):
 # TODO: Add table to handle ActivationHistory (activated, time activated, start_time, end_time, zone relationship). Consider correlation with decision history? maye the id from the decision is input to the actiation history?
 # TODO: Create a table to support notifications configuration (URLS, what to notify on)
 
+class EnumLogLevel(enum.Enum):
+    DEBUG = 0
+    INFO = 1
+    WARN = 2
+    ERROR = 3
+
+class Logs(Base):
+    __tablename__ = "logs"
+    id = Column('id', Integer, primary_key=True)
+    datetime = Column('timestamp', DateTime, default=datetime.now())
+    level = Column('level', Enum(EnumLogLevel), nullable=False)
+    component = Column('component', String(50), nullable=True)
+    message =  Column('message', String(500), nullable=False)
 
 # ###########################
 # Event triggers go below

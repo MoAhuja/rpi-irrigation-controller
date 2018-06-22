@@ -4,6 +4,7 @@ from service.zone.zone_controller import ZoneController
 from service.utilities.conversion import Conversions
 from service.zone.active_zone_bo import ActiveZone
 from service.database.decision_dbo import DecisionDBO
+from service.scheduler import Scheduler
 
 # Not sure i should be accessing DAO's at this layer, but it seems unneccessary to create a new object to track the same data
 from service.database.db_schema import DecisionHistory, EnumDecisionCodes, EnumReasonCodes
@@ -30,15 +31,44 @@ class Engine():
         
         # Register for notifications 
         event_publisher.register(self)
-        self.zone_manager = ZoneManager(event_publisher)
+        self.zone_manager = ZoneManager()
+        self.scheduler = Scheduler()
         self.decisionHistoryDBO = DecisionDBO()
         self.zone_controller = ZoneController()
         self.activeZones = {}
         self.weather_centre = WeatherCenter()
         self.loadZonesToMonitor()
+        self.buildSchedule()
         self.heartbeat()
+        
 
     
+    def buildSchedule(self):
+        # TODO: Link to schedule building class
+        return False
+
+    def manuallyActivateZone(self, zone, end_time):
+        # TODO: Check if the zone is already active
+        # TODO: This call should come from the zone manager (or some other place after validation). The user should not interface with the engine directly.
+        # TODO: Inject this zone into list of active zones
+        # TODO: Add decision history as "manual"
+        # TODO: Add activation to history table
+        # TODO: Tell controller to start the zone
+        return False
+    
+
+    
+    def manuallyDeactivateZone(self, zone):
+
+        # Check if zone is in the list of active zones
+        if self.activeZones[zone.id] is not None:
+            # TODO: What if a manual deactiate is called while he zone list is being?? Will this crash it?
+            del self.activeZones[zone.id]
+            Logger.info(self,"Zone " + str(zone.id) + "has been MANUALLY deactivated")
+
+            # TODO: insert a deactivation history event
+        
+
     def loadZonesToMonitor(self):
         # Shut off ALL zones first so we don't get stuck in a weird state.
         
@@ -50,6 +80,8 @@ class Engine():
                 Logger.debug(self, "Zone information is dirty. Going to obtain updated data")
 
             self.deactivateAllZones()
+
+            # Does this need to be changed to re-build the scheduler?
             self.enabledZones = self.zone_manager.retrieveAllEnabledZones()
     
     
@@ -70,6 +102,7 @@ class Engine():
     def checkAndDeactivateZones(self):
         deactivateList = []
 
+        
         # Loop through the activeZones list and check if the end time has been past
         Logger.debug(self,"Checking if any zones need to be deactivated")
         currentTime = datetime.now().time()
