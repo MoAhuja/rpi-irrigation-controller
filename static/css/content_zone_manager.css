@@ -120,12 +120,13 @@ createzone {
 }
 
 /* Input fields */
-.create_zone_fields > li > input,select {
-     flex: 1;
-     height: 45px;
-     padding: 5px;
+.create_zone_fields > li > input,select,button {
+     flex: 0 1 auto;
+     height: 35px;
+     padding: 5px;  
      margin-top: 5px;
      font-family: 'Montserrat', sans-serif;
+     /* border: 1px solid orange; */
  }
 
 .create_zone_fields > li > label, 
@@ -139,8 +140,20 @@ createzone {
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
+    /* border: 1px solid red; */
+    padding-right: 10px;
+    margin: 0px;
 }
 
+h4 {
+    margin: 0px;
+}
+
+.create_zone_fields h2 {
+    margin-top: 15px;
+    font-weight: bolder;
+    color: var(--color-primary);
+}
 
 .create_zone_fields > li > label {
     flex: 2;
@@ -153,8 +166,9 @@ createzone {
     min-height: 300px;
     flex-wrap: wrap;
     flex-direction: column;
-    /* border: 2px solid black; */
+    /* border: 2px solid black;  */
     flex-wrap: wrap;
+    
     
 } 
 
@@ -162,9 +176,10 @@ createzone {
     flex: 1;
     padding: 10px;
     display: flex;
-    /* border: 1px solid red; */
-}
 
+    /* border: 1px solid red; */
+    justify-content: flex-end;
+}
 
 
 #dowlist > li > label:first-child{
@@ -192,7 +207,9 @@ hr {
 	height: 10px;
 	border: 0;
     box-shadow: 0 10px 10px -10px #8c8b8b inset;
-    clear: both;
+    /* clear: both; */
+    margin-top: 10px;
+    margin-bottom:5px;
 }
 
 
@@ -204,6 +221,29 @@ hr {
 }
 
 
+.create_zone_fields button {
+    background: #76B3FA;
+    border-radius: 20px;
+    padding: 5px 15px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.0em;
+    /* margin: 0 15px; */
+  }
+  
+  /* Hover state animation applied here */
+  .create_zone_fields button:hover { 
+    /* -webkit-animation: hover 1200ms linear 2 alternate; */
+    animation: hover 1200ms linear 2 alternate;
+  }
+  
+  /* Active state animation applied here */
+  .create_zone_fields button:active {
+    /* -webkit-animation: active 1200ms ease 1 alternate; */
+    animation: active 1200ms ease 1 alternate; 
+    background: #5F9BE0;
+  }
 
-
-
+  #btnCreateZone {
+      flex: 1;
+  }
