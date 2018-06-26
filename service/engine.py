@@ -19,13 +19,10 @@ class Engine():
     zone_manager = None
     decisionHistoryDBO = None
     zone_controller = None
-    # enabledZones = None
-    nextRunScheduleIsDirty = True
     weather_centre = None
     weather_profile = None
     evaluatingZones = False
     activeZones = []
-    # nextRunSchedule = {}
     
 
     def __init__(self, event_publisher):
@@ -38,21 +35,8 @@ class Engine():
         self.zone_controller = ZoneController()
         self.activeZones = {}
         self.weather_centre = WeatherCenter()
-        
-        # self.buildSchedule()
-        self.nextRunSchedule = None
-
-        # Marked as dirty to invoke the schedule to be fetched on the first attempt
-        # self.nextRunScheduleIsDirty = True
-        self.loadNextRunSchedule()
         self.heartbeat()
         
-
-    
-    def buildSchedule(self):
-        Logger.debug(self, "Building the next run schedule")
-        self.nextRunSchedule = self.scheduler.buildNextRunSchedule()
-        self.nextRunScheduleIsDirty = True
 
     def manuallyActivateZone(self, zone, end_time):
         # TODO: Check if the zone is already active
@@ -76,19 +60,7 @@ class Engine():
             # TODO: insert a deactivation history event
         
 
-    def loadNextRunSchedule(self):
-        
-        Logger.debug(self, "load next run schedule entered. Next run schedule dirty = " + str(self.nextRunScheduleIsDirty))
-
-
-        # Check if zone data needs to be reloaded
-        if self.nextRunScheduleIsDirty is True or self.nextRunSchedule is None:
-            # Because the zones may have changed, we're going to force shutoff all the zones
-            # and allow them to re-activate if required
-            Logger.debug(self, "Next run schedule is dirty. Going to obtain updated data")
-
-            self.buildSchedule()
-            self.nextRunScheduleIsDirty = False
+   
 
     
     # Need to listen for changes
@@ -150,7 +122,7 @@ class Engine():
             self.evaluatingZones = True
 
             # Load the zones that we need to monitor
-            self.loadNextRunSchedule()
+            self.scheduler.loadNextRunSchedule()
 
             Logger.debug(self,"Finished loading zones")
 
@@ -166,7 +138,7 @@ class Engine():
             
             rebuildSchedule = False
 
-            for id, zonetiming in self.nextRunSchedule.items():
+            for id, zonetiming in self.scheduler.nextRunSchedule.items():
                 
                 Logger.debug(self, "Evaluating Zone: " + zonetiming.zone.name)
 

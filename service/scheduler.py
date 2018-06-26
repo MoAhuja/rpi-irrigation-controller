@@ -6,10 +6,32 @@ from service.zone.zone_timing_bo import ZoneTiming
 
 class Scheduler():
 
+    nextRunSchedule = {}
+    nextRunScheduleIsDirty = True
 
+    def __init__(self):
+        # checks if
+        nextRunScheduleIsDirty = True
+        self.loadNextRunSchedule()
+
+    def loadNextRunSchedule(self):
+        
+        Logger.debug(self, "load next run schedule entered. Next run schedule dirty = " + str(self.nextRunScheduleIsDirty))
+
+        # Check if zone data needs to be reloaded
+        if self.nextRunScheduleIsDirty is True or self.nextRunSchedule is None:
+            # Because the zones may have changed, we're going to force shutoff all the zones
+            # and allow them to re-activate if required
+            Logger.debug(self, "Next run schedule is dirty. Going to obtain updated data")
+
+            self.buildNextRunSchedule()
+            self.nextRunScheduleIsDirty = False
+    
+    def schedulerIsDirty(self):
+        self.nextRunScheduleIsDirty = True
+
+    # Builds the schedule and stores it in the class instance
     def buildNextRunSchedule(self):
-
-        nextRunHash = {}
 
         # create a zone manager instance
         zm = ZoneManager()
@@ -87,10 +109,7 @@ class Scheduler():
             Logger.info(self, "Next run end time for Zone " + zone.name + " is " + str(endTime))
 
             # Set the hashmap
-            nextRunHash[zone.id] = ZoneTiming.initialize(zone, nextRunDatetime, endTime)
-
-
-        return nextRunHash
+            self.nextRunSchedule[zone.id] = ZoneTiming.initialize(zone, nextRunDatetime, endTime)
 
     def calculateEndTime(self, zone, start_time, duration):
         return start_time + duration
