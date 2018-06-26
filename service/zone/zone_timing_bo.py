@@ -1,4 +1,4 @@
-class ActiveZone():
+class ZoneTiming():
 
    
     def __init__(self):

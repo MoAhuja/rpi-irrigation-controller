@@ -2,7 +2,7 @@ from service.zone.zone_manager import ZoneManager
 from service.weather_hub.weather_center import WeatherCenter
 from service.zone.zone_controller import ZoneController
 from service.utilities.conversion import Conversions
-from service.zone.active_zone_bo import ActiveZone
+from service.zone.zone_timing_bo import ZoneTiming
 from service.database.decision_dbo import DecisionDBO
 from service.scheduler import Scheduler
 
@@ -19,12 +19,13 @@ class Engine():
     zone_manager = None
     decisionHistoryDBO = None
     zone_controller = None
-    enabledZones = None
-    isDirty = False
+    # enabledZones = None
+    nextRunScheduleIsDirty = True
     weather_centre = None
     weather_profile = None
     evaluatingZones = False
     activeZones = []
+    # nextRunSchedule = {}
     
 
     def __init__(self, event_publisher):
@@ -37,15 +38,21 @@ class Engine():
         self.zone_controller = ZoneController()
         self.activeZones = {}
         self.weather_centre = WeatherCenter()
-        self.loadZonesToMonitor()
-        self.buildSchedule()
+        
+        # self.buildSchedule()
+        self.nextRunSchedule = None
+
+        # Marked as dirty to invoke the schedule to be fetched on the first attempt
+        # self.nextRunScheduleIsDirty = True
+        self.loadNextRunSchedule()
         self.heartbeat()
         
 
     
     def buildSchedule(self):
-        # TODO: Link to schedule building class
-        return False
+        Logger.debug(self, "Building the next run schedule")
+        self.nextRunSchedule = self.scheduler.buildNextRunSchedule()
+        self.nextRunScheduleIsDirty = True
 
     def manuallyActivateZone(self, zone, end_time):
         # TODO: Check if the zone is already active
@@ -69,21 +76,20 @@ class Engine():
             # TODO: insert a deactivation history event
         
 
-    def loadZonesToMonitor(self):
-        # Shut off ALL zones first so we don't get stuck in a weird state.
+    def loadNextRunSchedule(self):
         
+        Logger.debug(self, "load next run schedule entered. Next run schedule dirty = " + str(self.nextRunScheduleIsDirty))
+
+
         # Check if zone data needs to be reloaded
-        if self.isDirty is True or self.enabledZones is None:
+        if self.nextRunScheduleIsDirty is True or self.nextRunSchedule is None:
             # Because the zones may have changed, we're going to force shutoff all the zones
             # and allow them to re-activate if required
-            if self.isDirty:
-                Logger.debug(self, "Zone information is dirty. Going to obtain updated data")
+            Logger.debug(self, "Next run schedule is dirty. Going to obtain updated data")
 
-            self.deactivateAllZones()
+            self.buildSchedule()
+            self.nextRunScheduleIsDirty = False
 
-            # Does this need to be changed to re-build the scheduler?
-            self.enabledZones = self.zone_manager.retrieveAllEnabledZones()
-    
     
     # Need to listen for changes
     def publishZoneInfoUpdated(self):
@@ -134,8 +140,8 @@ class Engine():
 
     def checkAndActivateZones(self):
         
-        
         Logger.debug(self,"Evaluating Zones == " + str(self.evaluatingZones))
+
         # We need to make sure no one else is looping through the zones in case this gets invoked on another thread
         if self.evaluatingZones is False:
 
@@ -144,7 +150,8 @@ class Engine():
             self.evaluatingZones = True
 
             # Load the zones that we need to monitor
-            self.loadZonesToMonitor()
+            self.loadNextRunSchedule()
+
             Logger.debug(self,"Finished loading zones")
 
             # Get Time
@@ -155,12 +162,18 @@ class Engine():
             Logger.debug(self, "Current Temperature is: " + str(currentTemp))
             
             # Foreach enabled zone
-            Logger.debug(self, "There are " + str(len(self.enabledZones)) + " enabled zones")
-            for zone in self.enabledZones:
+            # Logger.debug(self, "There are " + str(len(self.enabledZones)) + " enabled zones")
+            
+            rebuildSchedule = False
+
+            for id, zonetiming in self.nextRunSchedule.items():
                 
-                Logger.debug(self, "Evaluating Zone: " + zone.name)
+                Logger.debug(self, "Evaluating Zone: " + zonetiming.zone.name)
+
                 # Check if this zone is already active
-                if zone.id in self.activeZones:
+                # TODO: What do we do if two schedules overlap? I suppose they can't? Need to make sure of this.
+                # TODO: If they can't overlap, then we likely don't need this.
+                if id in self.activeZones:
                     Logger.debug(self,"Zone already active. Skipping evaluation.")
                     break
 
@@ -168,55 +181,60 @@ class Engine():
                 rainRuleMet = False
                 tempRuleMet = False
             
-                # For each enabled schedule
-                for sch in zone.schedules:
+                Logger.debug(self, "Activate if: " + str(zonetiming.start_time) + " < " + str(currentDateTime)  + " < " + str(zonetiming.end_time))
+                # Check if the current time is past the start time, but before the end time
+                if zonetiming.start_time <= currentDateTime < zonetiming.end_time:
 
-                    Logger.debug(self, "Evaluating Schedule: [Enabled] = " + str(sch.enabled) + ", [Start] = " + sch.getStartTime() + ", [End] = " + sch.getEndTime())
-                    # Schedule must be enabled
-                    if sch.enabled is True:
-
+                    # Create a decision event w/ current info
+                    decisionEvent = None
+                    decisionEvent = DecisionHistory(zone=zone, event_time=currentDateTime, start_time=sch.start_time, end_time=sch.end_time)
+                
+                    Logger.debug(self, "Current Time within boundries")
+                    
+                    #Check conditions
+                    tempRuleMet = self.meetsTemperatureConditions(zone.temperature_rule, decisionEvent)
+                    rainRuleMet = self.meetsRainConditions(zone.rain_rule, decisionEvent)
+                    
+                    activateZone = tempRuleMet * rainRuleMet
+                    
+                    if activateZone:
+                        # Copy the zone timing object to the active running zones
+                        self.activateZone(zonetiming)
+                        decisionEvent.decision = EnumDecisionCodes.ActivateZone
+                        decisionEvent.reason = EnumReasonCodes.AllConditionsPassed
                         
+                        # Set flag indicating the schedule needs to be re-built
+                        rebuildSchedule = True
 
-                        # If time is between start and end time
-                        if  sch.start_time <= currentTime <= sch.end_time:
+                        #TODO: Update the next run schedule for the zone timing object that was started
+                        # self.scheduler.updateNextRunForZone(zonetiming.zone)
 
-                            # Create a decision event w/ current info
-                            decisionEvent = None
-                            decisionEvent = DecisionHistory(zone=zone, event_time=currentDateTime, start_time=sch.start_time, end_time=sch.end_time)
-                        
-                            Logger.debug(self, "Current Time within boundries")
-                            
-                            #Check conditions
-                            tempRuleMet = self.meetsTemperatureConditions(zone.temperature_rule, decisionEvent)
-                            rainRuleMet = self.meetsRainConditions(zone.rain_rule, decisionEvent)
-                            
-                            activateZone = tempRuleMet * rainRuleMet
-                            
-                            if activateZone:
-                                self.activateZone(zone, sch.start_time, sch.end_time)
-                                decisionEvent.decision = EnumDecisionCodes.ActivateZone
-                                decisionEvent.reason = EnumReasonCodes.AllConditionsPassed
+                    #Log an event, if one is available to be logged.
+                    self.decisionHistoryDBO.insertDecisionEvent(decisionEvent)
+                    self.decisionHistoryDBO.saveAndClose()
 
-                            #Log an event, if one is available to be logged.
-                            self.decisionHistoryDBO.insertDecisionEvent(decisionEvent)
-                            self.decisionHistoryDBO.saveAndClose()
-
-                            # Since the current time can only fall in one schedule, we can stop evaluating
-                            # schedules for this zone
-                            break
+                    # Since the current time can only fall in one schedule, we can stop evaluating
+                    # schedules for this zone
+                    break
                             
+            
+            if rebuildSchedule is True:
+                Logger.debug(self, "A zone was activated. Schedule needs to be updated.")
+                self.nextRunScheduleIsDirty = True
+
             # Reset the evaluating zones flag so someone else can evaluate it next time.
             self.evaluatingZones = False
     
-    def activateZone(self, zone, start_time, end_time):
+    def activateZone(self, zonetimingObj):
 
         Logger.debug(self,"Adding zone '" + zone.name + "' to list of active zones")
         # add this zone to a list of activated zones
-        self.activeZones[zone.id] = ActiveZone.initialize(zone, start_time, end_time)
+        self.activeZones[zonetimingObj.zone.id] = zonetimingObj
 
         Logger.debug(self,"Activating Zone")
+
         # call the zone controller and activate the zone
-        self.zone_controller.activateZone(zone)
+        self.zone_controller.activateZone(zonetimingObj.zone)
 
     def heartbeat(self):
         Logger.debug(self, "\n\n========================= HEARTBEAT START =========================\n\n")
@@ -225,7 +243,7 @@ class Engine():
         self.checkAndDeactivateZones()
 
         # Run the heartbeat every minute
-        threading.Timer(3, self.heartbeat).start()
+        threading.Timer(10, self.heartbeat).start()
 
     def meetsTemperatureConditions(self, temperature_bo, decisionEvent):
 
