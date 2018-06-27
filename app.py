@@ -2,10 +2,9 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from pprint import pprint
-import service.shared as shared
 
 import pi.main
-from service.zone.zone_manager import ZoneManager
+from service.zone.zone_data_manager import ZoneDataManager
 from service.engine import Engine
 
 
@@ -39,21 +38,21 @@ def flexbox():
 def service_zones_status():
 	return ""
 
-@app.route('/service_hub/zones/activate', methods=['POST'])
-def service_zones_activate():
-	print(request.get_json(force=True))
-	json_data = request.get_json(force=True)
-	zm = ZoneManager()
-	result = zm.manuallyActivateZone(json_data)
+# @app.route('/service_hub/zones/activate', methods=['POST'])
+# def service_zones_activate():
+	# print(request.get_json(force=True))
+	# json_data = request.get_json(force=True)
+	# zm = ZoneManager()
+	# result = zm.manuallyActivateZone(json_data)
 
-@app.route('/service_hub/zones/deactivate', methods=['POST'])
-def service_zones_deactivate():
-	print(request.get_json(force=True))
-	json_data = request.get_json(force=True)
-	zm = ZoneManager()
-	result = zm.manuallyDeactivateZone(json_data)
+# @app.route('/service_hub/zones/deactivate', methods=['POST'])
+# def service_zones_deactivate():
+# 	# print(request.get_json(force=True))
+# 	# json_data = request.get_json(force=True)
+# 	# zm = ZoneManager()
+# 	# result = zm.manuallyDeactivateZone(json_data)
 
-	return '{"x": "y"}'
+	# return '{"x": "y"}'
 	
 @app.route('/service_hub/zones/create_zone', methods=['POST'])
 def service_create_zone():
@@ -61,8 +60,8 @@ def service_create_zone():
 	
 	print(request.get_json(force=True))
 	json_data = request.get_json(force=True)
-	zm = ZoneManager()
-	zone = zm.createZone(json_data)
+	zdm = ZoneDataManager()
+	zone = zdm.createZone(json_data)
 	# zones = zc.retrieveAllZones()
 	# for zone in zones:
 	# 	pprint("======= Zone =========")
@@ -98,7 +97,7 @@ if __name__ == '__main__':
 
 	# Initialize the event publisher
 	# event_pub = EventPublisher()
-	# engine = Engine(event_pub)
+	engine = Engine()
 
 
 	# zm = ZoneManager(event_pub)

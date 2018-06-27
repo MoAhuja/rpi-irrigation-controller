@@ -1,12 +1,10 @@
-# from service.zone.zone_bo import ZoneBO
-
 from service.database.db_schema import Base, Zone, TemperatureRule, Schedule
 from service.database.zone_dbo import ZoneDBO
 from service.utilities.conversion import Conversions
 from pprint import pprint
 from service.utilities.logger import Logger
 from service.database.db_schema import Zone
-from service import shared
+# from service import shared
 import sys
 
 # TODO: consider putting in a failsafe for all zones where if they are activated for X period of time, they auto shut off.
@@ -14,7 +12,7 @@ import sys
 # TODO: WHat do we do if pyowm can't retrieve the weather? Do we still turn on?
 
 # This class is for managing a zone and it's information, or manipulation of the zone behavior (activation/deactivation)
-class ZoneManager():
+class ZoneDataManager():
 
     # def __init__(self):
     #     self.ops = ZoneDBO()
@@ -36,6 +34,7 @@ class ZoneManager():
         try:
             # # First we need to create a zone business object
             zone =  Zone.initializeWithJSON(jsonData)
+
             self.ops.createZone(zone)
             self.ops.saveAndClose()
             Logger.info(self, "Successfully added zone")
@@ -72,30 +71,33 @@ class ZoneManager():
     
         return zonesDO
 
-    def manuallyActivateZone(self, json_data):
-        # TODO: Validate the zone is enabled
-        zone_id = json_data['id']
-        duration = json_data['duration']
+    # def manuallyActivateZone(self, json_data):
+    #     # TODO: Validate the zone is enabled
+    #     zone_id = json_data['id']
+    #     duration = json_data['duration']
         
-        # TODO: Fetch zone using ID
-        zone = self.retrieveZone(zone_id)
+    #     # TODO: Fetch zone using ID
+    #     zone = self.retrieveZone(zone_id)
 
-        end_time = ""
-        # call the manual ativation function on the engine
-        shared.engine.manuallyActivateZone(zone, end_time)
+    #     # Set to current time plus the requested run time
+    #     end_time = datetime.now() + timedelta(minute=duration)
+
+    #     Logger.debug(self, "Manual Activation Requested for zone: " + zone.name + ". End time = " + str(end_time))
+
+    #     # call the manual ativation function on the engine
+    #     shared.engine.manuallyActivateZone(zone, end_time)
 
 
-        return False
+    #     return False
     
-    def manuallyDeactivateZone(self, json_data):
-        # TODO: Validate the zone is enabled
-        zone_id = json_data['id']
+    # def manuallyDeactivateZone(self, json_data):
+    #     zone_id = json_data['id']
         
-        # TODO: Fetch zone using ID
-        zone = self.retrieveZone(zone_id)
+    #     # TODO: Fetch zone using ID
+    #     zone = self.retrieveZone(zone_id)
 
-        # call the manual ativation function on the engine
-        shared.engine.manuallyDeactivateZone(zone)
+    #     # call the manual ativation function on the engine
+    #     shared.engine.manuallyDeactivateZone(zone)
 
     # def deleteZone(id?)
     # def editZone(id, jsonData) -- Need to figure out how to find assoicated objects and update them?
