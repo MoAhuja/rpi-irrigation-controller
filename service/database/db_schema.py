@@ -1,7 +1,7 @@
 import os
 import sys
 from sqlite3 import Connection as SQLite3Connection
-from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, Time, DateTime, event, Enum
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, Time, DateTime, event, Enum, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
@@ -147,6 +147,14 @@ class Schedule(Base):
         
     def getHoursAndMinutesFromStartTime(self):
         return self.start_time.hour, self.start_time.minute
+    
+    def getDuration(self):
+        # First we create a datetime object
+        now = datetime.now()
+        newStart = now.replace(hour=self.start_time.hour, minute=self.start_time.minute)
+        newEnd = now.replace(hour=self.end_time.hour, minute=self.end_time.minute)
+
+        return newEnd - newStart
 
 class EnumDayOfWeek(enum.Enum):
     Monday = 0
@@ -162,9 +170,14 @@ class ScheduleDays(Base):
     id = Column('id', Integer, primary_key=True)
 
     # The main attribute, which day.
-    dayOfWeek = Column('day_of_week', Enum(EnumDayOfWeek), unique=True, nullable=False)
+    dayOfWeek = Column('day_of_week', Enum(EnumDayOfWeek), nullable=False)
+
     schedule_id = Column('schedule_id', Integer, ForeignKey('schedule.id'), nullable=False)
     schedule=relationship("Schedule", back_populates="days")
+    __table_args__ = (
+        UniqueConstraint('schedule_id', 'day_of_week', name='_unique_day_per_schedule'),
+        )
+    
 
     
 
