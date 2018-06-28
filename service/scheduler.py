@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from service.utilities.logger import Logger
 from service.zone.zone_timing_bo import ZoneTiming
 from service import shared
+from service import shared_events
 from service.zone.zone_data_manager import ZoneDataManager
 
 class Scheduler():
@@ -11,12 +12,25 @@ class Scheduler():
     nextRunScheduleIsDirty = True
 
     def __init__(self):
-        shared.event_publisher.register(self)
+        shared_events.event_publisher.register(self, True, True)
         self.nextRunSchedule = {}
         self.nextRunScheduleIsDirty = True
         self.loadNextRunSchedule()
 
 
+    # Listen for zone updated events
+    def eventZoneUpdated(self):
+        Logger.debug(self, "Received event: Zone Info updated")
+        # Mark the schedule as dirty
+        # TODO: Change this to listen for schedule updated events
+        self.nextRunScheduleIsDirty = True
+
+    def eventRainDelayUpdated(self):
+
+        Logger.debug(self, "Received event: Rain delay updated")
+        # Mark the schedule as dirty
+        # TODO: Change this to listen for schedule updated events
+        self.nextRunScheduleIsDirty = True
 
     def loadNextRunSchedule(self):
         

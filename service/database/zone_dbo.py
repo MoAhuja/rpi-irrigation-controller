@@ -4,7 +4,7 @@ from datetime import datetime
 from service.utilities.conversion import Conversions
 from service.database.base_db_operations import BaseDBOperations
 from service.utilities.logger import Logger
-from service import shared
+from service import shared_events
  
 from service.database.db_schema import Base, Zone, TemperatureRule, RainRule, Schedule, RpiPinMapper
  
@@ -13,7 +13,7 @@ class ZoneDBO(BaseDBOperations):
 
     def __init__(self):
         # BaseDBOperations.__init__(self)
-        self.event_pub = shared.event_publisher
+        self.event_pub = shared_events.event_publisher
 
         
     def createZone(self, zone):
