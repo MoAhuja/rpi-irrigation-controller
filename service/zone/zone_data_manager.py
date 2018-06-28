@@ -71,33 +71,7 @@ class ZoneDataManager():
     
         return zonesDO
 
-    # def manuallyActivateZone(self, json_data):
-    #     # TODO: Validate the zone is enabled
-    #     zone_id = json_data['id']
-    #     duration = json_data['duration']
-        
-    #     # TODO: Fetch zone using ID
-    #     zone = self.retrieveZone(zone_id)
-
-    #     # Set to current time plus the requested run time
-    #     end_time = datetime.now() + timedelta(minute=duration)
-
-    #     Logger.debug(self, "Manual Activation Requested for zone: " + zone.name + ". End time = " + str(end_time))
-
-    #     # call the manual ativation function on the engine
-    #     shared.engine.manuallyActivateZone(zone, end_time)
-
-
-    #     return False
     
-    # def manuallyDeactivateZone(self, json_data):
-    #     zone_id = json_data['id']
-        
-    #     # TODO: Fetch zone using ID
-    #     zone = self.retrieveZone(zone_id)
-
-    #     # call the manual ativation function on the engine
-    #     shared.engine.manuallyDeactivateZone(zone)
 
     # def deleteZone(id?)
     # def editZone(id, jsonData) -- Need to figure out how to find assoicated objects and update them?

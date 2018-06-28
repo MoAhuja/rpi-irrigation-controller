@@ -17,6 +17,7 @@ class Scheduler():
         self.loadNextRunSchedule()
 
 
+
     def loadNextRunSchedule(self):
         
         Logger.debug(self, "load next run schedule entered. Next run schedule dirty = " + str(self.nextRunScheduleIsDirty))
@@ -40,18 +41,25 @@ class Scheduler():
 
     # Builds the schedule and stores it in the class instance
     def buildNextRunSchedule(self):
-
        
         # create a zone manager instance
         zm = ZoneDataManager()
 
         # Retrieve all enables zones
         enabledZones = zm.retrieveAllEnabledZones()
-        # retrieve AllEnablesZones
+        
+        rainDelayInHours = shared.settingsManager.getRainDelay()
+        print("Rain Delay set to: " + str(rainDelayInHours))
 
         # Get the current time
-        currentTime = datetime.now()
-        currentDow = datetime.today().weekday()
+        referenceTime = datetime.now() + timedelta(hours=int(rainDelayInHours))
+
+        print("Reference time = " + str(referenceTime))
+
+        # currentDow = datetime.today().weekday()
+        currentDow = referenceTime.weekday()
+
+        print("Current DOW = " + str(currentDow))
 
 
         for zone in enabledZones:
@@ -59,7 +67,7 @@ class Scheduler():
             Logger.debug(self, "Building next run for Zone " + zone.name)
 
             # Setup some arbitrary value in the past
-            nextRunDatetime = datetime.now() + timedelta(days=10)
+            nextRunDatetime = datetime.now() + timedelta(days=30)
 
             Logger.debug(self, "BuildNextRunSchedule - Waiting for lock: nextRunSchedule")
             shared.lockNextRunSchedule.acquire()
@@ -96,19 +104,18 @@ class Scheduler():
                             # If the scheduled day == the current day, we need to check if the times to see if we're
                             # too late and have to schedule it for next week
                             elif addDays is 0:
-                                if scheduledTime < currentTime.time():
+                                if scheduledTime < referenceTime.time():
                                     addDays = addDays + 7
                             
                             # Create the water time based on the number of days to add
-                            scheduledWatertime = currentTime + timedelta(days=addDays)
+                            scheduledWatertime = referenceTime + timedelta(days=addDays)
 
                             # Replace hours and minutes using the value from the schedule object
-                            
                             scheduledWatertime = scheduledWatertime.replace(hour=hour, minute=minute, second=0)
 
                             # Compare this water time against the lowest value stored. Replace if lower.
                             Logger.debug(self, "Comparing " + str(scheduledWatertime) + " against " + str(nextRunDatetime))
-                            if currentTime < scheduledWatertime < nextRunDatetime:
+                            if referenceTime < scheduledWatertime < nextRunDatetime:
                                 nextRunDatetime = scheduledWatertime
                                 nextRunDuration = sch.getDuration()
                                 Logger.debug(self, "Setting this as the temporary next run time")
