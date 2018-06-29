@@ -14,24 +14,37 @@ class Logger():
     # 2 = Info
     # 3 = Debug
     def __init__(self):
+        # Listen for updates to the logging level
+        shared_events.event_publisher.register(self, False, False, True, False)
+
         self.consolelogLevel = -1
         self.dbLogLevel = -1
         self.dbLogger = LogDBO()
         self.settingsmanager = SettingsManager()
+        self.getLogLevel()
+
     
+
+    def eventLogLevelUpdated(self):
+        self.debug(self, "eventLogLevelUpdated in settings manager called. Going to read config")
+        self.getLogLevel()
+
     # TODO: Add event to listen for logging level changes and update the logging level accordingly
     # shared_events.event_publisher.register(Logger, false, false, true)
     def getLogLevel(self):
-        if self.consolelogLevel is -1:
+        # if self.consolelogLevel is -1:
             # TODO: Go to settings manager (via shared) to get log level
-            self.consolelogLevel = self.settingsmanager.getConsoleLogLevel()
+        self.consolelogLevel = self.settingsmanager.getConsoleLogLevel()
+        # if self.dbLogLevel is -1:
+        self.dbLogLevel = self.settingsmanager.getDatabaseLogLevel()
+
+        self.debug(self, "Console log level is: " + str(self.consolelogLevel))
+        self.debug(self, "Database log level is: " + str(self.dbLogLevel))
         
-        if self.dbLogLevel is -1:
-            self.dbLogLevel = self.settingsmanager.getDatabaseLogLevel()
     
 
     def error(self,callingClass, text):
-        self.getLogLevel()
+        # self.getLogLevel()
         if self.consolelogLevel > 0:
             self.internalLogger("ERROR", callingClass, text)
 
@@ -39,7 +52,7 @@ class Logger():
             self.internalDBLogger(EnumLogLevel.ERROR, callingClass, text)
 
     def info(self,callingClass, text):
-        self.getLogLevel()
+        # self.getLogLevel()
         if self.consolelogLevel > 1:
             self.internalLogger( "INFO", callingClass, text)
 
@@ -47,7 +60,7 @@ class Logger():
             self.internalDBLogger(EnumLogLevel.INFO, callingClass, text)
     
     def debug(self, callingClass, text):
-        self.getLogLevel()
+        # self.getLogLevel()
         if self.consolelogLevel > 2:
             self.internalLogger("DEBUG", callingClass, text)
         

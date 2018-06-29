@@ -13,7 +13,8 @@ class Scheduler():
     nextRunScheduleIsDirty = True
 
     def __init__(self):
-        shared_events.event_publisher.register(self, True, True, False)
+        # Listen for zone or rain delay updates only
+        shared_events.event_publisher.register(self, True, True, False, False)
 
         self.settingsManager = SettingsManager()
         self.nextRunSchedule = {}

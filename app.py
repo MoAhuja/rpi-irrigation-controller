@@ -6,6 +6,9 @@ from pprint import pprint
 import pi.main
 from service.zone.zone_data_manager import ZoneDataManager
 from service.engine import Engine
+from service import shared
+from service. utilities.logger import Logger
+from service.system.settings_manager import SettingsManager
 
 
 app = Flask(__name__)
@@ -31,6 +34,7 @@ def create_zone():
 def flexbox():
 	# Check query string for the zone ID. If so, we'll retrieve that zone data first and then load the page
 	# return render_template('landing.html')
+	
 	return app.send_static_file('screens/portal/flexbox_test.html')
 
 
@@ -98,8 +102,7 @@ if __name__ == '__main__':
 	# Initialize the event publisher
 	# event_pub = EventPublisher()
 	engine = Engine()
-
-
+	
 	# zm = ZoneManager(event_pub)
 	app.run(debug=False)
 
