@@ -2,9 +2,9 @@ from service.weather_hub.weather_center import WeatherCenter
 from service.utilities.conversion import Conversions
 from service.zone.zone_timing_bo import ZoneTiming
 from service.database.decision_dbo import DecisionDBO
-from service.scheduler import Scheduler
+from service.core.scheduler import Scheduler
 from service.zone.zone_controller import ZoneController
-from service import shared
+from service.core import shared
 
 # Not sure i should be accessing DAO's at this layer, but it seems unneccessary to create a new object to track the same data
 from service.database.db_schema import DecisionHistory, EnumDecisionCodes, EnumReasonCodes

@@ -4,7 +4,7 @@ from datetime import datetime
 from service.utilities.conversion import Conversions
 from service.database.base_db_operations import BaseDBOperations
 from service.utilities.logger import Logger
-from service import shared_events
+from service.core import shared_events
  
 from service.database.db_schema import Base, Zone, TemperatureRule, RainRule, Schedule, RpiPinMapper
  

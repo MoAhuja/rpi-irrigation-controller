@@ -4,7 +4,7 @@ from service.utilities.conversion import Conversions
 from pprint import pprint
 from service.utilities.logger import Logger
 from service.database.db_schema import Zone
-# from service import shared
+# from service.core import shared
 import sys
 
 # TODO: consider putting in a failsafe for all zones where if they are activated for X period of time, they auto shut off.
@@ -51,13 +51,7 @@ class ZoneDataManager():
     def retrieveAllZones(self):
       
         #retrieve a DO object
-        
-        zonesDO = self.ops.fetchAllZones()
-
-        # for zone in zonesDO:
-        #     bo = ZoneBO.initializeWithZoneDO(zone)
-        #     zonesBO.append(bo)
-            
+        zonesDO = self.ops.fetchAllZones()            
         return zonesDO
 
     def retrieveZone(self, zone_id):
@@ -71,10 +65,5 @@ class ZoneDataManager():
     
         return zonesDO
 
-    
-
-    # def deleteZone(id?)
-    # def editZone(id, jsonData) -- Need to figure out how to find assoicated objects and update them?
-    # def fetchZone(id):
 
 

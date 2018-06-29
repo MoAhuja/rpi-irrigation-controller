@@ -1,7 +1,7 @@
 import configparser
 # from service.utilities.logger import Logger
 import os
-from service import shared_events
+from service.core import shared_events
 from threading import Lock
 from datetime import datetime
 

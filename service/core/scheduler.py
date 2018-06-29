@@ -2,8 +2,8 @@ from service.database.db_schema import EnumScheduleType
 from datetime import datetime, timedelta
 from service.utilities.logger import Logger
 from service.zone.zone_timing_bo import ZoneTiming
-from service import shared
-from service import shared_events
+from service.core import shared
+from service.core import shared_events
 from service.zone.zone_data_manager import ZoneDataManager
 from service.system.settings_manager import SettingsManager
 

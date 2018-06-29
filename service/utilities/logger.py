@@ -3,7 +3,7 @@ from pprint import pprint
 from time import strftime
 from service.database.log_dbo import LogDBO
 from service.database.db_schema import EnumLogLevel
-from service import shared_events
+from service.core import shared_events
 from service.system.settings_manager import SettingsManager
 
 class Logger():

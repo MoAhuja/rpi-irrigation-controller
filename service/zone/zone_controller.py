@@ -1,5 +1,5 @@
 from service.zone.zone_rpi_controller import ZoneRPIController
-from service import shared
+from service.core import shared
 from service.utilities.logger import Logger
 class ZoneController():
 

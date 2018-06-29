@@ -5,9 +5,9 @@ from pprint import pprint
 
 import pi.main
 from service.zone.zone_data_manager import ZoneDataManager
-from service.engine import Engine
-from service import shared
-from service. utilities.logger import Logger
+from service.core.engine import Engine
+from service.core import shared
+from service.utilities.logger import Logger
 from service.system.settings_manager import SettingsManager
 
 
