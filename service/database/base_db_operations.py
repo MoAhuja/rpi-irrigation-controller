@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
 from service.database.db_schema import Base
-from service.utilities.logger import Logger
+# from service.utilities.logger import Logger
 
 class BaseDBOperations():
 
@@ -37,7 +37,7 @@ class BaseDBOperations():
             self.session.commit()
             result = True
         except:
-            # Logger.error(self, "An error occured writing to DB")
+            # shared.logger.error(self, "An error occured writing to DB")
             self.session.rollback()
         finally:
             self.session.close()

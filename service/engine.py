@@ -40,11 +40,11 @@ class Engine():
         deactivateList = []
 
         # Loop through the activeZones list and check if the end time has been past
-        Logger.debug(self,"Checking if any zones need to be deactivated")
+        shared.logger.debug(self,"Checking if any zones need to be deactivated")
         currentTime = datetime.now().time()
 
         # Lock because we don't want the active zones to change while we are iterating over them
-        Logger.debug(self, "CheckAndDeactivateZones - Waiting to acquire lock: lockActiveZones")
+        shared.logger.debug(self, "CheckAndDeactivateZones - Waiting to acquire lock: lockActiveZones")
         shared.lockActiveZones.acquire()
 
         try:
@@ -52,7 +52,7 @@ class Engine():
             for key, activeZone in self.zone_controller.activeZones.items():
                 dh =  DecisionHistory()
 
-                Logger.debug(self,"Deactivation Check: [Zone ID] = " + str(key) + ", [CurrentTime] = " + Conversions.convertDBTimeToHumanReadableTime(currentTime)+ ", [Deactivation Time] =  " + Conversions.convertDBTimeToHumanReadableTime(activeZone.end_time))
+                shared.logger.debug(self,"Deactivation Check: [Zone ID] = " + str(key) + ", [CurrentTime] = " + Conversions.convertDBTimeToHumanReadableTime(currentTime)+ ", [Deactivation Time] =  " + Conversions.convertDBTimeToHumanReadableTime(activeZone.end_time))
                 if currentTime > activeZone.end_time:
                     dh.zone = activeZone.zone
                     dh.start_time = activeZone.start_time
@@ -62,66 +62,66 @@ class Engine():
 
                     self.decisionHistoryDBO.insertDecisionEvent(dh)
                     
-                    Logger.debug(self, "Zone will be deactivated")
+                    shared.logger.debug(self, "Zone will be deactivated")
                     # Add to list so we can remove it from our list of active zones
                     deactivateList.append(key)
 
         finally:
-            Logger.debug(self, "CheckAndDeactivateZones - Releasing lock: lockActiveZones")
+            shared.logger.debug(self, "CheckAndDeactivateZones - Releasing lock: lockActiveZones")
             shared.lockActiveZones.release()
 
 
         self.zone_controller.deactivateZones(deactivateList)
-        Logger.debug(self,"Deactivation check complete")
+        shared.logger.debug(self,"Deactivation check complete")
         
         
         
 
     def checkAndActivateZones(self):
         
-        Logger.debug(self,"Evaluating Zones == " + str(self.evaluatingZones))
+        shared.logger.debug(self,"Evaluating Zones == " + str(self.evaluatingZones))
 
         # We need to make sure no one else is looping through the zones in case this gets invoked on another thread
         if self.evaluatingZones is False:
 
-            Logger.debug(self,"Evaluating zones")
+            shared.logger.debug(self,"Evaluating zones")
             # Set a flag indicating the zones are being evaluated
             self.evaluatingZones = True
 
             # Load the zones that we need to monitor
             self.scheduler.loadNextRunSchedule()
 
-            Logger.debug(self,"Finished loading zones")
+            shared.logger.debug(self,"Finished loading zones")
 
             # Get Time
             currentDateTime = datetime.now()
             currentTime = currentDateTime.time()
-            Logger.debug(self, "Current Time is: " + Conversions.convertDBTimeToHumanReadableTime(currentTime))
+            shared.logger.debug(self, "Current Time is: " + Conversions.convertDBTimeToHumanReadableTime(currentTime))
             currentTemp = self.getCurrentTemp()
-            Logger.debug(self, "Current Temperature is: " + str(currentTemp))
+            shared.logger.debug(self, "Current Temperature is: " + str(currentTemp))
             
             
             rebuildSchedule = False
 
-            Logger.debug(self, "CheckAndActivateZones - Waiting for lock: nextRunSchedule")
+            shared.logger.debug(self, "CheckAndActivateZones - Waiting for lock: nextRunSchedule")
             shared.lockNextRunSchedule.acquire()
             try:
                 for id, zonetiming in self.scheduler.nextRunSchedule.items():
                     
-                    Logger.debug(self, "Evaluating Zone: " + zonetiming.zone.name)
+                    shared.logger.debug(self, "Evaluating Zone: " + zonetiming.zone.name)
 
                     # Check if this zone is already active
                     # TODO: What do we do if two schedules overlap? I suppose they can't? Need to make sure of this.
                     # TODO: If they can't overlap, then we likely don't need this.
                     if id in self.activeZones:
-                        Logger.debug(self,"Zone already active. Skipping evaluation.")
+                        shared.logger.debug(self,"Zone already active. Skipping evaluation.")
                         break
 
                     # Reset all the conditions
                     rainRuleMet = False
                     tempRuleMet = False
                 
-                    Logger.debug(self, "Activate if: " + str(zonetiming.start_time) + " < " + str(currentDateTime)  + " < " + str(zonetiming.end_time))
+                    shared.logger.debug(self, "Activate if: " + str(zonetiming.start_time) + " < " + str(currentDateTime)  + " < " + str(zonetiming.end_time))
                     # Check if the current time is past the start time, but before the end time
                     if zonetiming.start_time <= currentDateTime < zonetiming.end_time:
 
@@ -129,7 +129,7 @@ class Engine():
                         decisionEvent = None
                         decisionEvent = DecisionHistory(zone=zone, event_time=currentDateTime, start_time=sch.start_time, end_time=sch.end_time)
                     
-                        Logger.debug(self, "Current Time within boundries")
+                        shared.logger.debug(self, "Current Time within boundries")
                         
                         #Check conditions
                         tempRuleMet = self.meetsTemperatureConditions(zone.temperature_rule, decisionEvent)
@@ -157,12 +157,12 @@ class Engine():
                         # schedules for this zone
                         break
             finally:
-                Logger.debug(self, "CheckAndActivateZones - Releasing lock: nextRunSchedule")
+                shared.logger.debug(self, "CheckAndActivateZones - Releasing lock: nextRunSchedule")
                 shared.lockNextRunSchedule.release()
                     
             
             if rebuildSchedule is True:
-                Logger.debug(self, "A zone was activated. Schedule needs to be updated.")
+                shared.logger.debug(self, "A zone was activated. Schedule needs to be updated.")
                 self.nextRunScheduleIsDirty = True
 
             # Reset the evaluating zones flag so someone else can evaluate it next time.
@@ -171,7 +171,7 @@ class Engine():
 
 
     def heartbeat(self):
-        Logger.debug(self, "\n\n========================= HEARTBEAT START =========================\n\n")
+        shared.logger.debug(self, "\n\n========================= HEARTBEAT START =========================\n\n")
         
         self.checkAndActivateZones()
         self.checkAndDeactivateZones()
@@ -181,23 +181,23 @@ class Engine():
 
     def meetsTemperatureConditions(self, temperature_bo, decisionEvent):
 
-        # Logger.debug(self,vars(temperature_bo))
+        # shared.logger.debug(self,vars(temperature_bo))
 
         if temperature_bo.enabled == True:
             # current_temp = getCurrentTemp()
-            Logger.debug(self,"Temperature Check Enabled. Evaluation if --> " + str(temperature_bo.lower_limit ) + "<=" + str(self.getCurrentTemp()) + " <= " + str(temperature_bo.upper_limit))
+            shared.logger.debug(self,"Temperature Check Enabled. Evaluation if --> " + str(temperature_bo.lower_limit ) + "<=" + str(self.getCurrentTemp()) + " <= " + str(temperature_bo.upper_limit))
             decisionEvent.temperature_enabled = True
             decisionEvent.temperature_lower_limit = temperature_bo.lower_limit
             decisionEvent.temperature_upper_limit = temperature_bo.upper_limit
             decisionEvent.current_temperature = self.getCurrentTemp()
                 
             if  self.getCurrentTemp() <temperature_bo.lower_limit:
-                Logger.debug(self,"Temperature is BELOW lower limit. Will not activate.")
+                shared.logger.debug(self,"Temperature is BELOW lower limit. Will not activate.")
                 decisionEvent.reason = EnumReasonCodes.TemperatureBelowMin
                 decisionEvent.decision = EnumDecisionCodes.DontActivateZone
                 return False
             elif  self.getCurrentTemp() > temperature_bo.upper_limit:
-                Logger.debug(self,"Temperature is ABOVE max limit. Will not activate")
+                shared.logger.debug(self,"Temperature is ABOVE max limit. Will not activate")
                 decisionEvent.reason = EnumReasonCodes.TemperatureAboveMax
                 decisionEvent.decision = EnumDecisionCodes.DontActivateZone
         else:
@@ -209,8 +209,8 @@ class Engine():
     def meetsRainConditions(self, rain_rule, decisionEvent):
 
         if rain_rule.enabled == True:
-            Logger.debug(self,"Rain Check Enabled. 3 hour check . Is " + str(self.getShortTermRain()) + "<= " + str(rain_rule.short_term_limit ))
-            Logger.debug(self,"Rain Check Enabled. 24 hour check . Is " + str(self.getDailyRain()) + "<= " + str(rain_rule.daily_limit ))
+            shared.logger.debug(self,"Rain Check Enabled. 3 hour check . Is " + str(self.getShortTermRain()) + "<= " + str(rain_rule.short_term_limit ))
+            shared.logger.debug(self,"Rain Check Enabled. 24 hour check . Is " + str(self.getDailyRain()) + "<= " + str(rain_rule.daily_limit ))
             
             decisionEvent.rain_enabled = True
             decisionEvent.rain_short_term_limit = rain_rule.short_term_limit
@@ -220,12 +220,12 @@ class Engine():
 
             if self.getShortTermRain() > rain_rule.short_term_limit:
 
-                Logger.debug(self,"Short term rain rule FAILED. Will not activate.")
+                shared.logger.debug(self,"Short term rain rule FAILED. Will not activate.")
                 decisionEvent.reason = EnumReasonCodes.ShortTermRainExpected
                 decisionEvent.decision = EnumDecisionCodes.DontActivateZone
                 return False
             elif self.getDailyRain() > rain_rule.daily_limit:
-                Logger.debug(self,"Daily  rain rule FAILED. Will not activate.")
+                shared.logger.debug(self,"Daily  rain rule FAILED. Will not activate.")
                 decisionEvent.reason = EnumReasonCodes.LongTermRainExpected
                 decisionEvent.decision = EnumDecisionCodes.DontActivateZone
                 return False    
@@ -243,10 +243,10 @@ class Engine():
         # TODO: Mississauga, CA shouldn't be hardcoded. We need a "System config section"
         if self.weather_profile is None or self.weather_profile_is_old:
             
-            Logger.debug(self,"need to retrieve new weather profile")
+            shared.logger.debug(self,"need to retrieve new weather profile")
             self.weather_profile = self.weather_centre.createWeatherProfile("Mississauga", "CA")
 
-            # Logger.debug(self,vars(self.weather_profile))
+            # shared.logger.debug(self,vars(self.weather_profile))
             # We got a new profile, so reset the "old" flag
             self.weather_profile_is_old = False
             

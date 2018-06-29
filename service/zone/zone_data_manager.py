@@ -29,7 +29,7 @@ class ZoneDataManager():
     # TODO: Add checkbox to UI to enable setting of the parameters
     # TODO: Add logic to check if start time < end time for all schedules
     def createZone(self, jsonData):
-        Logger.debug(self, "ZoneManager - createZone begin")
+        shared.logger.debug(self, "ZoneManager - createZone begin")
 
         try:
             # # First we need to create a zone business object
@@ -37,11 +37,11 @@ class ZoneDataManager():
 
             self.ops.createZone(zone)
             self.ops.saveAndClose()
-            Logger.info(self, "Successfully added zone")
+            shared.logger.info(self, "Successfully added zone")
         except:
             the_type, the_value, the_traceback = sys.exc_info()
-            Logger.error(self, "Failed to create zone")
-            Logger.error(self, str(the_value))
+            shared.logger.error(self, "Failed to create zone")
+            shared.logger.error(self, str(the_value))
             self.ops.undo()
             return False
         

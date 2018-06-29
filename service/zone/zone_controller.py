@@ -9,8 +9,6 @@ class ZoneController():
     def __init__(self):
         zrpi_controller = ZoneRPIController()
         activeZones = {}
-
-        
     
     def userInvokedActivateZone(self, json_data):
         # TODO: Validate the zone is enabled
@@ -23,7 +21,7 @@ class ZoneController():
         # Set to current time plus the requested run time
         end_time = datetime.now() + timedelta(minute=duration)
 
-        Logger.debug(self, "Manual Activation Requested for zone: " + zone.name + ". End time = " + str(end_time))
+        shared.logger.debug(self, "Manual Activation Requested for zone: " + zone.name + ". End time = " + str(end_time))
 
         # call the manual ativation function on the engine
         # shared.engine.manuallyActivateZone(zone, end_time)
@@ -43,20 +41,20 @@ class ZoneController():
 
     def activateZone(self, zonetimingObj):
 
-        Logger.debug(self, "ActivateZone - Waiting to acquire lock: lockActiveZones")
+        shared.logger.debug(self, "ActivateZone - Waiting to acquire lock: lockActiveZones")
         shared.lockActiveZones.acquire()
         try:
 
-            Logger.debug(self,"Adding zone '" + zone.name + "' to list of active zones")
+            shared.logger.debug(self,"Adding zone '" + zone.name + "' to list of active zones")
             # add this zone to a list of activated zones
             self.activeZones[zonetimingObj.zone.id] = zonetimingObj
 
-            Logger.debug(self,"Activating Zone")
+            shared.logger.debug(self,"Activating Zone")
             self.zrpi_controller.activateZone(zonetimingObj.zone)
 
         finally:
             shared.lockActiveZones.release()
-            Logger.debug(self, "ActivateZone - releasing lock: lockActiveZones")
+            shared.logger.debug(self, "ActivateZone - releasing lock: lockActiveZones")
         
 
         # call the zone controller and activate the zone
@@ -64,7 +62,7 @@ class ZoneController():
 
     def deactivateZones(self, listOfKeysToDeactivate):
         
-        Logger.debug(self, "deactivateZones - Waiting to acquire lock: lockActiveZones")
+        shared.logger.debug(self, "deactivateZones - Waiting to acquire lock: lockActiveZones")
         shared.lockActiveZones.acquire()
         
 
@@ -78,18 +76,18 @@ class ZoneController():
 
         finally:
             shared.lockActiveZones.release()
-            Logger.debug(self, "deactivateZones - releasing lock: lockActiveZones")
+            shared.logger.debug(self, "deactivateZones - releasing lock: lockActiveZones")
 
     def deactivateAllZones(self):
         
 
-        Logger.debug(self,"Deactivating All Zones")
-        Logger.debug(self, "deactivateAllZones - Waiting to acquire lock: lockActiveZones")
+        shared.logger.debug(self,"Deactivating All Zones")
+        shared.logger.debug(self, "deactivateAllZones - Waiting to acquire lock: lockActiveZones")
         shared.lockActiveZones.acquire()
         
         try:
             for key, activeZone in self.activeZones.items():
-                Logger.debug(self, "Deactivating -> " + key + "-->" + activeZone.zone.name)
+                shared.logger.debug(self, "Deactivating -> " + key + "-->" + activeZone.zone.name)
 
                 self.zone_controller.deactivateZone(activeZone.zone)
             
@@ -97,7 +95,7 @@ class ZoneController():
             self.activeZones = {}
         finally:
             shared.lockActiveZones.release()
-            Logger.debug(self, "deactivateAllZones - releasing lock: lockActiveZones")
+            shared.logger.debug(self, "deactivateAllZones - releasing lock: lockActiveZones")
 
     #  def manuallyDeactivateZone(self, zone):
 
@@ -105,7 +103,7 @@ class ZoneController():
     #     if self.activeZones[zone.id] is not None:
     #         # TODO: What if a manual deactiate is called while he zone list is being?? Will this crash it?
     #         del self.activeZones[zone.id]
-    #         Logger.info(self,"Zone " + str(zone.id) + "has been MANUALLY deactivated")
+    #         shared.logger.info(self,"Zone " + str(zone.id) + "has been MANUALLY deactivated")
 
     #         # TODO: insert a deactivation history event
     

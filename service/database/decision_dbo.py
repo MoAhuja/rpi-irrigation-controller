@@ -10,7 +10,7 @@ class DecisionDBO(BaseDBOperations):
     
     def insertDecisionEvent(self, decisionEvent):
 
-        Logger.debug(self, "Inserting decision event")
+        shared.logger.debug(self, "Inserting decision event")
         self.initialize()
         # self.session.add(decisionEvent)
 

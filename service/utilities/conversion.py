@@ -13,7 +13,7 @@ class Conversions():
     @staticmethod
     def convertHumanReadableTimetoDBTime(stringTime):
         return datetime.strptime(stringTime, '%H:%M').time()
-        
+    
 
     @staticmethod
     def printVarsInObject(objectToPrint):

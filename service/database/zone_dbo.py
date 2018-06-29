@@ -67,10 +67,10 @@ class ZoneDBO(BaseDBOperations):
         # call the base class to save the changes
         if super(ZoneDBO, self).saveAndClose():
             self.event_pub.publishZoneInfoUpdated()
-            Logger.debug(self, "Zone information saved")
+            shared.logger.debug(self, "Zone information saved")
             return True
         else:
-            Logger.error(self, "Zone information not saved")
+            shared.logger.error(self, "Zone information not saved")
             return False
 
         return False
