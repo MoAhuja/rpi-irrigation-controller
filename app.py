@@ -57,11 +57,33 @@ def service_zones_status():
 # 	# result = zm.manuallyDeactivateZone(json_data)
 
 	# return '{"x": "y"}'
-	
+@app.route('/service_hub/settings/loglevel/console', methods=['GET', 'POST'])
+def service_settings_console_log_level():
+	sm = SettingsManager()
+	if request.method == 'GET':
+		return sm.getSettingRestMapper(SettingsManager.field_console_log_level)
+	else:
+		# POst request, so we need to update
+		json_data = request.get_json(force=True)
+		sm = SettingsManager()
+		return sm.setSettingRestMapper(SettingsManager.field_console_log_level, json_data["value"])
+
+@app.route('/service_hub/settings/loglevel/database', methods=['GET', 'POST'])
+def service_settings_database_log_level():
+	sm = SettingsManager()
+		
+	if request.method == 'GET':
+		return sm.getSettingRestMapper(SettingsManager.field_database_log_level)
+	else:
+		# POst request, so we need to update
+
+		json_data = request.get_json(force=True)
+		return sm.setSettingRestMapper(SettingsManager.field_database_log_level, json_data["value"])
+
+
 @app.route('/service_hub/zones/create_zone', methods=['POST'])
 def service_create_zone():
 
-	
 	print(request.get_json(force=True))
 	json_data = request.get_json(force=True)
 	zdm = ZoneDataManager()
