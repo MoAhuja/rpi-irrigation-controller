@@ -6,6 +6,7 @@ from service.core import shared
 from service.core import shared_events
 from service.zone.zone_data_manager import ZoneDataManager
 from service.system.settings_manager import SettingsManager
+from service.utilities.conversion import Conversions
 
 class Scheduler():
 
@@ -66,18 +67,24 @@ class Scheduler():
         # Retrieve all enables zones
         enabledZones = zm.retrieveAllEnabledZones()
         
-        rainDelayInHours = self.settingsManager.getRainDelay()
-        print("Rain Delay set to: " + str(rainDelayInHours))
-
-        # Get the current time
-        referenceTime = datetime.now() + timedelta(hours=int(rainDelayInHours))
-
-        print("Reference time = " + str(referenceTime))
+        # Rain delay as string (format of datetime)
+        rainDelayDT = Conversions.convertRainDelaySettingToDatetime(self.settingsManager.getRainDelay())
+        
+        # Check if the rain delay is in the future, if so, that's our reference time.
+        if rainDelayDT is not None and rainDelayDT > datetime.now():
+            shared.logger.debug(self, "Rain delay datetime is valid")
+            referenceTime = rainDelayDT
+        else:
+            shared.logger.debug(self, "Invalid rain delay set. Going to use current time as reference time")
+            referenceTime = datetime.now()
+        
+        
+        shared.logger.debug(self, "Reference time = " + str(referenceTime))
 
         # currentDow = datetime.today().weekday()
         currentDow = referenceTime.weekday()
 
-        print("Current DOW = " + str(currentDow))
+        shared.logger.debug(self, "Current DOW = " + str(currentDow))
 
 
         for zone in enabledZones:

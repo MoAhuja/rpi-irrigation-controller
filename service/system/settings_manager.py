@@ -12,7 +12,7 @@ class SettingsManager():
     
     # operational section & fields
     section_operational = 'Operational'
-    field_rain_delay = 'RainDelayInHours'
+    field_rain_delay = 'rainDelay'
 
     # Logging section and fields
     section_logging = 'Logging'
@@ -79,15 +79,15 @@ class SettingsManager():
             self.lock.release()
     
     # Operational Fields
-    def setRainDelay(self, hours):
+    def setRainDelay(self, date):
         # self.readConfig()
-        self.config[SettingsManager.section_operational][SettingsManager.field_rain_delay] = str(hours)
+        self.config[SettingsManager.section_operational][SettingsManager.field_rain_delay] = str(date)
         self.save()
         shared_events.event_publisher.publishRainDelayUpdated()
     
     def getRainDelay(self):
         # self.readConfig()
-        return(int(self.config[SettingsManager.section_operational][SettingsManager.field_rain_delay]))
+        return(self.config[SettingsManager.section_operational][SettingsManager.field_rain_delay])
 
 
     # Logging Fields

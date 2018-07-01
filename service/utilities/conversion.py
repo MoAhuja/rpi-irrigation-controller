@@ -1,7 +1,10 @@
 from datetime import datetime, time
 from time import gmtime, strftime
+# from service.utilities.logger import Logger
 
 class Conversions():
+    rainDelayFormat = "%Y-%m-%dT%H:%M:%S"
+
     @staticmethod
     def __init__():
         self.humanReadableDatePattern = ""
@@ -14,7 +17,15 @@ class Conversions():
     def convertHumanReadableTimetoDBTime(stringTime):
         return datetime.strptime(stringTime, '%H:%M').time()
     
-
+    @staticmethod
+    def convertRainDelayDateTimeToString(datetime):
+        return ""
+    
+    @staticmethod
+    def convertRainDelaySettingToDatetime(rainDelayAsString):
+        return datetime.strptime(rainDelayAsString, Conversions.rainDelayFormat)
+        
+    
     @staticmethod
     def printVarsInObject(objectToPrint):
         attrs = vars(objectToPrint)
