@@ -1,0 +1,7 @@
+POST http://127.0.0.1:5000/service_hub/zones/activate HTTP/1.0
+content-type: application/json
+
+{
+    "id": "1",
+    "duration": "90"
+}

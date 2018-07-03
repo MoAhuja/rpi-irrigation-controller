@@ -13,6 +13,8 @@ class SettingsManager():
     # operational section & fields
     section_operational = 'Operational'
     field_rain_delay = 'rainDelay'
+    field_city = 'city'
+    field_country = 'country'
 
     # Logging section and fields
     section_logging = 'Logging'
@@ -48,6 +50,10 @@ class SettingsManager():
             self.setDatabaseLogLevel(propertyValue)
         elif propertyName == SettingsManager.field_rain_delay:
             self.setRainDelay(propertyValue)
+        elif propertyName == SettingsManager.field_city:
+            self.setCity(propertyValue)
+        # elif propertyName == SettingsManager.
+        
         values["result"] = True
         return json.dumps(values)
         
@@ -88,6 +94,24 @@ class SettingsManager():
     def getRainDelay(self):
         # self.readConfig()
         return(self.config[SettingsManager.section_operational][SettingsManager.field_rain_delay])
+
+    def setCity(self, city):
+        # self.readConfig()
+        self.config[SettingsManager.section_operational][SettingsManager.field_city] = city
+        self.save()
+    
+    def getCity(self):
+        # self.readConfig()
+        return(self.config[SettingsManager.section_operational][SettingsManager.field_city])
+
+    def setCountry(self, country):
+        # self.readConfig()
+        self.config[SettingsManager.section_operational][SettingsManager.field_country] = country
+        self.save()
+    
+    def getCountry(self):
+        # self.readConfig()
+        return(self.config[SettingsManager.section_operational][SettingsManager.field_country])
 
 
     # Logging Fields
