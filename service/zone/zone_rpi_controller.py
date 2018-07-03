@@ -1,6 +1,7 @@
 from pi.pi_controller import PIController
 from pprint import pprint
 from service.utilities.logger import Logger
+from service.core import shared
 
 class ZoneRPIController():
 
