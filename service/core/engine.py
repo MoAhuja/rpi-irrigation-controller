@@ -5,6 +5,7 @@ from service.database.decision_dbo import DecisionDBO
 from service.core.scheduler import Scheduler
 from service.zone.zone_controller import ZoneController
 from service.core import shared
+from service.system.settings_manager import SettingsManager
 
 # Not sure i should be accessing DAO's at this layer, but it seems unneccessary to create a new object to track the same data
 from service.database.db_schema import DecisionHistory, EnumDecisionCodes, EnumReasonCodes
@@ -25,23 +26,19 @@ class Engine():
 
     def __init__(self):
         
-        # Register for notifications 
-        # event_publisher.register(self)
         self.scheduler = Scheduler()
         self.decisionHistoryDBO = DecisionDBO()
         self.zone_controller = ZoneController()
         self.weather_centre = WeatherCenter()
         self.heartbeat()
         
-    
-    
 
     def checkAndDeactivateZones(self):
         deactivateList = []
 
         # Loop through the activeZones list and check if the end time has been past
         shared.logger.debug(self,"Checking if any zones need to be deactivated")
-        currentTime = datetime.now().time()
+        currentTime = datetime.now()
 
         # Lock because we don't want the active zones to change while we are iterating over them
         shared.logger.debug(self, "CheckAndDeactivateZones - Waiting to acquire lock: lockActiveZones")
@@ -57,7 +54,7 @@ class Engine():
                     dh.zone = activeZone.zone
                     dh.start_time = activeZone.start_time
                     dh.end_time = activeZone.end_time
-                    dh.decision = EnumDecisionCodes.DeactivateZone
+                    dh.decision = EnumDecisionCodes.DeactivateZone 
                     dh.reason = EnumReasonCodes.AllConditionsPassed
 
                     self.decisionHistoryDBO.insertDecisionEvent(dh)
@@ -243,6 +240,8 @@ class Engine():
         # TODO: Mississauga, CA shouldn't be hardcoded. We need a "System config section"
         if self.weather_profile is None or self.weather_profile_is_old:
             
+            # Create a settings retrieving
+
             shared.logger.debug(self,"need to retrieve new weather profile")
             self.weather_profile = self.weather_centre.createWeatherProfile("Mississauga", "CA")
 
