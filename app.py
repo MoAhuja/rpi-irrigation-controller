@@ -62,28 +62,23 @@ def service_zones_activate():
 	# return '{"x": "y"}'
 @app.route('/service_hub/settings/loglevel/console', methods=['GET', 'POST'])
 def service_settings_console_log_level():
-	# sm = SettingsManager()
-	# if request.method == 'GET':
-	# 	return sm.getSettingRestMapper(SettingsManager.field_console_log_level)
-	# else:
-	# 	# POst request, so we need to update
-	# 	json_data = request.get_json(force=True)
-	# 	sm = SettingsManager()
-	# 	return sm.setSettingRestMapper(SettingsManager.field_console_log_level, json_data["value"])
-	return False
+	srm = SettingsRestMapper()
+	if request.method == 'GET':
+		return srm.getConsoleLogLevel()
+	else:
+		# POst request, so we need to update
+		json_data = request.get_json(force=True)
+		return srm.setConsoleLogLevel(json_data)
 
 @app.route('/service_hub/settings/loglevel/database', methods=['GET', 'POST'])
 def service_settings_database_log_level():
-	# sm = SettingsManager()
-		
-	# if request.method == 'GET':
-	# 	return sm.getSettingRestMapper(SettingsManager.field_database_log_level)
-	# else:
-	# 	# POst request, so we need to update
-
-	# 	json_data = request.get_json(force=True)
-	# 	return sm.setSettingRestMapper(SettingsManager.field_database_log_level, json_data["value"])
-	return False
+	srm = SettingsRestMapper()
+	if request.method == 'GET':
+		return srm.getDatabaseLogLevel()
+	else:
+		# POst request, so we need to update
+		json_data = request.get_json(force=True)
+		return srm.setDatabaseLogLevel(json_data)
 
 @app.route('/service_hub/settings/location', methods=['GET', 'POST'])
 def service_settings_location():

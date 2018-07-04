@@ -7,21 +7,85 @@ from datetime import datetime
 
 class SettingsRestMapper(BaseRestMapper):
 
+    # Rain Delay Error Codes
     ERROR_TYPE_NOT_VALID_DATETIME_FORMAT = "Invalid Datetime Format. Format must be YYYY-MM-DDTHH:MM:SS (e.g. 2018-07-01T00:00:40)"
     ERROR_TYPE_DATETIME_MUST_BE_FUTURE = "Invalid Datetime - Value must be in the future"
     
+    # Log Level Error Codes
+    ERROR_TYPE_INVALID_LOG_LEVEL = "Log level must be between 0 - 4. 0 = Off, 1 = Error, 2 = Info, 3 = Debug"
     GENERIC_PROPERTY_VALUE_FIELD = "value"
 
     FIELD_LOCATION_CITY = "city"
     FIELD_LOCATION_COUNTRY = "country"
     FIELD_RAIN_DELAY = "rain_delay"
+    FIELD_LOG_LEVEL = "log_level"
     
     def __init__(self):
         self.smgr = SettingsManager()
 
-    # ##################
+    # ####################################
     # Operational Settings mappers
-    # ##################
+    # ####################################
+    
+    def setConsoleLogLevel(self, json_data):
+        shared.logger.debug(self, "setConsoleLogLevel entered")
+
+        try:
+            logLevel = int(json_data[self.GENERIC_PROPERTY_VALUE_FIELD])
+        except:
+            self.returnBadRequest(self.GENERIC_PROPERTY_VALUE_FIELD, self.ERROR_TYPE_INVALID_VALUE, json_data)
+
+        # Value must be 0 - 4
+        if logLevel < 0 or logLevel > 4:
+            self.returnBadRequest(self.GENERIC_PROPERTY_VALUE_FIELD, self.ERROR_TYPE_INVALID_LOG_LEVEL, json_data)
+        else:
+            self.smgr.setConsoleLogLevel(logLevel)
+        
+
+        return self.returnSuccessfulResponse()
+    
+    def getConsoleLogLevel(self):
+        shared.logger.debug(self, "getConsoleLogLevel entered")
+
+        try:
+            logLevel = self.smgr.getConsoleLogLevel()
+
+            response = {}
+            response[self.FIELD_LOG_LEVEL] = logLevel
+            return self.returnSuccessfulResponse(response)
+        except:
+            return self.handleSystemError()
+
+    def setDatabaseLogLevel(self, json_data):
+        shared.logger.debug(self, "setConsoleLogLevel entered")
+
+        try:
+            logLevel = int(json_data[self.GENERIC_PROPERTY_VALUE_FIELD])
+        except:
+            self.returnBadRequest(self.GENERIC_PROPERTY_VALUE_FIELD, self.ERROR_TYPE_INVALID_VALUE, json_data)
+
+        # Value must be 0 - 4
+        if logLevel < 0 or logLevel > 4:
+            self.returnBadRequest(self.GENERIC_PROPERTY_VALUE_FIELD, self.ERROR_TYPE_INVALID_LOG_LEVEL, json_data)
+        else:
+            self.smgr.setDatabaseLogLevel(logLevel)
+
+        return self.returnSuccessfulResponse()
+    
+    def getDatabaseLogLevel(self):
+        shared.logger.debug(self, "getDatabaseLogLevel entered")
+
+        try:
+            logLevel = self.smgr.getDatabaseLogLevel()
+
+            response = {}
+            response[self.FIELD_LOG_LEVEL] = logLevel
+            return self.returnSuccessfulResponse(response)
+        except:
+            return self.handleSystemError()
+    # ####################################
+    # Operational Settings mappers
+    # ####################################
     def setRainDelay(self, json_data):
         shared.logger.debug(self, "setRainDelay entered")
 
@@ -63,6 +127,7 @@ class SettingsRestMapper(BaseRestMapper):
             return self.returnSuccessfulResponse(response)
         except:
             return self.handleSystemError()
+
 
     def getLocation(self):
         response = {}
