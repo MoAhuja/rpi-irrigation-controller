@@ -95,6 +95,16 @@ def service_settings_location():
 		json_data = request.get_json(force=True)
 		return srm.setLocation(json_data)
 
+@app.route('/service_hub/settings/raindelay', methods=['GET', 'POST'])
+def service_settings_raindelay():
+	srm = SettingsRestMapper()
+	if request.method == 'GET':
+		return srm.getRainDelay()
+	else:
+		# POst request, so we need to update
+		json_data = request.get_json(force=True)
+		return srm.setRainDelay(json_data)
+
 @app.route('/service_hub/zones/create_zone', methods=['POST'])
 def service_create_zone():
 

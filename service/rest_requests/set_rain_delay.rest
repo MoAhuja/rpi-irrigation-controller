@@ -1,0 +1,6 @@
+POST http://127.0.0.1:5000/service_hub/settings/raindelay HTTP/1.1
+content-type: application/json
+
+{
+    "value": "2018-07-01T00:00:40"
+}

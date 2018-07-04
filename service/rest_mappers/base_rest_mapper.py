@@ -1,6 +1,7 @@
 # from flask.ext.api import status
 from service.rest_mappers.InvalidUsage import InvalidUsage
 from flask import jsonify
+from service.core import shared
 
 
 class BaseRestMapper():
@@ -15,7 +16,6 @@ class BaseRestMapper():
 
     # ERROR TYPES
     ERROR_TYPE_INVALID_VALUE = "Invalid Value"
-
     
     # Response is a dictionary of fields
     def returnSuccessfulResponse(self, responseDict=None):
@@ -27,8 +27,9 @@ class BaseRestMapper():
             
         return jsonify(responseDict)
     
-    def returnBadRequest(self, fieldName, error_type, payload=None):
-        raise InvalidUsage(self.HTTP_ERROR_CODE_BAD_REQUEST, fieldName, error_type, payload )
+    def returnBadRequest(self, fieldName, error_message, payload=None):
+        shared.logger.debug(self, "Return bad request: " + error_message)
+        raise InvalidUsage(self.HTTP_ERROR_CODE_BAD_REQUEST, fieldName, error_message, payload )
         
 
     # Helper functions
