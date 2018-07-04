@@ -1,7 +1,7 @@
 # from flask.ext.api import status
 from service.rest_mappers.InvalidUsage import InvalidUsage
+from flask import jsonify
 
-import json
 
 class BaseRestMapper():
 
@@ -25,7 +25,7 @@ class BaseRestMapper():
         if BaseRestMapper.FIELD_SUCCESS not in responseDict:
             self.injectRequestSuccessValue(responseDict, True)
             
-        return json.dumps(responseDict)
+        return jsonify(responseDict)
     
     def returnBadRequest(self, fieldName, error_type, payload=None):
         raise InvalidUsage(self.HTTP_ERROR_CODE_BAD_REQUEST, fieldName, error_type, payload )

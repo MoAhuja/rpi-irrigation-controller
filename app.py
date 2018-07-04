@@ -89,7 +89,7 @@ def service_settings_database_log_level():
 def service_settings_location():
 	srm = SettingsRestMapper()
 	if request.method == 'GET':
-		return False
+		return srm.getLocation()
 	else:
 		# POst request, so we need to update
 		json_data = request.get_json(force=True)

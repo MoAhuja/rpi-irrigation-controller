@@ -13,6 +13,12 @@ class SettingsRestMapper(BaseRestMapper):
     def __init__(self):
         self.smgr = SettingsManager()
 
+    def getLocation(self):
+        response = {}
+        response[self.FIELD_LOCATION_CITY] = self.smgr.getCity()
+        response[self.FIELD_LOCATION_COUNTRY] = self.smgr.getCountry()
+        return self.returnSuccessfulResponse(response)
+
     def setLocation(self, json_data):
 
         shared.logger.debug(self, "SetLocation Entered")
