@@ -1,0 +1,151 @@
+
+from service.rest_mappers.base_rest_mapper import BaseRestMapper
+
+from service.utilities.conversion import Conversions
+from service.database.db_schema import EnumScheduleType, Zone
+from service.zone.zone_data_manager import ZoneDataManager
+from service.core import shared
+import sys
+
+
+
+class ZoneDataRestMapper(BaseRestMapper):
+
+
+    FIELD_ZONE_NAME = "input_zone_name"
+    FIELD_ZONE_DESCRIPTION = "input_zone_description"
+    FIELD_TEMPERATURE = "temperature"
+    FIELD_TEMPERATURE_MIN = "min"
+    FIELD_TEMPERATURE_MAX = "max"
+    FIELD_RAIN = "rain"
+    FIELD_ENABLED = "enabled"
+    FIELD_RAIN_SHORT_TERM_LIMIT = "shortTermExpectedRainAmount"
+    FIELD_RAIN_DAILY_LIMIT = "dailyExpectedRainAmount"
+    FIELD_SCHEDULE = "schedule"
+    FIELD_SCHEDULE_TYPE = "schedule_type"
+    FIELD_SCHEDULE_START_TIME = "startTime"
+    FEILD_SCHEDULE_END_TIME = "endTime"
+    FIELD_SCHEDULE_DAYS = "days"
+
+    def __init__(self):
+        self.zdm = ZoneDataManager()
+
+    # Logic errors
+    ERROR_TYPE_MIN_NOT_BELOW_MAX = "Invalid Value - Temperature Min must be below temperature max"
+    ERROR_TYPE_INVALID_TIME = "Invalid Value - Time must be formatted as HH:MM"
+    ERROR_TYPE_INVALID_SCHEDULE_TYPE = "Invalid Value - Schedule type must be one of [" + str(EnumScheduleType.DayAndTime.value) + "," + str(EnumScheduleType.TimeAndFrequency.value) + "]"
+    ERROR_TYPE_INVALID_DAY_TYPE = "Invalid Value - Days must range between 0 and 6"
+    ERROR_TYPE_ZONE_NAME_MUST_BE_UNIQUE = "Zone name already exists"
+
+    def createZone(self, json_data):
+        shared.logger.debug(self, "ZoneManager - create zone")
+
+        
+        # TODO: Add business logic to validate that the schedules don't overlap
+        # TODO: Add checkbox to UI to enable setting of the parameters
+        # TODO: Add logic to check if start time < end time for all schedules
+        
+        # Check zone name
+        zone_name = self.getKeyOrThrowException(json_data, self.FIELD_ZONE_NAME, json_data)
+        self.validateIsProvidedAndString(zone_name, self.FIELD_ZONE_NAME, json_data)
+
+        # Check if the name already exists
+        if self.zdm.getZoneByName(zone_name) is not None:
+            self.raiseBadRequestException(self.FIELD_ZONE_NAME, self.ERROR_TYPE_ZONE_NAME_MUST_BE_UNIQUE, json_data)
+        
+        
+        # Check zone description
+        zone_description = self.getKeyOrThrowException(json_data, self.FIELD_ZONE_DESCRIPTION, json_data)
+        self.validateIsProvidedAndString(zone_description, self.FIELD_ZONE_DESCRIPTION, json_data)
+        
+        # ###################
+        # Temperature Validations
+        #####################
+        temperature_rule_enabled = self.getKeyOrThrowException(json_data[self.FIELD_TEMPERATURE],self.FIELD_ENABLED, json_data)
+        
+        # Check to make sure the data type of the enabled flag is set correctly
+        self.validateIsProvidedAndBool(temperature_rule_enabled, self.FIELD_ENABLED, json_data)
+        
+        if temperature_rule_enabled is True:
+            # Validate the min and max are provided
+            temp_min = self.getKeyOrThrowException(json_data[self.FIELD_TEMPERATURE],self.FIELD_TEMPERATURE_MIN, json_data)
+            temp_max = self.getKeyOrThrowException(json_data[self.FIELD_TEMPERATURE],self.FIELD_TEMPERATURE_MAX, json_data)
+
+
+            self.validateIsProvidedAndInt(temp_min, self.FIELD_TEMPERATURE_MIN, json_data)
+            self.validateIsProvidedAndInt(temp_max, self.FIELD_TEMPERATURE_MAX, json_data)
+
+            # Validate the min and max don't cross
+            if temp_min >= temp_max:
+                self.raiseBadRequestException(self.FIELD_TEMPERATURE_MIN, self.ERROR_TYPE_MIN_NOT_BELOW_MAX, json_data, temp_min)
+
+        # #######################
+        # Rain Validations
+        # #######################
+        rain_rule_enabled = self.getKeyOrThrowException(json_data[self.FIELD_RAIN],self.FIELD_ENABLED, json_data)
+        
+        self.validateIsProvidedAndBool(rain_rule_enabled,self.FIELD_ENABLED, json_data)
+
+        if rain_rule_enabled is True:
+            rain_short_term_limit = self.getKeyOrThrowException(json_data[self.FIELD_RAIN],self.FIELD_RAIN_SHORT_TERM_LIMIT, json_data)
+            rain_daily_limit = self.getKeyOrThrowException(json_data[self.FIELD_RAIN],self.FIELD_RAIN_DAILY_LIMIT, json_data)
+
+            self.validateIsProvidedAndInt(rain_short_term_limit, self.FIELD_RAIN_SHORT_TERM_LIMIT, json_data)
+            self.validateIsProvidedAndInt(rain_daily_limit, self.FIELD_RAIN_DAILY_LIMIT, json_data)
+
+        # #######################
+        # Validate Schedules
+        # #######################
+        schedules = self.getKeyOrThrowException(json_data, self.FIELD_SCHEDULE, json_data)
+
+        # Validate each schedule
+        for schedule in schedules:
+
+            enabled = self.getKeyOrThrowException(schedule ,self.FIELD_ENABLED, json_data)
+            start_time = self.getKeyOrThrowException(schedule, self.FIELD_SCHEDULE_START_TIME, json_data)
+            end_time = self.getKeyOrThrowException(schedule,self.FEILD_SCHEDULE_END_TIME, json_data)
+            schedule_type = self.getKeyOrThrowException(schedule,self.FIELD_SCHEDULE_TYPE, json_data)
+            days = self.getKeyOrThrowException(schedule,self.FIELD_SCHEDULE_DAYS, json_data)
+
+            # Validate enabled
+            self.validateIsProvidedAndBool(enabled, self.FIELD_ENABLED, json_data)
+
+            # Validate times
+            self.validateIsProvidedAndString(start_time, self.FIELD_SCHEDULE_START_TIME, json_data)
+            self.validateIsProvidedAndString(end_time, self.FEILD_SCHEDULE_END_TIME, json_data)
+
+            try:
+                Conversions.convertHumanReadableTimetoDBTime(start_time)
+            except:
+                self.raiseBadRequestException(self.FIELD_SCHEDULE_START_TIME, self.ERROR_TYPE_INVALID_TIME,json_data, start_time)
+
+            try:
+                Conversions.convertHumanReadableTimetoDBTime(end_time)
+            except:
+                self.raiseBadRequestException(self.FEILD_SCHEDULE_END_TIME, self.ERROR_TYPE_INVALID_TIME,json_data, end_time)
+
+            # Validate schedule type
+            self.validateIsProvidedAndInt(schedule_type, self.FIELD_SCHEDULE_TYPE, json_data)
+            
+            if schedule_type not in [EnumScheduleType.DayAndTime.value, EnumScheduleType.TimeAndFrequency.value]:
+                self.raiseBadRequestException(self.FIELD_SCHEDULE_TYPE, self.ERROR_TYPE_INVALID_SCHEDULE_TYPE, json_data, schedule_type)
+
+            # Validate days
+            for day in days:
+                self.validateIsProvidedAndInt(day, self.FIELD_SCHEDULE_DAYS, json_data)
+                if day <0 or day >6:
+                    self.raiseBadRequestException(self.FIELD_SCHEDULE_DAYS, self.ERROR_TYPE_INVALID_DAY_TYPE, json_data, day)
+
+        # # First we need to create a zone business object
+        zone =  Zone.initializeWithJSON(json_data)
+        result = self.zdm.createZone(zone)
+
+        # TODO: Create zone needs to be extended to return specific errors based on integrity checks?
+        # self.ops.createZone(zone)
+        # self.ops.saveAndClose()
+        if result is True:
+            shared.logger.info(self, "Successfully added zone")
+            return self.returnSuccessfulResponse()
+        else:
+            self.raiseServerErrorException()
+        

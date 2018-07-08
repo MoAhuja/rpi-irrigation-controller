@@ -10,6 +10,7 @@ from service.core.engine import Engine
 from service.core import shared
 from service.utilities.logger import Logger
 from service.rest_mappers.settings_rest_mapper import SettingsRestMapper
+from service.rest_mappers.zone_data_rest_mapper import ZoneDataRestMapper 
 from service.zone.zone_controller import ZoneController
 
 global app
@@ -58,8 +59,8 @@ def service_zones_activate():
 # 	# json_data = request.get_json(force=True)
 # 	# zm = ZoneManager()
 # 	# result = zm.manuallyDeactivateZone(json_data)
-
 	# return '{"x": "y"}'
+	
 @app.route('/service_hub/settings/loglevel/console', methods=['GET', 'POST'])
 def service_settings_console_log_level():
 	srm = SettingsRestMapper()
@@ -104,26 +105,12 @@ def service_settings_raindelay():
 def service_create_zone():
 
 	print(request.get_json(force=True))
-	json_data = request.get_json(force=True)
-	zdm = ZoneDataManager()
-	zone = zdm.createZone(json_data)
-	# zones = zc.retrieveAllZones()
-	# for zone in zones:
-	# 	pprint("======= Zone =========")
-	# 	pprint(vars(zone))
-
-	# for schedule in zone.schedule:
-	# 	print(schedule.start)
-	# 	print(schedule.stop)
-
-
-	return '{"x": "y"}'
-
-	#The data coming in should be an application/json post request
-	# print(params)
 	
-	# return app.send_static_file('portal/index.html')
-	# Replace this with a request to the db business logic layer to request creation of a zone
+	mapper = ZoneDataRestMapper()
+
+	json_data = request.get_json(force=True)
+	return mapper.createZone(json_data)
+
 
 # @app.route('/portal/landing')
 # def landing():

@@ -40,7 +40,7 @@ class ZoneController():
 
         return json.dumps(result)
     
-    def restDeactivateZOne(self, json_data):
+    def restDeactivateZone(self, json_data):
         zone_id = json_data['id']
         
         # TODO: Fetch zone using ID

@@ -24,29 +24,10 @@ class ZoneDataManager():
         # TODO: Remove this later
         self.ops.insertRPItoPINConfig( 1,10)
 
-    # TODO: Add business logic to validate that the schedules don't overlap
-    # TODO: Add business logic to disable any rules where conditions are partially populated
-    # TODO: Add checkbox to UI to enable setting of the parameters
-    # TODO: Add logic to check if start time < end time for all schedules
-    def createZone(self, jsonData):
-        shared.logger.debug(self, "ZoneManager - createZone begin")
-
-        try:
-            # # First we need to create a zone business object
-            zone =  Zone.initializeWithJSON(jsonData)
-
-            self.ops.createZone(zone)
-            self.ops.saveAndClose()
-            shared.logger.info(self, "Successfully added zone")
-        except:
-            the_type, the_value, the_traceback = sys.exc_info()
-            shared.logger.error(self, "Failed to create zone")
-            shared.logger.error(self, str(the_value))
-            self.ops.undo()
-            return False
-        
-
-        return True
+    
+    def createZone(self, zone):
+        self.ops.createZone(zone)
+        return self.ops.saveAndClose()
 
     def retrieveAllZones(self):
       
@@ -64,6 +45,9 @@ class ZoneDataManager():
         zonesDO = self.ops.fetchAllEnabledZones()
     
         return zonesDO
+    
+    def getZoneByName(self, zone_name):
+        return self.ops.fetchZoneByName(zone_name)
 
 
 

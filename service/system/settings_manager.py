@@ -1,11 +1,8 @@
 import configparser
-# from service.utilities.logger import Logger
 import os
-import json
 from service.core import shared_events
 from threading import Lock
 from datetime import datetime
-
 
 class SettingsManager():
 
@@ -39,36 +36,6 @@ class SettingsManager():
         self.lock = Lock()
         self.readConfig()
 
-    # This is the default 
-    def setSettingRestMapper(self, propertyName, propertyValue):
-        
-        values = {}
-        
-        if propertyName == SettingsManager.field_console_log_level:
-            self.setConsoleLogLevel(propertyValue)
-        elif propertyName == SettingsManager.field_database_log_level:
-            self.setDatabaseLogLevel(propertyValue)
-        elif propertyName == SettingsManager.field_rain_delay:
-            self.setRainDelay(propertyValue)
-        elif propertyName == SettingsManager.field_city:
-            self.setCity(propertyValue)
-        # elif propertyName == SettingsManager.
-        
-        values["result"] = True
-        return json.dumps(values)
-        
-    
-    def getSettingRestMapper(self, propertyName):
-        
-        values = {}
-        if propertyName == SettingsManager.field_console_log_level:
-            values["result"] = self.getConsoleLogLevel()
-        elif propertyName == SettingsManager.field_database_log_level:
-            values["result"] = self.getDatabaseLogLevel()
-        elif propertyName == SettingsManager.field_rain_delay:
-            values["result"] = self.getRainDelay()
-
-        return json.dumps(values)
 
     # This event function is called by the event publisher when any logging settings are updated
     def eventSettingsUpdated(self):

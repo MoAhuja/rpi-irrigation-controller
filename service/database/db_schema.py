@@ -15,10 +15,7 @@ Base = declarative_base()
 
 class Zone(Base):
     __tablename__ = 'zone'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
     id = Column('id', Integer, primary_key=True)
-    # TODO: Create a mapping to the yet to be created ZONE PIN table    2
     name = Column('name', String(250), nullable=False,  unique=True)
     description = Column('description', String(250), nullable=True)
     enabled = Column('enabled', Boolean, default=True)
@@ -87,7 +84,7 @@ class RainRule(Base):
     @classmethod
     def initializeWithJSON(cls, jsonData, zone):
         cl = cls()
-        cl.short_term_limit = jsonData["shortTermExpectedRain"]
+        cl.short_term_limit = jsonData["shortTermExpectedRainAmount"]
         cl.daily_limit = jsonData["dailyExpectedRainAmount"]
         cl.enabled = True
         cl.zone = zone
@@ -127,8 +124,7 @@ class Schedule(Base):
         cl.start_time = Conversions.convertHumanReadableTimetoDBTime(json_data['startTime'])
         cl.end_time = Conversions.convertHumanReadableTimetoDBTime(json_data['endTime'])
         cl.schedule_type = EnumScheduleType(int(json_data["schedule_type"]))
-        # cl.schedule_type = EnumScheduleType.DayAndTime
-
+        
         if cl.schedule_type is EnumScheduleType.DayAndTime:
             # Iteratre over each selected day and add it to teh days array
             for val in json_data["days"]:

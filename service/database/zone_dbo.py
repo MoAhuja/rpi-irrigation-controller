@@ -4,7 +4,7 @@ from datetime import datetime
 from service.utilities.conversion import Conversions
 from service.database.base_db_operations import BaseDBOperations
 from service.utilities.logger import Logger
-from service.core import shared_events
+from service.core import shared_events, shared
  
 from service.database.db_schema import Base, Zone, TemperatureRule, RainRule, Schedule, RpiPinMapper
  
@@ -42,6 +42,13 @@ class ZoneDBO(BaseDBOperations):
         self.session.flush()
         return zoneDO
 
+    def fetchZoneByName(self, zone_name):
+        self.initialize()
+        zoneDO = self.session.query(Zone).filter(Zone.name==zone_name).first()
+        self.session.flush()
+        return zoneDO
+
+
     def insertRPItoPINConfig(self, relay_id, rpi_pin):
         self.initialize()
     
@@ -53,6 +60,7 @@ class ZoneDBO(BaseDBOperations):
             self.session.add(pin_config)
             self.session.flush()
             return pin_config
+    
     
     def mapZoneToRelay(self, zone_id, relay_id):
         self.initialize()
