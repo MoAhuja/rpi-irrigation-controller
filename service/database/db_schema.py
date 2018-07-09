@@ -8,12 +8,20 @@ from sqlalchemy import create_engine
 from pprint import pprint
 from datetime import datetime
 from service.utilities.conversion import Conversions
+import json
 import enum
  
 # TODO: Split the schema into separate files??
 Base = declarative_base()
 
+
+# TODO: COnsider moving all fields to a base class that inherits from the sql alchemy base
 class Zone(Base):
+    FIELD_ID = "id"
+    FIELD_ZONE_NAME = "zone_name"
+    FIELD_ZONE_DESCRIPTION = "zone_description"
+    FIELD_ENABLED = "enabled"
+    
     __tablename__ = 'zone'
     id = Column('id', Integer, primary_key=True)
     name = Column('name', String(250), nullable=False,  unique=True)
@@ -29,24 +37,52 @@ class Zone(Base):
     # TODO: do we want to back-populate this? It's going to be a ton of data to load even if we don't need it
     decision_history = relationship("DecisionHistory", uselist=True, back_populates="zone")
     
+    def toDictionary(self):
+
+        zoneDict = {}
+        zoneDict[Zone.FIELD_ID] = self.id
+        zoneDict[Zone.FIELD_ZONE_NAME] = self.name
+        zoneDict[Zone.FIELD_ZONE_DESCRIPTION] = self.description
+        zoneDict[Zone.FIELD_ENABLED] = self.enabled
+        zoneDict[TemperatureRule.FIELD_TEMPERATURE] = self.temperature_rule.toDictionary()
+        zoneDict[RainRule.FIELD_RAIN] = self.rain_rule.toDictionary()
+        scheduleList = []
+        
+        for schedule in self.schedules:
+            print("found schedule")
+            scheduleList.append(schedule.toDictionary())
+        
+        zoneDict[Schedule.FIELD_SCHEDULE] = scheduleList
+
+        # TODO: What about pinconfig & decision history?
+
+        return zoneDict
+
     @classmethod
     def initializeWithJSON(cls, jsonData):
 
         cl = cls()
 
-        cl.description=jsonData["input_zone_description"]
-        cl.name=jsonData["input_zone_name"]
+        cl.description=jsonData[Zone.FIELD_ZONE_NAME]
+        cl.name=jsonData[Zone.FIELD_ZONE_NAME]
         cl.enabled=True
         
-        cl.temperature = TemperatureRule.initializeWithJSON(jsonData["temperature"], cl)
-        cl.rain = RainRule.initializeWithJSON(jsonData["rain"], cl)
+        cl.temperature = TemperatureRule.initializeWithJSON(jsonData[Zone.FIELD_TEMPERATURE], cl)
+        cl.rain = RainRule.initializeWithJSON(jsonData[Zone.FIELD_RAIN], cl)
         
-        for schedule in jsonData["schedule"]:
+        for schedule in jsonData[Zone.FIELD_SCHEDULE]:
             cl.schedules.append(Schedule.initializeWithJSON(schedule, cl))
 
         return cl
 
 class TemperatureRule(Base):
+    FIELD_TEMPERATURE = "temperature"
+    FIELD_TEMPERATURE_MIN = "min"
+    FIELD_TEMPERATURE_MAX = "max"
+    FIELD_ENABLED = "enabled"
+    
+    
+
     __tablename__ = 'temperature_rules'
     id = Column('id', Integer, primary_key=True)
     # environment_id = Column('environment_id', Integer, ForeignKey('environment_rules.id'), nullable=False)
@@ -58,11 +94,19 @@ class TemperatureRule(Base):
     zone_id = Column('zone_id', Integer, ForeignKey('zone.id'), nullable=False)
     zone=relationship("Zone", back_populates="temperature_rule")
 
+    def toDictionary(self):
+
+        tempDict = {}
+        tempDict[TemperatureRule.FIELD_ENABLED] = self.enabled
+        tempDict[TemperatureRule.FIELD_TEMPERATURE_MIN] = self.lower_limit
+        tempDict[TemperatureRule.FIELD_TEMPERATURE_MAX] = self.upper_limit
+        return tempDict
+
     @classmethod
     def initializeWithJSON(cls, jsonData, zone):
         cl = cls()
-        cl.lower_limit = jsonData["min"]
-        cl.upper_limit = jsonData["max"]
+        cl.lower_limit = jsonData[TemperatureRule.FIELD_TEMPERATURE_MIN]
+        cl.upper_limit = jsonData[TemperatureRule.FIELD_TEMPERATURE_MAX]
         cl.enabled = True
         cl.zone = zone
         # TODO: make this dynamic??
@@ -70,6 +114,12 @@ class TemperatureRule(Base):
         return cl
 
 class RainRule(Base):
+    FIELD_RAIN = "rain"
+    FIELD_ENABLED = "enabled"
+    FIELD_RAIN_SHORT_TERM_LIMIT = "shortTermExpectedRainAmount"
+    FIELD_RAIN_DAILY_LIMIT = "dailyExpectedRainAmount"
+    
+
     __tablename__ = 'rain_rules'
     id = Column('id', Integer, primary_key=True)
     # environment_id = Column('environment_id', Integer, ForeignKey('environment_rules.id'), nullable=False)
@@ -84,18 +134,34 @@ class RainRule(Base):
     @classmethod
     def initializeWithJSON(cls, jsonData, zone):
         cl = cls()
-        cl.short_term_limit = jsonData["shortTermExpectedRainAmount"]
-        cl.daily_limit = jsonData["dailyExpectedRainAmount"]
+        cl.short_term_limit = jsonData[Zone.FIELD_RAIN_SHORT_TERM_AMOUNT]
+        cl.daily_limit = jsonData[Zone.FIELD_RAIN_DAILY_LIMIT]
         cl.enabled = True
         cl.zone = zone
 
         return cl
+    
+    def toDictionary(self):
+
+        rainDict = {}
+        rainDict[RainRule.FIELD_ENABLED] = self.enabled
+        rainDict[RainRule.FIELD_RAIN_SHORT_TERM_LIMIT] = self.short_term_limit
+        rainDict[RainRule.FIELD_RAIN_DAILY_LIMIT] = self.daily_limit
+        return rainDict
 
 class EnumScheduleType(enum.Enum):
     DayAndTime = 0
     TimeAndFrequency= 1
 
 class Schedule(Base):
+    FIELD_SCHEDULE = "schedule"
+    FIELD_SCHEDULE_TYPE = "schedule_type"
+    FIELD_SCHEDULE_START_TIME = "startTime"
+    FIELD_SCHEDULE_END_TIME = "endTime"
+    FIELD_ENABLED = "enabled"
+    FIELD_SCHEDULE_DAYS = "days"
+    
+
     __tablename__ = 'schedule'
     id = Column('id', Integer, primary_key=True)
     schedule_type = Column('schedule_type', Enum(EnumScheduleType), nullable=False)
@@ -121,19 +187,35 @@ class Schedule(Base):
     def initializeWithJSON(cls, json_data, zone):
         cl = cls()
         # print("Creating schedule DO")
-        cl.start_time = Conversions.convertHumanReadableTimetoDBTime(json_data['startTime'])
-        cl.end_time = Conversions.convertHumanReadableTimetoDBTime(json_data['endTime'])
-        cl.schedule_type = EnumScheduleType(int(json_data["schedule_type"]))
+        cl.start_time = Conversions.convertHumanReadableTimetoDBTime(json_data[Zone.FIELD_SCHEDULE_START_TIME])
+        cl.end_time = Conversions.convertHumanReadableTimetoDBTime(json_data[Zone.FIELD_SCHEDULE_END_TIME])
+        cl.schedule_type = EnumScheduleType(int(json_data[Zone.FIELD_SCHEDULE_TYPE]))
         
         if cl.schedule_type is EnumScheduleType.DayAndTime:
             # Iteratre over each selected day and add it to teh days array
-            for val in json_data["days"]:
+            for val in json_data[Zone.FIELD_SCHEDULE_DAYS]:
                 cl.days.append(ScheduleDays(dayOfWeek = EnumDayOfWeek(int(val))))
 
         cl.enabled = True
         cl.zone = zone
 
         return cl
+    
+    def toDictionary(self):
+        scheduleDict = {}
+        scheduleDict[Schedule.FIELD_ENABLED] = self.enabled
+        scheduleDict[Schedule.FIELD_SCHEDULE_START_TIME] = Conversions.convertDBTimeToHumanReadableTime(self.start_time)
+        scheduleDict[Schedule.FIELD_SCHEDULE_END_TIME] = Conversions.convertDBTimeToHumanReadableTime(self.end_time)
+        scheduleDict[Schedule.FIELD_SCHEDULE_TYPE] = self.schedule_type.value
+        
+        days = []
+        for day in self.days:
+            days.append(day.dayOfWeek.value)
+
+        days.sort()
+        scheduleDict[Schedule.FIELD_SCHEDULE_DAYS] = days
+
+        return scheduleDict
 
     def getStartTime(self):
         return Conversions.convertDBTimeToHumanReadableTime(self.start_time)
@@ -162,6 +244,8 @@ class EnumDayOfWeek(enum.Enum):
     Sunday = 6
 
 class ScheduleDays(Base):
+    
+
     __tablename__ = "schedule_days"
     id = Column('id', Integer, primary_key=True)
 

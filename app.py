@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, Response
 from flask import render_template
 from flask import request
 from pprint import pprint
@@ -111,6 +111,9 @@ def service_create_zone():
 	json_data = request.get_json(force=True)
 	return mapper.createZone(json_data)
 
+@app.route('/service_hub/zones', methods=['GET'])
+def servie_get_zones():
+	return Response(ZoneDataRestMapper().getAllZones(), mimetype='application/json')
 
 # @app.route('/portal/landing')
 # def landing():

@@ -29,17 +29,24 @@ class ZoneDataManager():
         self.ops.createZone(zone)
         return self.ops.saveAndClose()
 
-    def retrieveAllZones(self):
+    def retrieveAllZones(self, asJSON=False):
       
         #retrieve a DO object
-        zonesDO = self.ops.fetchAllZones()            
-        return zonesDO
+        zonesDO = self.ops.fetchAllZones()   
+
+        if asJSON is True:
+            jsonDict =  []
+            for zone in zonesDO:
+                jsonDict.append(zone.toDictionary())
+            return jsonDict   
+        else:         
+            return zonesDO
 
     def retrieveZone(self, zone_id):
         zoneDO = self.ops.fetchZone( zone_id)
         return zoneDO
     
-    def retrieveAllEnabledZones(self):
+    def retrieveAllEnabledZones(self, asJSON=False):
         # zonesBO = []
 
         zonesDO = self.ops.fetchAllEnabledZones()
@@ -48,6 +55,7 @@ class ZoneDataManager():
     
     def getZoneByName(self, zone_name):
         return self.ops.fetchZoneByName(zone_name)
+    
 
 
 
