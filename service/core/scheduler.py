@@ -24,7 +24,7 @@ class Scheduler():
 
 
     # Listen for zone updated events
-    def eventZoneUpdated(self):
+    def eventZoneInfoUpdated(self):
         shared.logger.debug(self, "Received event: Zone Info updated")
         # Mark the schedule as dirty
         # TODO: Change this to listen for schedule updated events
