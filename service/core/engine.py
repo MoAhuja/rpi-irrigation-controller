@@ -240,10 +240,13 @@ class Engine():
         # TODO: Mississauga, CA shouldn't be hardcoded. We need a "System config section"
         if self.weather_profile is None or self.weather_profile_is_old:
             
-            # Create a settings retrieving
+            # Create a settings retriever
+            smgr = SettingsManager()
+            city = smgr.getCity()
+            country = smgr.getCountry()
 
             shared.logger.debug(self,"need to retrieve new weather profile")
-            self.weather_profile = self.weather_centre.createWeatherProfile("Mississauga", "CA")
+            self.weather_profile = self.weather_centre.createWeatherProfile(city, country)
 
             # shared.logger.debug(self,vars(self.weather_profile))
             # We got a new profile, so reset the "old" flag
