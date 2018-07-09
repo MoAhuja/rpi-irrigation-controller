@@ -1,30 +1,92 @@
 
-Todo:
+Current App To Do:
   ✔ Convert weather center to a class @done(18-06-11 19:27)
-  ☐ Store irrigation controller location in config file
-  ☐ It shouldn't be harcoded, so maybe we need a system config vs zone configs section
+  ✔ Store irrigation controller location in config file @done(18-06-28 15:47)
+  ✔ It shouldn't be harcoded, so maybe we need a system config vs zone configs section @done(18-06-28 15:47)
   ✔ Determine where and how to track activation of a zone @done(18-06-11 19:27)
-  ☐ Enable Push notification on critical errors, events (Configurable)
-  ☐ Create push notification engine that supports multiple providers
-  ☐ Make push notifications configurable (what notifications to send)
-  ☐ Create a system settings ConfigParser, notification settings Table?
-  ☐ Create a static/configurable file for all push notification provider (names, urls, etc). ConfigParser
-  ☐ Find out how and where to log all errors
+  ✔ Use location from config for weather center @done(18-07-09 08:56)
+  ☐ Push Notifications
+    ☐ Enable Push notification on critical errors, events (Configurable)
+    ☐ Create push notification engine that supports multiple providers
+    ☐ Make push notifications configurable (what notifications to send)
+    ☐ Create a static/configurable file for all push notification provider (names, urls, etc). ConfigParser
+  ✔ Create a system settings ConfigParser @done(18-07-09 08:55)
+  ✔ Create a base class for all rest mappers (default success response, serialization) @done(18-07-04 08:41)
+  ✔ Migrate create zone rest function to REST mapper layer @done(18-07-09 08:55)
+  ✔ Find out how and where to log all errors @done(18-06-14 18:34)
   ✔ Log everything through a centralized class @done(18-06-11 19:24)
-  ☐ Add database logging of errors
+  ✔ Create helper function to check if a key exists (rest mapper) before attempting to access it @done(18-07-09 08:56)
+  ✔ Add database logging of errors @done(18-06-29 15:14)
+  ☐ Determine where and how the pin mapping should be set
   ☐ Create a portal to view/filter all errors
+  ✔ Look into serialization of the requests into the DBO types @done(18-07-09 08:56)
+  ☐ Look into changing all JSON investigation into an data object first using json.loads (https://stackoverflow.com/questions/15476983/deserialize-a-json-string-to-an-object-in-python)
+  ☐ Look into try catches to protect the code @done(18-06-11 19:28)
+  ✔ Add the ability to setup the Raspberry PI available Pins and mapping to Relay. Need to think how the zone value will be edited as a result. @done(18-06-11 19:28)
+  ☐ deactivate all zones on engine initialization to ensure a reboot turns off everything
+  ✔ Store system settings in a config object ( https://wiki.python.org/moin/ConfigParserExamples ) @done(18-06-28 15:48)
+  ☐ Implement ActivationHistory Table (Activations/Deactivations)
+  ✔ Implement DecisionHistory Table (All the decisions made on every enabled zone) @done(18-06-14 18:34)
+  ☐ Implement Rain delay feature
+    ✔ On-Demand (Manual/Global) @done(18-07-09 08:57)
+    ☐ Create simple UI to set rain delay
+    ☐ Should rain delay automatically shut off any currently running zones? Yes
+      ☐ Should rain delay have a start and end time?
+    ✔ Store in database with caching and event handler mechanism @done(18-07-09 08:58)
+    ☐ Architect so that it can be fed using automated sensors later on
+    ✔ Build restful interface for it @done(18-07-09 08:58)
+    ✔ Transient (app memory) or persistent (database)? Should a rain delay persist after reboot? @done(18-07-09 08:58)
+  ✔ Evaluate whether or not a BO and DO are both required. They are really really similar. Maybe the DO can be extended to be an enriched DO (has some BO like capabilities, such as mappers) @done(18-06-14 18:35)
+  ✔ Consider using a DataObject as the base class of a Business object. Enables segregation of data and logic, but keeps them related. @done(18-06-14 18:35)
+  ☐ All the data objects default to TRUE for enabled. Need to make that dynamic??
+  ✔ Add data validation to create zone and return back a hTTP 400 for bad data @done(18-07-09 08:58)
+  ☐ Scheduling Changes
+    ✔ Support: Day/Time (Monday, Tuesday @ 10 am) @done(18-06-25 20:23)
+    ☐ Support: Time/Frequence (10am every 6 hours)
+    ✔ Create next run schedule @done(18-06-25 20:23)
+      ✔ [zoneid] = zone, zone, start datetime, end datetime @done(18-06-25 20:23)
+      ☐ manual activation = override the next run schedule?? && update current running list
+      ☐ manual deactivation = remove from current running, don't update next run
+    ✔ Look into locks to manage synchronization between manual manipulation of the zone and automatic manipulation of hte zone @done(18-07-01 15:40)
+    ☐ Should rain delays be stored within a database. Probably so we can retrieve it if the system reboots.
+    ✔ Global rain delay stored in persistent storage @done(18-06-29 15:15)
+    ✔ Adjust rain delay to be a date-time so we have a reference of when to end it. @done(18-07-01 15:40)
+    ✔ Should the next run schedule accomodate for rain delays and build the next run schedule with estimatations AFTer the rain delay? @done(18-06-29 15:15)
+    ✔ Should the nextRunSchedule be embedded within it's own class and just read from the engine? This will keep any consumers of the schedule away from the engine @done(18-06-26 08:34)
+    ✔ Add observer in the schedule manager class to handle scenario where zone data changes and schedule needs to be re-built @done(18-06-29 15:15)
+    ☐ Implement a system manager for the RPI (reboot/shutdown)
+    ☐ Look into blueprints to properly segreate the rest functions in the app.py class
+    ☐ Implement a kill switch (shutoff all zoens) in the system settings
+    ✔ Adjust architecutre to remove cyclical dependencies. Nothing should depend on engine, it should depend on everything else. @done(18-06-28 08:10)
+      ✔ Refactor zonecontroller to manage all activations of zones and the corresponding list managmenet. Remove the list management for the engine. Zone controller will also interface with the Zone->RPI bridge. @done(18-06-28 08:10)
+    ☐ Dashboard Information
+      ☐ Zone
+        ☐ Last Run
+        ☐ Next Run (Rain Delay Factor)
+        ☐ Current Status
+          ☐ Disabled/Enabled
+          ☐ Zone On/Off
+          
+        ☐ Links
+          ☐ Decision History
+          ☐ Activation History
+      
+      ☐ Global
+        ☐ Rain Delay
+        ☐ System uptime
+        ☐ Logs
+
+
+Future Considerations:
+  ☐ Wire up a rain sensor to RPI and feed that data into the system to force an automated rain delay.
+  ☐ Wire up water flow meter to the main valve and calculate how much is being used per zone. (https://www.adafruit.com/product/828 || https://www.adafruit.com/product/833)
   ☐ Consider an OAuth implementation if this is going public [Need to research permissioning]
   ☐ Integration to Google home (Turn on Zone by ID, by name. Check status of watering, get History)
   ☐ What kind of API gateway to manage access control in front of Flask
-  ✔ Look into try catches to protect the code @done(18-06-11 19:28)
-  ✔ Add the ability to setup the Raspberry PI available Pins and mapping to Relay. Need to think how the zone value will be edited as a result. @done(18-06-11 19:28)
-  ☐ Add ability to set the frequency of each schedule (every X days, by days of week)
-  ☐ Need to think through data model to store every X Days/Days of week
-  ☐ deactivate all zones on engine initialization to ensure a reboot turns off everything
-  ☐ Store system settings in a config object ( https://wiki.python.org/moin/ConfigParserExamples )
-  ☐ Implement ActivationHistory Table (Activations/Deactivations)
-  ☐ Implement DecisionHistory Table (All the decisions made on every enabled zone)
-  
+  ✔ 
+
+
+
 
 
 
