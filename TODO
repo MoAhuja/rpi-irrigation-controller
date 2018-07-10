@@ -38,7 +38,12 @@ Current App To Do:
     ✔ Transient (app memory) or persistent (database)? Should a rain delay persist after reboot? @done(18-07-09 08:58)
   ✔ Evaluate whether or not a BO and DO are both required. They are really really similar. Maybe the DO can be extended to be an enriched DO (has some BO like capabilities, such as mappers) @done(18-06-14 18:35)
   ✔ Consider using a DataObject as the base class of a Business object. Enables segregation of data and logic, but keeps them related. @done(18-06-14 18:35)
-  ☐ All the data objects default to TRUE for enabled. Need to make that dynamic??
+  ✔ All the data objects default to TRUE for enabled. Need to make that dynamic?? @done(18-07-10 08:11)
+  ☐ Work on the logic to edit a zone.
+    ☐ It should take in zone ID and just the field that needs to be updated or all the fields?
+    ☐ Both?
+      ☐ Update via ALL fields which essentially goes through the creae zone flow, except it pulls up a zone instead of creating a new one
+  ☐ Determine how to handle setting of hte PIN. Datbase contains pins. We need to specify in the zone editor which pin it belongs to.
   ✔ Add data validation to create zone and return back a hTTP 400 for bad data @done(18-07-09 08:58)
   ☐ Scheduling Changes
     ✔ Support: Day/Time (Monday, Tuesday @ 10 am) @done(18-06-25 20:23)
@@ -48,7 +53,7 @@ Current App To Do:
       ☐ manual activation = override the next run schedule?? && update current running list
       ☐ manual deactivation = remove from current running, don't update next run
     ✔ Look into locks to manage synchronization between manual manipulation of the zone and automatic manipulation of hte zone @done(18-07-01 15:40)
-    ☐ Should rain delays be stored within a database. Probably so we can retrieve it if the system reboots.
+    ✔ Should rain delays be stored within a database. Probably so we can retrieve it if the system reboots. @done(18-07-09 08:59)
     ✔ Global rain delay stored in persistent storage @done(18-06-29 15:15)
     ✔ Adjust rain delay to be a date-time so we have a reference of when to end it. @done(18-07-01 15:40)
     ✔ Should the next run schedule accomodate for rain delays and build the next run schedule with estimatations AFTer the rain delay? @done(18-06-29 15:15)
@@ -57,6 +62,9 @@ Current App To Do:
     ☐ Implement a system manager for the RPI (reboot/shutdown)
     ☐ Look into blueprints to properly segreate the rest functions in the app.py class
     ☐ Implement a kill switch (shutoff all zoens) in the system settings
+    ☐ Clean up logging across the board
+    ☐ Event manager shuld log all activations/deactivations
+    ☐ Creating restful service to get events and logs
     ✔ Adjust architecutre to remove cyclical dependencies. Nothing should depend on engine, it should depend on everything else. @done(18-06-28 08:10)
       ✔ Refactor zonecontroller to manage all activations of zones and the corresponding list managmenet. Remove the list management for the engine. Zone controller will also interface with the Zone->RPI bridge. @done(18-06-28 08:10)
     ☐ Dashboard Information
