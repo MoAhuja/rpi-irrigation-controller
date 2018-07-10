@@ -38,7 +38,7 @@ class BaseRestMapper():
         shared.logger.debug(self, "Return bad request: " + error_message)
         raise InvalidUsage(self.HTTP_ERROR_CODE_BAD_REQUEST, fieldName, error_message, payload, invalid_value )
         
-    def raiseServerErrorException(self):
+    def raiseServerErrorException(self, error_message="Unknown Error"):
         shared.logger.debug(self, "Return server error")
         raise InvalidUsage(self.HTTP_ERROR_CODE_SERVER_ERROR)
        
