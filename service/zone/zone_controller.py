@@ -2,7 +2,7 @@ from service.zone.zone_rpi_controller import ZoneRPIController
 from service.core import shared
 from service.zone.zone_data_manager import ZoneDataManager
 from service.zone.zone_timing_bo import ZoneTiming
-from datetime import datetime, timedelta
+
 import json
 class ZoneController():
 
@@ -12,46 +12,10 @@ class ZoneController():
         self.zrpi_controller = ZoneRPIController()
         self.zdm = ZoneDataManager()
     
-    def restActivateZone(self, json_data):
-        result = {}
-        result["value"] = True
-
-        # TODO: Validate the zone is enabled
-        zone_id = json_data['id']
-        duration = json_data['duration']
-        
-        # Check if the zone is already running
-        # if int(zone_id) in self.activeZones:
-        #     shared.logger.info(self, "Zone is already active")
-        #     # TODO: REturn an error code of some sort
-        #     return json.dumps(result)
-
-        # Fetch zone using ID
-        zone = self.zdm.retrieveZone(zone_id)
-
-        # Set to current time plus the requested run time
-        end_time = datetime.now() + timedelta(minutes=int(duration))
-
-        # create a zone timing object
-        zto = ZoneTiming.initialize(zone, datetime.now(), end_time)
-
-        shared.logger.debug(self, "Manual Activation Requested for zone: " + zone.name + ". End time = " + str(end_time))
-        self.activateZone(zto)
-
-        return json.dumps(result)
-    
-    def restDeactivateZone(self, json_data):
-        zone_id = json_data['id']
-        
-        # TODO: Fetch zone using ID
-        zone = self.retrieveZone(zone_id)
-
-        # call the manual ativation function on the engine
-        shared.engine.manuallyDeactivateZone(zone)      
 
     def activateZone(self, zonetimingObj):
 
-
+        result = False
         shared.logger.debug(self, "ActivateZone - Waiting to acquire lock: lockActiveZones")
         shared.lockActiveZones.acquire()
         try:
@@ -64,18 +28,19 @@ class ZoneController():
             shared.logger.debug(self,"Adding zone '" + zonetimingObj.zone.name + "' to list of active zones")
             
             # add this zone to a list of activated zones
-            ZoneController.activeZones[zonetimingObj.zone.id] = zonetimingObj
+            
 
             shared.logger.debug(self,"Activating Zone")
-            self.zrpi_controller.activateZone(zonetimingObj.zone)
+            
+            if self.zrpi_controller.activateZone(zonetimingObj.zone):
+                ZoneController.activeZones[zonetimingObj.zone.id] = zonetimingObj
+                result = True
 
         finally:
             shared.lockActiveZones.release()
             shared.logger.debug(self, "ActivateZone - releasing lock: lockActiveZones")
         
-
-        # call the zone controller and activate the zone
-        self.zrpi_controller.activateZone(zonetimingObj.zone)
+        return result
 
     def deactivateZones(self, listOfKeysToDeactivate):
         
@@ -95,9 +60,24 @@ class ZoneController():
             shared.lockActiveZones.release()
             shared.logger.debug(self, "deactivateZones - releasing lock: lockActiveZones")
 
-    def deactivateAllZones(self):
+    def deactivateZone(self, zone):
+         
+        shared.logger.debug(self, "deactivateZone - Waiting to acquire lock: lockActiveZones")
+        shared.lockActiveZones.acquire()
         
+        try:
+            # Call the RPI controller to deactivate the zone
+            self.zrpi_controller.deactivateZone(zone)
 
+            # Remove the zone from the list of active zones
+            del ZoneController.activeZones[zone.id]
+        finally:
+            shared.lockActiveZones.release()
+            shared.logger.debug(self, "deactivateZones- releasing lock: lockActiveZones")
+
+
+    def deactivateAllZones(self):
+    
         shared.logger.debug(self,"Deactivating All Zones")
         shared.logger.debug(self, "deactivateAllZones - Waiting to acquire lock: lockActiveZones")
         shared.lockActiveZones.acquire()
@@ -106,10 +86,12 @@ class ZoneController():
             for key, activeZone in ZoneController.activeZones.items():
                 shared.logger.debug(self, "Deactivating -> " + key + "-->" + activeZone.zone.name)
 
-                self.zone_controller.deactivateZone(activeZone.zone)
+                #Call the RPI controller to deactivate this zone
+                self.zrpi_controller.deactivateZone(zone)
             
             # Reset back to an empty hashmap
             ZoneController.activeZones = {}
+
         finally:
             shared.lockActiveZones.release()
             shared.logger.debug(self, "deactivateAllZones - releasing lock: lockActiveZones")

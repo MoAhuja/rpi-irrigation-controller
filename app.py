@@ -11,6 +11,8 @@ from service.core import shared
 from service.utilities.logger import Logger
 from service.rest_mappers.settings_rest_mapper import SettingsRestMapper
 from service.rest_mappers.zone_data_rest_mapper import ZoneDataRestMapper 
+from service.rest_mappers.zone_controller_rest_mapper import ZoneControllerRestMapper
+
 from service.zone.zone_controller import ZoneController
 
 global app
@@ -47,19 +49,20 @@ def service_zones_status():
 
 @app.route('/service_hub/zones/activate', methods=['POST'])
 def service_zones_activate():
-	print(request.get_json(force=True))
 	json_data = request.get_json(force=True)
-	zc = ZoneController()
-	result = zc.restActivateZone(json_data)
+	zcrm = ZoneControllerRestMapper()
+
+	result = zcrm.activateZone(json_data)
 	return result
 
-# @app.route('/service_hub/zones/deactivate', methods=['POST'])
-# def service_zones_deactivate():
-# 	# print(request.get_json(force=True))
-# 	# json_data = request.get_json(force=True)
-# 	# zm = ZoneManager()
-# 	# result = zm.manuallyDeactivateZone(json_data)
-	# return '{"x": "y"}'
+@app.route('/service_hub/zones/deactivate', methods=['POST'])
+def service_zones_deactivate():
+	json_data = request.get_json(force=True)
+	zcrm = ZoneControllerRestMapper()
+
+	result = zcrm.deactivateZone(json_data)
+	return result
+
 	
 @app.route('/service_hub/settings/loglevel/console', methods=['GET', 'POST'])
 def service_settings_console_log_level():
