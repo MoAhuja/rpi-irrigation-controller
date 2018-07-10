@@ -65,12 +65,12 @@ class Zone(Base):
 
         cl.description=jsonData[Zone.FIELD_ZONE_NAME]
         cl.name=jsonData[Zone.FIELD_ZONE_NAME]
-        cl.enabled=True
+        cl.enabled=jsonData[Zone.FIELD_ENABLED]
         
         cl.temperature = TemperatureRule.initializeWithJSON(jsonData[Zone.FIELD_TEMPERATURE], cl)
         cl.rain = RainRule.initializeWithJSON(jsonData[Zone.FIELD_RAIN], cl)
         
-        for schedule in jsonData[Zone.FIELD_SCHEDULE]:
+        for schedule in jsonData[Zone.FIELD_SCHEDULE]
             cl.schedules.append(Schedule.initializeWithJSON(schedule, cl))
 
         return cl
@@ -107,7 +107,7 @@ class TemperatureRule(Base):
         cl = cls()
         cl.lower_limit = jsonData[TemperatureRule.FIELD_TEMPERATURE_MIN]
         cl.upper_limit = jsonData[TemperatureRule.FIELD_TEMPERATURE_MAX]
-        cl.enabled = True
+        cl.enabled = jsonData[Zone.FIELD_ENABLED]
         cl.zone = zone
         # TODO: make this dynamic??
 
@@ -136,7 +136,7 @@ class RainRule(Base):
         cl = cls()
         cl.short_term_limit = jsonData[Zone.FIELD_RAIN_SHORT_TERM_AMOUNT]
         cl.daily_limit = jsonData[Zone.FIELD_RAIN_DAILY_LIMIT]
-        cl.enabled = True
+        cl.enabled = jsonData[Zone.FIELD_ENABLED]
         cl.zone = zone
 
         return cl
@@ -171,22 +171,12 @@ class Schedule(Base):
     zone_id = Column('zone_id', Integer, ForeignKey('zone.id'), nullable=False)
     zone=relationship("Zone", back_populates="schedules")
     days = relationship("ScheduleDays", uselist=True, back_populates="schedule")
-
-    # @classmethod
-    # def initializeWithTimes(cls, iStart, iStop, zone):
-    #     cl = cls()
-    #     # print("Creating schedule DO")
-    #     cl.start_time = Conversions.convertHumanReadableTimetoDBTime(iStart)
-    #     cl.end_time = Conversions.convertHumanReadableTimetoDBTime(iStop)
-    #     cl.enabled = True
-    #     cl.zone = zone
-
-    #     return cl
     
     @classmethod
     def initializeWithJSON(cls, json_data, zone):
         cl = cls()
         # print("Creating schedule DO")
+        cl.enabled = json_data[Zone.FIELD_ENABLED]
         cl.start_time = Conversions.convertHumanReadableTimetoDBTime(json_data[Zone.FIELD_SCHEDULE_START_TIME])
         cl.end_time = Conversions.convertHumanReadableTimetoDBTime(json_data[Zone.FIELD_SCHEDULE_END_TIME])
         cl.schedule_type = EnumScheduleType(int(json_data[Zone.FIELD_SCHEDULE_TYPE]))
@@ -273,6 +263,7 @@ class EnumReasonCodes(enum.Enum):
     LongTermRainExpected = 2
     TemperatureBelowMin = 3
     TemperatureAboveMax = 4
+    Manual = 5
 
 # TODO: Complete this event history object (consider rename to "ZoneDecisionHistory")
 class DecisionHistory(Base):
