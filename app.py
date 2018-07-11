@@ -12,6 +12,7 @@ from service.utilities.logger import Logger
 from service.rest_mappers.settings_rest_mapper import SettingsRestMapper
 from service.rest_mappers.zone_data_rest_mapper import ZoneDataRestMapper 
 from service.rest_mappers.zone_controller_rest_mapper import ZoneControllerRestMapper
+import service.database.db_schema
 
 from service.zone.zone_controller import ZoneController
 
@@ -156,6 +157,10 @@ if __name__ == '__main__':
 	global event_pub
 	global zm
 	pi.main.initialize()
+
+	shared.logger.debug(None, "About to create database!!")
+	service.database.db_schema.createDatabase()
+
 
 	# Initialize the event publisher
 	# event_pub = EventPublisher()

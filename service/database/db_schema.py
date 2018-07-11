@@ -11,9 +11,7 @@ from service.utilities.conversion import Conversions
 import json
 import enum
  
-# TODO: Split the schema into separate files??
 Base = declarative_base()
-
 
 # TODO: COnsider moving all fields to a base class that inherits from the sql alchemy base
 class Zone(Base):
@@ -312,8 +310,6 @@ class RpiPinMapper(Base):
     rpi_pin = Column('rpi_pin', Integer, nullable=False, unique=True)
 
 # TODO: Add table for system settings (location, safety shutoff, auto-disable if safety shutoff was invoked, alerting)
-# TODO: Add a table to handle errors (e.g. Zone does not have a mapped pin??)
-# TODO: Add table to handle ActivationHistory (activated, time activated, start_time, end_time, zone relationship). Consider correlation with decision history? maye the id from the decision is input to the actiation history?
 # TODO: Create a table to support notifications configuration (URLS, what to notify on)
 
 class EnumLogLevel(enum.Enum):
@@ -334,20 +330,23 @@ class Logs(Base):
 # Event triggers go below
 # ##########################
 @event.listens_for(RpiPinMapper.__table__, 'after_create')
-def after_create(target, connection, **kw):
+def RPIPIN_after_create(target, connection, **kw):
     # TODO: Add all the relays 
     # connection.session.add(RpiPinMapper(relay_id=1, rpi_pin=2))
     connection.execute("Insert into pin_mapper (relay_id, rpi_pin) VALUES (1,20)")
     connection.execute("Insert into pin_mapper (relay_id, rpi_pin) VALUES (2,14)")
-    connection.close()
+    # connection.close()
     # connection.session.commit()
 
-#      enabled = Column(Boolean)
-# Create an engine that stores data in the local directory's
-# sqlalchemy_example.db file.
-engine = create_engine('sqlite:///sqlalchemy_example.db?check_same_thread=False')
+def createDatabase():
+    pprint("createDatabase called")
+    global Base
+    #      enabled = Column(Boolean)
+    # Create an engine that stores data in the local directory's
+    # sqlalchemy_example.db file.
+    engine = create_engine('sqlite:///sqlalchemy_example.db?check_same_thread=False')
 
 
-# # Create all tables in the engine. This is equivalent to "Create Table"
-# # statements in raw SQL.
-Base.metadata.create_all(engine)
+    # # Create all tables in the engine. This is equivalent to "Create Table"
+    # # statements in raw SQL.
+    Base.metadata.create_all(engine)
