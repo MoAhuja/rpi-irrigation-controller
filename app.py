@@ -63,7 +63,14 @@ def service_zones_deactivate():
 	result = zcrm.deactivateZone(json_data)
 	return result
 
-	
+@app.route('/service_hub/zones/kill', methods=['POST'])
+def service_zones_kill_switch():
+	json_data = request.get_json(force=True)
+	zcrm = ZoneControllerRestMapper()
+
+	result = zcrm.killSwitch()
+	return result
+
 @app.route('/service_hub/settings/loglevel/console', methods=['GET', 'POST'])
 def service_settings_console_log_level():
 	srm = SettingsRestMapper()
@@ -104,7 +111,7 @@ def service_settings_raindelay():
 		json_data = request.get_json(force=True)
 		return srm.setRainDelay(json_data)
 
-@app.route('/service_hub/zones/create_zone', methods=['POST'])
+@app.route('/service_hub/zones/create', methods=['POST'])
 def service_create_zone():
 
 	print(request.get_json(force=True))
@@ -113,6 +120,17 @@ def service_create_zone():
 
 	json_data = request.get_json(force=True)
 	return mapper.createZone(json_data)
+
+
+@app.route('/service_hub/zones/edit', methods=['POST'])
+def service_edit_zone():
+
+	print(request.get_json(force=True))
+	
+	mapper = ZoneDataRestMapper()
+
+	json_data = request.get_json(force=True)
+	return mapper.editZone(json_data)
 
 @app.route('/service_hub/zones', methods=['GET'])
 def servie_get_zones():

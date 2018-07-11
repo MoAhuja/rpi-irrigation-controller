@@ -85,3 +85,14 @@ class BaseRestMapper():
         
         return data
 
+    def getKeyOrSetAsNone(self, dictionary, key):
+        data = None
+        try:
+            data = dictionary[key]
+        except KeyError:
+            return None
+        
+        return data
+
+    
+

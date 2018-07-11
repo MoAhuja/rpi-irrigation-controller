@@ -28,6 +28,10 @@ class ZoneDataManager():
     def createZone(self, zone):
         self.ops.createZone(zone)
         return self.ops.saveAndClose()
+    
+    def editZone(self, zone_id, zone):
+        self.ops.editZone(zone_id, zone)
+        return self.ops.saveAndClose()
 
     def retrieveAllZones(self, asJSON=False):
       
