@@ -57,8 +57,8 @@ class ZoneControllerRestMapper(BaseRestMapper):
             # TODO: Create a decision history event
             dh = DecisionHistory()
             dh.zone = zone
-            dh.start_time = zone.start_time
-            dh.end_time = zone.end_time
+            dh.start_time = start_time
+            dh.end_time = end_time
             dh.decision = EnumDecisionCodes.ActivateZone 
             dh.reason = EnumReasonCodes.Manual
 
@@ -82,14 +82,16 @@ class ZoneControllerRestMapper(BaseRestMapper):
             if zone.id not in ZoneController.activeZones:
                 self.raiseBadRequestException(self.FIELD_ID, self.ERROR_TYPE_ZONE_NOT_ACTIVE)
 
+            # Fetch teh zone timing object using the zone id
+            zoneTiming = ZoneController.activeZones[zone.id]
 
             # Deactivate the zone
             if self.zc.deactivateZone(zone):
                 # TODO:Write an entry to the decision history table
                 dh = DecisionHistory()
                 dh.zone = zone
-                dh.start_time = zone.start_time
-                dh.end_time = zone.end_time
+                dh.start_time = zoneTiming.start_time
+                dh.end_time = zoneTiming.end_time
                 dh.decision = EnumDecisionCodes.DeactivateZone 
                 dh.reason = EnumReasonCodes.Manual
 

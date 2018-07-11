@@ -3,6 +3,7 @@
 # from service.utilities.conversion import Conversions
 from service.database.base_db_operations import BaseDBOperations
 from service.utilities.logger import Logger
+from service.core import shared
  
 from service.database.db_schema import Zone, DecisionHistory
 

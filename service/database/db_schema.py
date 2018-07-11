@@ -287,8 +287,8 @@ class DecisionHistory(Base):
     rain_enabled = Column('rain_enabled', Boolean, nullable=True)
     rain_short_term_limit = Column('rain_short_term_limit', Integer, nullable=True)
     rain_daily_limit = Column('rain_daily_limit', Integer, nullable=True)
-    start_time = Column('start_time', Time, nullable=False)
-    end_time = Column('end_time', Time, nullable=False)
+    start_time = Column('start_time', DateTime, nullable=False)
+    end_time = Column('end_time', DateTime, nullable=False)
     # schedule_enabled = Column('schedule_enabled', Boolean, nullable=False)
 
     decision = Column('decision_code', Enum(EnumDecisionCodes), nullable=False) 
