@@ -25,14 +25,11 @@ class ZoneController():
                 shared.logger.info(self, "Zone is already active")
                 return True
 
-            shared.logger.debug(self,"Adding zone '" + zonetimingObj.zone.name + "' to list of active zones")
-            
-            # add this zone to a list of activated zones
-            
 
             shared.logger.debug(self,"Activating Zone")
             
             if self.zrpi_controller.activateZone(zonetimingObj.zone):
+                shared.logger.debug(self,"Adding zone '" + zonetimingObj.zone.name + "' to list of active zones")
                 ZoneController.activeZones[zonetimingObj.zone.id] = zonetimingObj
                 result = True
 
@@ -78,6 +75,7 @@ class ZoneController():
 
     def deactivateAllZones(self):
     
+        result = False
         shared.logger.debug(self,"Deactivating All Zones")
         shared.logger.debug(self, "deactivateAllZones - Waiting to acquire lock: lockActiveZones")
         shared.lockActiveZones.acquire()
@@ -91,10 +89,13 @@ class ZoneController():
             
             # Reset back to an empty hashmap
             ZoneController.activeZones = {}
+            result = True
 
         finally:
             shared.lockActiveZones.release()
             shared.logger.debug(self, "deactivateAllZones - releasing lock: lockActiveZones")
+
+        return result
 
     # def manuallyDeactivateZone(self, zone):
 
@@ -109,6 +110,5 @@ class ZoneController():
     # def manuallyActivateZone(self, zone, end_time):
         # TODO: Check if the zone is already active
         # TODO: Inject this zone into list of active zonesp
-        # TODO: Add activation to history table
-        # TODO: Tell controller to start the zone
+     
         # return False

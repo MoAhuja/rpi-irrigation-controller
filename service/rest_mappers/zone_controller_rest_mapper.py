@@ -97,6 +97,11 @@ class ZoneControllerRestMapper(BaseRestMapper):
             else:
                 self.raiseServerErrorException(self.ERROR_TYPE_UNABLE_TO_DEACTIVATE_ZONE)
 
-            
+        return self.returnSuccessfulResponse()
+    
+    def killSwitch(self):
+        # TODO:Write an entry to the decision history table to indicate all zones were shutoff due to kil switch (reason code: KillSwitch?)
         
+        self.zc.deactivateAllZones()
+
         return self.returnSuccessfulResponse()
