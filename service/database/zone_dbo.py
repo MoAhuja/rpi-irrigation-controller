@@ -20,6 +20,50 @@ class ZoneDBO(BaseDBOperations):
         self.initialize()
         self.session.add(zone)
         self.session.flush()
+    
+    def editZone(self, zone_id, newZone):
+        print("Zone is is --> " + str(zone_id))
+        self.initialize()
+        # Query the old zone
+        originalZone = self.fetchZone(zone_id)
+        self.session.delete(originalZone)
+
+        self.session.flush()
+
+        newZone.id = zone_id
+        self.session.add(newZone)
+
+        self.session.flush()
+
+        # TODO: What if I jsut specified the ID for the zone?
+        
+
+        # if originalZone is not None:
+        #     # Map all the new attributes to the original zone object
+        #     originalZone.name = newZone.name
+        #     originalZone.enabled = newZone.enabled
+        #     originalZone.description = newZone.description
+
+            # Update all the temperature parameters
+
+            # Update all the rain parameters
+
+            # Update the schedules (iterate over the lists)? Maybe just delete the schedules and re-add?
+            # TODO: Do we need to return the IDs of all the schedules so they can be matched and updated accordingly?
+
+
+            # cl.description=jsonData[Zone.FIELD_ZONE_NAME]
+        # cl.name=jsonData[Zone.FIELD_ZONE_NAME]
+        # cl.enabled=jsonData[Zone.FIELD_ENABLED]
+        
+        # cl.temperature = TemperatureRule.initializeWithJSON(jsonData[Zone.FIELD_TEMPERATURE], cl)
+        # cl.rain = RainRule.initializeWithJSON(jsonData[Zone.FIELD_RAIN], cl)
+        
+        # for schedule in jsonData[Zone.FIELD_SCHEDULE]
+        #     cl.schedules.append(Schedule.initializeWithJSON(schedule, cl))
+
+        # return cl
+
 
     #     #retrieve the zone_id
     def fetchAllZones(self ):
@@ -38,6 +82,8 @@ class ZoneDBO(BaseDBOperations):
     
     def fetchZone(self, zone_id):
         self.initialize()
+        print("Fetching zone by id:" + str(zone_id))
+
         zoneDO = self.session.query(Zone).filter(Zone.id==zone_id).first()
         self.session.flush()
         return zoneDO

@@ -29,9 +29,9 @@ class Zone(Base):
     enabled = Column('enabled', Boolean, default=True)
 
     # environment = relationship("EnvironmentRules", uselist=False, back_populates="zone")
-    temperature_rule = relationship("TemperatureRule", uselist=False, back_populates="zone")
-    rain_rule=relationship("RainRule", uselist=False, back_populates="zone")
-    schedules = relationship("Schedule", uselist=True, back_populates="zone")
+    temperature_rule = relationship("TemperatureRule", uselist=False, back_populates="zone", cascade="delete,save-update")
+    rain_rule=relationship("RainRule", uselist=False, back_populates="zone", cascade="delete, save-update")
+    schedules = relationship("Schedule", uselist=True, back_populates="zone", cascade="delete, save-update")
     pin_config = relationship("RpiPinMapper", uselist=False, back_populates="zone")
 
     # TODO: do we want to back-populate this? It's going to be a ton of data to load even if we don't need it
@@ -67,10 +67,10 @@ class Zone(Base):
         cl.name=jsonData[Zone.FIELD_ZONE_NAME]
         cl.enabled=jsonData[Zone.FIELD_ENABLED]
         
-        cl.temperature = TemperatureRule.initializeWithJSON(jsonData[Zone.FIELD_TEMPERATURE], cl)
-        cl.rain = RainRule.initializeWithJSON(jsonData[Zone.FIELD_RAIN], cl)
+        cl.temperature = TemperatureRule.initializeWithJSON(jsonData[TemperatureRule.FIELD_TEMPERATURE], cl)
+        cl.rain = RainRule.initializeWithJSON(jsonData[RainRule.FIELD_RAIN], cl)
         
-        for schedule in jsonData[Zone.FIELD_SCHEDULE]
+        for schedule in jsonData[Schedule.FIELD_SCHEDULE]:
             cl.schedules.append(Schedule.initializeWithJSON(schedule, cl))
 
         return cl
@@ -134,9 +134,9 @@ class RainRule(Base):
     @classmethod
     def initializeWithJSON(cls, jsonData, zone):
         cl = cls()
-        cl.short_term_limit = jsonData[Zone.FIELD_RAIN_SHORT_TERM_AMOUNT]
-        cl.daily_limit = jsonData[Zone.FIELD_RAIN_DAILY_LIMIT]
-        cl.enabled = jsonData[Zone.FIELD_ENABLED]
+        cl.short_term_limit = jsonData[RainRule.FIELD_RAIN_SHORT_TERM_LIMIT]
+        cl.daily_limit = jsonData[RainRule.FIELD_RAIN_DAILY_LIMIT]
+        cl.enabled = jsonData[RainRule.FIELD_ENABLED]
         cl.zone = zone
 
         return cl
@@ -170,20 +170,20 @@ class Schedule(Base):
     enabled = Column('enabled', Boolean, default=False)
     zone_id = Column('zone_id', Integer, ForeignKey('zone.id'), nullable=False)
     zone=relationship("Zone", back_populates="schedules")
-    days = relationship("ScheduleDays", uselist=True, back_populates="schedule")
+    days = relationship("ScheduleDays", uselist=True, back_populates="schedule",  cascade="delete, save-update")
     
     @classmethod
     def initializeWithJSON(cls, json_data, zone):
         cl = cls()
         # print("Creating schedule DO")
-        cl.enabled = json_data[Zone.FIELD_ENABLED]
-        cl.start_time = Conversions.convertHumanReadableTimetoDBTime(json_data[Zone.FIELD_SCHEDULE_START_TIME])
-        cl.end_time = Conversions.convertHumanReadableTimetoDBTime(json_data[Zone.FIELD_SCHEDULE_END_TIME])
-        cl.schedule_type = EnumScheduleType(int(json_data[Zone.FIELD_SCHEDULE_TYPE]))
+        cl.enabled = json_data[Schedule.FIELD_ENABLED]
+        cl.start_time = Conversions.convertHumanReadableTimetoDBTime(json_data[Schedule.FIELD_SCHEDULE_START_TIME])
+        cl.end_time = Conversions.convertHumanReadableTimetoDBTime(json_data[Schedule.FIELD_SCHEDULE_END_TIME])
+        cl.schedule_type = EnumScheduleType(int(json_data[Schedule.FIELD_SCHEDULE_TYPE]))
         
         if cl.schedule_type is EnumScheduleType.DayAndTime:
             # Iteratre over each selected day and add it to teh days array
-            for val in json_data[Zone.FIELD_SCHEDULE_DAYS]:
+            for val in json_data[Schedule.FIELD_SCHEDULE_DAYS]:
                 cl.days.append(ScheduleDays(dayOfWeek = EnumDayOfWeek(int(val))))
 
         cl.enabled = True
