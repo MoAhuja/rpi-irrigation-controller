@@ -100,7 +100,7 @@ class SettingsRestMapper(BaseRestMapper):
 
             rainDelayDate = Conversions.convertRainDelaySettingToDatetime(rainDelay)
         except:
-            return self.returnBadRequest(self.GENERIC_PROPERTY_VALUE_FIELD, self.ERROR_TYPE_NOT_VALID_DATETIME_FORMAT, json_data)
+            self.raiseBadRequestException(self.GENERIC_PROPERTY_VALUE_FIELD, self.ERROR_TYPE_NOT_VALID_DATETIME_FORMAT, json_data)
         
 
         shared.logger.debug(self, "Validating if rain delay value (" + str(rainDelayDate) + ") is set to the future.")
@@ -108,7 +108,7 @@ class SettingsRestMapper(BaseRestMapper):
         # Check if the rain delay value is set in the past
         if rainDelayDate < datetime.now():
             shared.logger.error(self, "Rain delay set to past")
-            return self.returnBadRequest(self.GENERIC_PROPERTY_VALUE_FIELD, self.ERROR_TYPE_DATETIME_MUST_BE_FUTURE, json_data)
+            self.raiseBadRequestException(self.GENERIC_PROPERTY_VALUE_FIELD, self.ERROR_TYPE_DATETIME_MUST_BE_FUTURE, json_data)
         
         result = self.smgr.setRainDelay(rainDelay)
 

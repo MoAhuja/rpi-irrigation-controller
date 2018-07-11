@@ -30,7 +30,7 @@ class Scheduler():
         # TODO: Change this to listen for schedule updated events
         self.nextRunScheduleIsDirty = True
 
-    def eventRainDelayUpdated(self):
+    def eventRainDelayUpdated(self, eventRainDelayUpdated):
 
         shared.logger.debug(self, "Received event: Rain delay updated")
         # Mark the schedule as dirty

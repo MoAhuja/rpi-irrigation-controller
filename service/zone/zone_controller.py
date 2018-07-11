@@ -1,5 +1,5 @@
 from service.zone.zone_rpi_controller import ZoneRPIController
-from service.core import shared
+from service.core import shared, shared_events
 from service.zone.zone_data_manager import ZoneDataManager
 from service.zone.zone_timing_bo import ZoneTiming
 
@@ -9,9 +9,19 @@ class ZoneController():
     activeZones = {}
 
     def __init__(self):
+        shared_events.event_publisher.register(self, False, True, False, False)
+
         self.zrpi_controller = ZoneRPIController()
         self.zdm = ZoneDataManager()
     
+
+    def eventRainDelayUpdated(self, rainDelayDate):
+
+        shared.logger.debug(self, "Received event: Rain delay updated")
+        
+        # Check if hte rain delay value is is the future. If so, stop all active zones.
+        if datetime.now() < rainDelayDate:
+            self.deactivateAllZones()
 
     def activateZone(self, zonetimingObj):
 
@@ -37,6 +47,7 @@ class ZoneController():
             shared.lockActiveZones.release()
             shared.logger.debug(self, "ActivateZone - releasing lock: lockActiveZones")
         
+        shared.logger.debug(self, "Activating Zone Result = " + str(result))
         return result
 
     def deactivateZones(self, listOfKeysToDeactivate):
@@ -58,22 +69,27 @@ class ZoneController():
             shared.logger.debug(self, "deactivateZones - releasing lock: lockActiveZones")
 
     def deactivateZone(self, zone):
-         
+        result = False
         shared.logger.debug(self, "deactivateZone - Waiting to acquire lock: lockActiveZones")
         shared.lockActiveZones.acquire()
         
         try:
             # Call the RPI controller to deactivate the zone
-            self.zrpi_controller.deactivateZone(zone)
+            if self.zrpi_controller.deactivateZone(zone):
 
-            # Remove the zone from the list of active zones
-            del ZoneController.activeZones[zone.id]
+                # Remove the zone from the list of active zones
+                del ZoneController.activeZones[zone.id]
+
+                result = True
+                
         finally:
             shared.lockActiveZones.release()
             shared.logger.debug(self, "deactivateZones- releasing lock: lockActiveZones")
+        
+        return result
 
 
-    def deactivateAllZones(self):
+    def deactivateAllZones(self, decisionHistoryReasonCode=None):
     
         result = False
         shared.logger.debug(self,"Deactivating All Zones")
@@ -83,6 +99,8 @@ class ZoneController():
         try:
             for key, activeZone in ZoneController.activeZones.items():
                 shared.logger.debug(self, "Deactivating -> " + key + "-->" + activeZone.zone.name)
+
+                # TODO: Add logic to look at the decision history reason code and insert decision history events for each class
 
                 #Call the RPI controller to deactivate this zone
                 self.zrpi_controller.deactivateZone(zone)
