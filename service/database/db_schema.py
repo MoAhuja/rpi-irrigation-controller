@@ -1,10 +1,9 @@
 import os
 import sys
 from sqlite3 import Connection as SQLite3Connection
-from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, Time, DateTime, event, Enum, UniqueConstraint
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, Time, DateTime, event, Enum, UniqueConstraint, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from sqlalchemy import create_engine
 from pprint import pprint
 from datetime import datetime
 from service.utilities.conversion import Conversions
@@ -33,7 +32,7 @@ class Zone(Base):
     pin_config = relationship("RpiPinMapper", uselist=False, back_populates="zone")
 
     # TODO: do we want to back-populate this? It's going to be a ton of data to load even if we don't need it
-    decision_history = relationship("DecisionHistory", uselist=True, back_populates="zone")
+    decision_history = relationship("DecisionHistory", uselist=True, back_populates="zone", cascade="delete, save-update")
     
     def toDictionary(self):
 
