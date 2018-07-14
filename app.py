@@ -112,8 +112,19 @@ def service_settings_raindelay():
 		json_data = request.get_json(force=True)
 		return srm.setRainDelay(json_data)
 
-@app.route('/service_hub/zones/create', methods=['POST'])
-def service_create_zone():
+@app.route('/service_hub/zone/<int:zone_id>', methods=['DELETE', 'GET'])
+def service_zone_delete_or_get(zone_id):
+	mapper = ZoneDataRestMapper()
+
+	if request.method == 'DELETE':
+		result = mapper.deleteZone(zone_id)
+	else:
+		result = mapper.getZone(zone_id)
+
+	return Response(result, mimetype='application/json')
+
+@app.route('/service_hub/zone', methods=['POST'])
+def service_zone_create():
 
 	print(request.get_json(force=True))
 	
@@ -123,7 +134,7 @@ def service_create_zone():
 	return mapper.createZone(json_data)
 
 
-@app.route('/service_hub/zones/edit', methods=['POST'])
+@app.route('/service_hub/zone/edit', methods=['POST'])
 def service_edit_zone():
 
 	print(request.get_json(force=True))

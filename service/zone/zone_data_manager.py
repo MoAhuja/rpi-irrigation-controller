@@ -33,6 +33,7 @@ class ZoneDataManager():
         self.ops.editZone(zone_id, zone)
         return self.ops.saveAndClose()
 
+    # TODO: normalize all these names (retrieve vs get)
     def retrieveAllZones(self, asJSON=False):
       
         #retrieve a DO object
@@ -46,8 +47,12 @@ class ZoneDataManager():
         else:         
             return zonesDO
 
-    def retrieveZone(self, zone_id):
+    def retrieveZone(self, zone_id, asJSON=False):
         zoneDO = self.ops.fetchZone( zone_id)
+
+        if asJSON is True:
+            return zoneDO.toDictionary()
+        
         return zoneDO
     
     def retrieveAllEnabledZones(self, asJSON=False):

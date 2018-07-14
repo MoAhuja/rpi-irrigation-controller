@@ -20,7 +20,20 @@ class ZoneDataRestMapper(BaseRestMapper):
     ERROR_TYPE_INVALID_SCHEDULE_TYPE = "Invalid Value - Schedule type must be one of [" + str(EnumScheduleType.DayAndTime.value) + "," + str(EnumScheduleType.TimeAndFrequency.value) + "]"
     ERROR_TYPE_INVALID_DAY_TYPE = "Invalid Value - Days must range between 0 and 6"
     ERROR_TYPE_ZONE_NAME_MUST_BE_UNIQUE = "Zone name already exists"
+    ERROR_TYPE_ZONE_ID_NOT_FOUND = "Zone ID not found"
+    def getZone(self, zone_id):
+        
+        # Check if the zone exists
+        zone = self.zdm.retrieveZone(zone_id, True)
 
+        if zone is None:
+            self.raiseBadRequestException(Zone.FIELD_ID, ZoneDataRestMapper.ERROR_TYPE_ZONE_ID_NOT_FOUND)
+
+        return json.dumps(zone)
+    
+    def deleteZone(self, zone_id):
+
+        return self.returnSuccessfulResponse()
     def editZone(self, json_data):
         # Get an ID
         zone_id = self.getKeyOrThrowException(json_data, Zone.FIELD_ID, json_data)
