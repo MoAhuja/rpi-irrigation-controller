@@ -32,10 +32,10 @@ class EventPublisher():
         for subscriber in self.zone_subscribers:
             subscriber.eventZoneInfoUpdated()
     
-    def publishRainDelayUpdated(self):
+    def publishRainDelayUpdated(self, rainDelayDate):
         # shared.logger.info(self, "Rain delay updated. Publishing event to subscribers")
         for subscriber in self.rain_delay_subscribers:
-            subscriber.eventRainDelayUpdated()
+            subscriber.eventRainDelayUpdated(rainDelayDate)
     
     def publishLogLevelUpdated(self):
         # print("There are " + str(len(self.logging_subscribers)) + " logging subscribers")
