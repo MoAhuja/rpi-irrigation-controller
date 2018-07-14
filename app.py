@@ -120,8 +120,10 @@ def service_zone_delete_or_get(zone_id):
 		result = mapper.deleteZone(zone_id)
 	else:
 		result = mapper.getZone(zone_id)
+		result = Response(result, mimetype='application/json')
 
-	return Response(result, mimetype='application/json')
+
+	return result
 
 @app.route('/service_hub/zone', methods=['POST'])
 def service_zone_create():

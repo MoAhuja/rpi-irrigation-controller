@@ -3,6 +3,7 @@ import os
 from service.core import shared_events
 from threading import Lock
 from datetime import datetime
+from service.utilities.conversion import Conversions
 
 class SettingsManager():
 
@@ -54,9 +55,12 @@ class SettingsManager():
     # Operational Fields
     def setRainDelay(self, date):
         # self.readConfig()
-        self.config[SettingsManager.section_operational][SettingsManager.field_rain_delay] = str(date)
+        self.config[SettingsManager.section_operational][SettingsManager.field_rain_delay] = date
         self.save()
-        shared_events.event_publisher.publishRainDelayUpdated()
+
+        # Convert the string to a date and send via event mgr
+        datetimeFormat = Conversions.convertRainDelaySettingToDatetime(date)
+        shared_events.event_publisher.publishRainDelayUpdated(datetimeFormat)
     
     def getRainDelay(self):
         # self.readConfig()

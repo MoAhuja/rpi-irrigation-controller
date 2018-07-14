@@ -90,7 +90,7 @@ class SettingsRestMapper(BaseRestMapper):
         shared.logger.debug(self, "setRainDelay entered")
 
         # Pull the value from the rest data body
-        rainDelay = json_data[self.GENERIC_PROPERTY_VALUE_FIELD]
+        rainDelay = self.getKeyOrThrowException(json_data, self.GENERIC_PROPERTY_VALUE_FIELD, json_data)
 
         shared.logger.debug(self, "Rain Delay requested = " + rainDelay)
 
