@@ -32,8 +32,21 @@ class ZoneDataRestMapper(BaseRestMapper):
         return json.dumps(zone)
     
     def deleteZone(self, zone_id):
+        
+        # Validate the zone_id
+        self.validateIsProvidedAndInt(zone_id, Zone.FIELD_ID)
+
+        zone = self.zdm.retrieveZone(zone_id, False)
+
+        if zone is None:
+            self.raiseBadRequestException(Zone.FIELD_ID, ZoneDataRestMapper.ERROR_TYPE_ZONE_ID_NOT_FOUND)
+
+
+        # Delete the zone
+        self.zdm.deleteZone(zone)
 
         return self.returnSuccessfulResponse()
+
     def editZone(self, json_data):
         # Get an ID
         zone_id = self.getKeyOrThrowException(json_data, Zone.FIELD_ID, json_data)

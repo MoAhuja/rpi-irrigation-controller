@@ -32,6 +32,10 @@ class ZoneDataManager():
     def editZone(self, zone_id, zone):
         self.ops.editZone(zone_id, zone)
         return self.ops.saveAndClose()
+    
+    def deleteZone(self, zone):
+        self.ops.deleteZone(zone)
+        return self.ops.saveAndClose()
 
     # TODO: normalize all these names (retrieve vs get)
     def retrieveAllZones(self, asJSON=False):
@@ -50,6 +54,9 @@ class ZoneDataManager():
     def retrieveZone(self, zone_id, asJSON=False):
         zoneDO = self.ops.fetchZone( zone_id)
 
+        if zoneDO is None:
+            return None
+            
         if asJSON is True:
             return zoneDO.toDictionary()
         

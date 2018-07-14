@@ -21,6 +21,12 @@ class ZoneDBO(BaseDBOperations):
         self.session.add(zone)
         self.session.flush()
     
+    def deleteZone(self, zone):
+        self.initialize()
+        # zone = self.fetchZone(zone_id)
+        self.session.delete(zone)
+        self.session.flush()
+    
     def editZone(self, zone_id, newZone):
         print("Zone is is --> " + str(zone_id))
         self.initialize()
