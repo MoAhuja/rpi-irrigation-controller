@@ -40,7 +40,7 @@ class BaseRestMapper():
         
     def raiseServerErrorException(self, error_message="Unknown Error"):
         shared.logger.debug(self, "Return server error")
-        raise InvalidUsage(self.HTTP_ERROR_CODE_SERVER_ERROR)
+        raise InvalidUsage(self.HTTP_ERROR_CODE_SERVER_ERROR, error_message=error_message)
        
     # Helper functions
     def injectRequestSuccessValue(self, responseData, result):
