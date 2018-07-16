@@ -19,6 +19,7 @@ class ZoneControllerRestMapper(BaseRestMapper):
     ERROR_TYPE_UNABLE_TO_DEACTIVATE_ZONE = "Unable to deactivate zone - Check error logs for more details"
 
     ERROR_TYPE_ZONE_NOT_ACTIVE = "Zone not active"
+    ERROR_TYPE_NO_PIN_CONFIGURED_FOR_ZONE = "RPI Pin and relay not configured for this zone. Please set one before trying to activate."
 
     def __init__(self):
         self.zdm = ZoneDataManager()
@@ -27,19 +28,27 @@ class ZoneControllerRestMapper(BaseRestMapper):
 
     def activateZone(self, json_data):
         
-        zone_id = json_data[self.FIELD_ID]
-        duration = json_data[self.FIELD_DURATION]
+        shared.logger.debug(self, "activateZone entered")
+        zone_id = self.getKeyOrThrowException(json_data, self.FIELD_ID, json_data)
+        duration = self.getKeyOrThrowException(json_data, self.FIELD_DURATION, json_data)
         
         self.validateIsProvidedAndInt(zone_id, ZoneControllerRestMapper.FIELD_ID)
         self.validateIsProvidedAndInt(duration, ZoneControllerRestMapper.FIELD_DURATION)
 
+        shared.logger.debug(self, "GOT here1")
         # Fetch zone using ID
         zone = self.zdm.retrieveZone(zone_id)
 
+        shared.logger.debug(self, "GOT here2")
         if zone is not None:
 
             if zone.id in ZoneController.activeZones:
                 self.raiseBadRequestException(self.FIELD_ID, self.ERROR_TYPE_ZONE_ALREADY_ACTIVE)
+            
+            shared.logger.debug(self, "Checking if pin config is set")
+            if zone.pin_config is None:
+                shared.logger.debug(self, "Pin Config not set. Throwing error.")
+                self.raiseServerErrorException(self.ERROR_TYPE_NO_PIN_CONFIGURED_FOR_ZONE)
 
             # Set to current time plus the requested run time
             start_time = datetime.now()
@@ -54,7 +63,7 @@ class ZoneControllerRestMapper(BaseRestMapper):
             if self.zc.activateZone(zto) is False:
                 self.raiseServerErrorException(self.ERROR_TYPE_UNABLE_TO_ACTIVATE_ZONE)
             
-            # TODO: Create a decision history event
+            # Create a decision history event
             dh = DecisionHistory()
             dh.zone = zone
             dh.start_time = start_time
