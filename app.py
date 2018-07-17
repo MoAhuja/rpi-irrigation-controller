@@ -64,13 +64,20 @@ def service_zones_deactivate():
 	result = zcrm.deactivateZone(json_data)
 	return result
 
-@app.route('/service_hub/zones/kill', methods=['POST'])
-def service_zones_kill_switch():
-	json_data = request.get_json(force=True)
-	zcrm = ZoneControllerRestMapper()
+@app.route('/service_hub/settings/kill', methods=['GET', 'POST'])
+def service_settings_kill_switch():
+	srm = SettingsRestMapper()
 
-	result = zcrm.killSwitch()
+	if request.method == 'GET':
+		result =  srm.getKillSwitch()
+	else:
+		json_data = request.get_json(force=True)
+		result = srm.setKillSwitch(json_data)
+
 	return result
+
+	
+	
 
 @app.route('/service_hub/settings/loglevel/console', methods=['GET', 'POST'])
 def service_settings_console_log_level():
