@@ -13,6 +13,7 @@ class SettingsManager():
     field_rain_delay = 'rainDelay'
     field_city = 'city'
     field_country = 'country'
+    field_kill_switch = 'kill_switch'
 
     # Logging section and fields
     section_logging = 'Logging'
@@ -83,7 +84,17 @@ class SettingsManager():
     def getCountry(self):
         # self.readConfig()
         return(self.config[SettingsManager.section_operational][SettingsManager.field_country])
+    
+    def setKillSwitch(self, kill_switch):
+        # self.readConfig()
+        self.config[SettingsManager.section_operational][SettingsManager.field_kill_switch] = str(kill_switch)
+        self.save()
+        shared_events.event_publisher.publishKillSwitchUpdated()
 
+    
+    def getKillSwitch(self):
+        # self.readConfig()
+        return(self.config[SettingsManager.section_operational].getboolean(SettingsManager.field_kill_switch))
 
     # Logging Fields
     def getConsoleLogLevel(self):
@@ -104,8 +115,6 @@ class SettingsManager():
         self.config[SettingsManager.section_logging][SettingsManager.field_console_log_level] = str(level)
         self.save()
         shared_events.event_publisher.publishLogLevelUpdated()
-
-        
 
     def getDatabaseLogLevel(self):
         # self.readConfig()
@@ -128,6 +137,7 @@ class SettingsManager():
         self.save()
         shared_events.event_publisher.publishLogLevelUpdated()
 
+    
     def save(self):
         # self.lock.acquire()
         # try:

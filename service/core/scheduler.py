@@ -15,13 +15,21 @@ class Scheduler():
 
     def __init__(self):
         # Listen for zone or rain delay updates only
-        shared_events.event_publisher.register(self, True, True, False, False)
+        shared_events.event_publisher.register(self, listenForZoneUpdates=True, listenForRainDelayUpdates=True, listenForKillSwitchUpdates=True)
 
         self.settingsManager = SettingsManager()
         self.nextRunSchedule = {}
         self.nextRunScheduleIsDirty = True
         self.loadNextRunSchedule()
 
+
+    def eventKillSwitchUpdated(self):
+        
+        shared.logger.debug(self, "Kill Switch Event Recevied - Marking scheduler to re-build")
+        # Mark the schedule as dirty and have it re-build
+        self.schedulerIsDirty()
+        self.loadNextRunSchedule()
+        
 
     # Listen for zone updated events
     def eventZoneInfoUpdated(self):
@@ -61,6 +69,12 @@ class Scheduler():
     # Builds the schedule and stores it in the class instance
     def buildNextRunSchedule(self):
        
+        if self.settingsManager.getKillSwitch() is True:
+            shared.logger.info(self, "Kill switch is enabled - No schedules will be built. Existing schedules will be destroyed.")
+            if self.nextRunSchedule is not None:
+                self.nextRunSchedule.clear()
+            return
+
         # create a zone manager instance
         zm = ZoneDataManager()
 

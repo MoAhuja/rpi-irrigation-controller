@@ -96,7 +96,8 @@ class ZoneControllerRestMapper(BaseRestMapper):
 
             # Deactivate the zone
             if self.zc.deactivateZone(zone):
-                # TODO:Write an entry to the decision history table
+                
+                # Write an entry to the decision history table
                 dh = DecisionHistory()
                 dh.zone = zone
                 dh.start_time = zoneTiming.start_time

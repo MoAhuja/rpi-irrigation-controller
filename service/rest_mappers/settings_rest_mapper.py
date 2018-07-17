@@ -2,6 +2,7 @@
 from service.rest_mappers.base_rest_mapper import BaseRestMapper
 from service.system.settings_manager import SettingsManager
 from service.utilities.conversion import Conversions
+import json
 from service.core import shared
 from datetime import datetime
 
@@ -19,6 +20,7 @@ class SettingsRestMapper(BaseRestMapper):
     FIELD_LOCATION_COUNTRY = "country"
     FIELD_RAIN_DELAY = "rain_delay"
     FIELD_LOG_LEVEL = "log_level"
+    FIELD_KILL_SWITCH = "kill_switch"
     
     def __init__(self):
         self.smgr = SettingsManager()
@@ -29,7 +31,7 @@ class SettingsRestMapper(BaseRestMapper):
     
     def setConsoleLogLevel(self, json_data):
         shared.logger.debug(self, "setConsoleLogLevel entered")
-
+        shared.logger.debug(self, "Data = " + json.dumps(json_data))
         try:
             logLevel = int(json_data[self.GENERIC_PROPERTY_VALUE_FIELD])
         except:
@@ -58,7 +60,8 @@ class SettingsRestMapper(BaseRestMapper):
 
     def setDatabaseLogLevel(self, json_data):
         shared.logger.debug(self, "setConsoleLogLevel entered")
-
+        shared.logger.debug(self, "Data = " + json.dumps(json_data))
+        
         try:
             logLevel = int(json_data[self.GENERIC_PROPERTY_VALUE_FIELD])
         except:
@@ -88,6 +91,7 @@ class SettingsRestMapper(BaseRestMapper):
     # ####################################
     def setRainDelay(self, json_data):
         shared.logger.debug(self, "setRainDelay entered")
+        shared.logger.debug(self, "Data = " + json.dumps(json_data))
 
         # Pull the value from the rest data body
         rainDelay = self.getKeyOrThrowException(json_data, self.GENERIC_PROPERTY_VALUE_FIELD, json_data)
@@ -138,6 +142,7 @@ class SettingsRestMapper(BaseRestMapper):
     def setLocation(self, json_data):
 
         shared.logger.debug(self, "SetLocation Entered")
+        shared.logger.debug(self, "Data = " + json.dumps(json_data))
 
         # Extract the two fields we care about
         city = json_data[SettingsRestMapper.FIELD_LOCATION_CITY]
@@ -158,3 +163,23 @@ class SettingsRestMapper(BaseRestMapper):
 
         # return successful response
         return self.returnSuccessfulResponse()
+
+    def setKillSwitch(self, json_data):
+        
+        shared.logger.debug(self, "setKillSwitch - Entered")
+        shared.logger.debug(self, "Data = " + json.dumps(json_data))
+
+        killSwitch = self.getKeyOrThrowException(json_data, SettingsRestMapper.GENERIC_PROPERTY_VALUE_FIELD, json_data)
+
+        # Validate the kill switch is a bool
+        self.validateIsProvidedAndBool(killSwitch, SettingsRestMapper.GENERIC_PROPERTY_VALUE_FIELD, json_data)
+
+        response = self.smgr.setKillSwitch(killSwitch)
+        return self.returnSuccessfulResponse()
+    
+    def getKillSwitch(self):
+        
+        response = {}
+        response[self.FIELD_KILL_SWITCH] = self.smgr.getKillSwitch()
+        return self.returnSuccessfulResponse(response)
+

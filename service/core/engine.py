@@ -30,10 +30,12 @@ class Engine():
         self.decisionHistoryDBO = DecisionDBO()
         self.zone_controller = ZoneController()
         self.weather_centre = WeatherCenter()
+        self.settingsManager = SettingsManager()
         self.heartbeat()
         
 
     def checkAndDeactivateZones(self):
+        # TODO: Determine if deactivation should be done if kill switch is on
         deactivateList = []
 
         # Loop through the activeZones list and check if the end time has been past
@@ -76,6 +78,10 @@ class Engine():
 
     def checkAndActivateZones(self):
         
+        if self.settingsManager.getKillSwitch() is True:
+            shared.logger.info(self, "Kill Switch Enabled - Not going to perform zone schedule evaluation")
+            return
+
         shared.logger.debug(self,"Evaluating Zones == " + str(self.evaluatingZones))
 
         # We need to make sure no one else is looping through the zones in case this gets invoked on another thread
@@ -237,13 +243,11 @@ class Engine():
 
     def getWeatherProfile(self):
 
-        # TODO: Mississauga, CA shouldn't be hardcoded. We need a "System config section"
         if self.weather_profile is None or self.weather_profile_is_old:
             
             # Create a settings retriever
-            smgr = SettingsManager()
-            city = smgr.getCity()
-            country = smgr.getCountry()
+            city = self.settingsManager.getCity()
+            country = self.settingsManager.getCountry()
 
             shared.logger.debug(self,"need to retrieve new weather profile")
             self.weather_profile = self.weather_centre.createWeatherProfile(city, country)

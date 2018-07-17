@@ -2,6 +2,8 @@ from service.zone.zone_rpi_controller import ZoneRPIController
 from service.core import shared, shared_events
 from service.zone.zone_data_manager import ZoneDataManager
 from service.zone.zone_timing_bo import ZoneTiming
+from service.system.settings_manager import SettingsManager
+from service.database.db_schema import EnumReasonCodes
 from datetime import datetime
 
 import json
@@ -10,11 +12,21 @@ class ZoneController():
     activeZones = {}
 
     def __init__(self):
-        shared_events.event_publisher.register(self, False, True, False, False)
+        shared_events.event_publisher.register(self, False, True, False, False, listenForKillSwitchUpdates=True)
 
         self.zrpi_controller = ZoneRPIController()
         self.zdm = ZoneDataManager()
+        self.settingsManager = SettingsManager()
     
+        
+    # TODO: Add event to listen for kill switch
+        # TODO:Write an entry to the decision history table to indicate all zones were shutoff due to kil switch (reason code: KillSwitch?)
+    
+    def eventKillSwitchUpdated(self):
+        killSwitch = self.settingsManager.getKillSwitch()
+
+        if killSwitch is True:
+            self.deactivateAllZones(decisionHistoryReasonCode=EnumReasonCodes.KillSwitch)
 
     def eventRainDelayUpdated(self, rainDelayDate):
 
