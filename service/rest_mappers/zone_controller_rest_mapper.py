@@ -96,8 +96,9 @@ class ZoneControllerRestMapper(BaseRestMapper):
 
             # Deactivate the zone
             if self.zc.deactivateZone(zone):
-                
+
                 # Write an entry to the decision history table
+                # TODO: Maybe this should be moved to the later below? THe rest layer just checks for a valid ID, then sends the request to the ZC
                 dh = DecisionHistory()
                 dh.zone = zone
                 dh.start_time = zoneTiming.start_time
@@ -111,9 +112,4 @@ class ZoneControllerRestMapper(BaseRestMapper):
 
         return self.returnSuccessfulResponse()
     
-    def killSwitch(self):
-        # TODO:Write an entry to the decision history table to indicate all zones were shutoff due to kil switch (reason code: KillSwitch?)
-        
-        self.zc.deactivateAllZones()
-
-        return self.returnSuccessfulResponse()
+    

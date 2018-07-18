@@ -251,7 +251,7 @@ class ScheduleDays(Base):
 class EnumDecisionCodes(enum.Enum):
     ActivateZone = 0
     DeactivateZone= 1
-    DontActivateZone = 2
+    DontActivateZone = 2 #When would this be used?
   
 
 class EnumReasonCodes(enum.Enum):
@@ -261,6 +261,7 @@ class EnumReasonCodes(enum.Enum):
     TemperatureBelowMin = 3
     TemperatureAboveMax = 4
     Manual = 5
+    KillSwitch = 6
 
 # TODO: Complete this event history object (consider rename to "ZoneDecisionHistory")
 class DecisionHistory(Base):
