@@ -12,6 +12,7 @@ from service.utilities.logger import Logger
 from service.rest_mappers.settings_rest_mapper import SettingsRestMapper
 from service.rest_mappers.zone_data_rest_mapper import ZoneDataRestMapper 
 from service.rest_mappers.zone_controller_rest_mapper import ZoneControllerRestMapper
+from service.rest_mappers.dashboard_rest_mapper import DashboardRestMapper
 import service.database.db_schema
 
 from service.zone.zone_controller import ZoneController
@@ -154,18 +155,12 @@ def service_edit_zone():
 	return mapper.editZone(json_data)
 
 @app.route('/service_hub/zones', methods=['GET'])
-def servie_get_zones():
+def service_get_zones():
 	return Response(ZoneDataRestMapper().getAllZones(), mimetype='application/json')
 
-# @app.route('/portal/landing')
-# def landing():
-	# Fetch data
-	# render template and pass in data
-
-# 	 r = requests.get(
-#       'https://www.parsehub.com/api/v2/projects/{PROJECT_TOKEN}/last_ready_run/data',
-#       params=params)
-#   return render_template('movies.html', movies=json.loads(r.text)['movies'])
+@app.route('/service_hub/dashboard', methods=['GET'])
+def service_get_dashboard():
+	return Response(DashboardRestMapper().getDashboard(), mimetype='application/json')
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):

@@ -175,5 +175,16 @@ class Scheduler():
             
     def calculateEndTime(self, zone, start_time, duration):
         return start_time + duration
+    
+    def getNextRunStartAndEndForZone(self, zone_id):
+        if self.nextRunSchedule is not None:
+
+            # Check if the key exists
+            if zone_id in self.nextRunSchedule:
+                # extract teh zone timing object
+                zto = self.nextRunSchedule[zone_id]
+                return zto.start_time, zto.end_time
+        
+        return None, None
 
 

@@ -1,7 +1,7 @@
 # from flask.ext.api import status
 from service.rest_mappers.InvalidUsage import InvalidUsage
-from flask import jsonify
 from service.core import shared
+import json
 
 
 class BaseRestMapper():
@@ -31,8 +31,8 @@ class BaseRestMapper():
 
         if BaseRestMapper.FIELD_SUCCESS not in responseDict:
             self.injectRequestSuccessValue(responseDict, True)
-            
-        return jsonify(responseDict)
+        
+        return json.dumps(responseDict)
     
     def raiseBadRequestException(self, fieldName, error_message, payload=None, invalid_value=None):
         shared.logger.debug(self, "Return bad request: " + error_message)

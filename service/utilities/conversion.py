@@ -19,7 +19,7 @@ class Conversions():
     
     @staticmethod
     def convertRainDelayDateTimeToString(datetime):
-        return ""
+        return datetime.strftime(Conversions.rainDelayFormat)
     
     @staticmethod
     def convertRainDelaySettingToDatetime(rainDelayAsString):
