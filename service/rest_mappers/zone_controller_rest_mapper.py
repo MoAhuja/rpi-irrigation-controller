@@ -63,15 +63,6 @@ class ZoneControllerRestMapper(BaseRestMapper):
             if self.zc.activateZone(zto, reasonCode=EnumReasonCodes.Manual) is False:
                 self.raiseServerErrorException(self.ERROR_TYPE_UNABLE_TO_ACTIVATE_ZONE)
             
-            # Create a decision history event
-            # dh = DecisionHistory()
-            # dh.zone = zone
-            # dh.start_time = start_time
-            # dh.end_time = end_time
-            # dh.decision = EnumDecisionCodes.ActivateZone 
-            # dh.reason = EnumReasonCodes.Manual
-
-            # self.decisionDbo.insertDecisionEvent(dh)
 
             return self.returnSuccessfulResponse()
         else:
@@ -93,7 +84,7 @@ class ZoneControllerRestMapper(BaseRestMapper):
 
             
             # Deactivate the zone
-            if not self.zc.deactivateZone(zone, EnumReasonCodes.Manual, datetime.now()):
+            if not self.zc.deactivateZone(zone, decisionHistoryReasonCode=EnumReasonCodes.Manual, overrideEndTime=datetime.now()):
                 self.raiseServerErrorException(self.ERROR_TYPE_UNABLE_TO_DEACTIVATE_ZONE)
 
         return self.returnSuccessfulResponse()

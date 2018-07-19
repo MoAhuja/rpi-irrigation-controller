@@ -123,24 +123,24 @@ class Engine():
 
                         # Create a decision event w/ current info
                         decisionEvent = None
-                        decisionEvent = DecisionHistory(zone=zone, event_time=currentDateTime, start_time=sch.start_time, end_time=sch.end_time)
+                        decisionEvent = DecisionHistory(zone=zonetiming.zone, event_time=currentDateTime, start_time=zonetiming.start_time, end_time=zonetiming.end_time)
                         # decisionEvent = DecisionHistory()
                         shared.logger.debug(self, "Current Time within boundries")
                         
                         #Check conditions
-                        tempRuleMet = self.meetsTemperatureConditions(zone.temperature_rule, decisionEvent)
-                        rainRuleMet = self.meetsRainConditions(zone.rain_rule, decisionEvent)
+                        tempRuleMet = self.meetsTemperatureConditions(zonetiming.zone.temperature_rule, decisionEvent)
+                        rainRuleMet = self.meetsRainConditions(zonetiming.zone.rain_rule, decisionEvent)
                         
                         activateZone = tempRuleMet * rainRuleMet
                         
                         if activateZone:
                             # Copy the zone timing object to the active running zones
-                            self.zone_controller.activateZone(zonetiming, decisionEvent, EnumReasonCodes.AllConditionsPassed)
+                            if self.zone_controller.activateZone(zonetiming, decisionEvent, EnumReasonCodes.AllConditionsPassed):
                             # decisionEvent.decision = EnumDecisionCodes.ActivateZone
                             # decisionEvent.reason = EnumReasonCodes.AllConditionsPassed
                             
                             # Set flag indicating the schedule needs to be re-built
-                            rebuildSchedule = True
+                                rebuildSchedule = True
                         else:
 
                             #Log an event, if one is available to be logged.
@@ -157,7 +157,7 @@ class Engine():
             
             if rebuildSchedule is True:
                 shared.logger.debug(self, "A zone was activated. Schedule needs to be updated.")
-                self.nextRunScheduleIsDirty = True
+                Scheduler.nextRunScheduleIsDirty = True
 
             # Reset the evaluating zones flag so someone else can evaluate it next time.
             self.evaluatingZones = False

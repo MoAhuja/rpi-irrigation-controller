@@ -95,7 +95,7 @@ class ZoneController():
 
                     # Insert a decision event
                     dh = DecisionHistory()
-                    self.insertDecisionHistoryEvent(dh, zoneTiming, decisionHistoryReasonCode, EnumDecisionCodes.DeactivateZone,overrideEndTime)
+                    self.insertDecisionHistoryEvent(decisionObject=dh, zoneTiming=zoneTiming, reasonCode=decisionHistoryReasonCode, decisionCode=EnumDecisionCodes.DeactivateZone,overrideEndTime=overrideEndTime)
 
                 # Remove the zone from the list of active zones
                 del ZoneController.activeZones[zone.id]

@@ -86,7 +86,9 @@ class Logger():
         except:
             classString = "[Unknown]"
 
-        self.dbLogger.logMessage(dbLogLevel, classString, text)
+        time = datetime.now()
+
+        self.dbLogger.logMessage(time, dbLogLevel, classString, text)
 
 # TODO: threading on the db logging
 

@@ -36,35 +36,35 @@ class Scheduler():
         shared.logger.debug(self, "Received event: Zone Info updated")
         # Mark the schedule as dirty
         # TODO: Change this to listen for schedule updated events
-        self.nextRunScheduleIsDirty = True
+        self.schedulerIsDirty()
 
     def eventRainDelayUpdated(self, rainDelayDate):
 
         shared.logger.debug(self, "Received event: Rain delay updated")
         # Mark the schedule as dirty
         # TODO: Change this to listen for schedule updated events
-        self.nextRunScheduleIsDirty = True
+        self.schedulerIsDirty()
 
     def loadNextRunSchedule(self):
         
-        shared.logger.debug(self, "load next run schedule entered. Next run schedule dirty = " + str(self.nextRunScheduleIsDirty))
+        shared.logger.debug(self, "load next run schedule entered. Next run schedule dirty = " + str(Scheduler.nextRunScheduleIsDirty))
 
         # Check if zone data needs to be reloaded
-        if self.nextRunScheduleIsDirty is True or self.nextRunSchedule is None:
+        if Scheduler.nextRunScheduleIsDirty is True or self.nextRunSchedule is None:
             # Because the zones may have changed, we're going to force shutoff all the zones
             # and allow them to re-activate if required
             shared.logger.debug(self, "Next run schedule is dirty. Going to obtain updated data")
 
             self.buildNextRunSchedule()
-            self.nextRunScheduleIsDirty = False
+            Scheduler.nextRunScheduleIsDirty = False
     
     def schedulerIsDirty(self):
-        self.nextRunScheduleIsDirty = True
+        Scheduler.nextRunScheduleIsDirty = True
     
     # Need to listen for changes
     def publishZoneInfoUpdated(self):
         # We received an event the zone info was updated. We need to drop our list.
-        self.nextRunScheduleIsDirty = True
+        self.schedulerIsDirty()
 
     # Builds the schedule and stores it in the class instance
     def buildNextRunSchedule(self):
@@ -82,7 +82,10 @@ class Scheduler():
         enabledZones = zm.retrieveAllEnabledZones()
         
         # Rain delay as string (format of datetime)
-        rainDelayDT = Conversions.convertRainDelaySettingToDatetime(self.settingsManager.getRainDelay())
+        rainDelayString = self.settingsManager.getRainDelay()
+        rainDelayDT = None
+        if rainDelayString is not None:
+            rainDelayDT = Conversions.convertRainDelaySettingToDatetime(rainDelayString)
         
         # Check if the rain delay is in the future, if so, that's our reference time.
         if rainDelayDT is not None and rainDelayDT > datetime.now():
