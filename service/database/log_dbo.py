@@ -10,10 +10,10 @@ from service.database.db_schema import Base, Logs, EnumLogLevel
 #Management variables
 class LogDBO(BaseDBOperations):
 
-    def logMessage(self, level, component, message):
+    def logMessage(self, datetime, level, component, message):
         self.initialize()
 
-        log =  Logs(level=level, component=component, message=message)
+        log =  Logs(datetime=datetime, level=level, component=component, message=message)
        
         # current_db_sessions = self.session.object_session(log)
         # current_db_sessions.add(log)
