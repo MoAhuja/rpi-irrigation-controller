@@ -96,12 +96,19 @@ class SettingsRestMapper(BaseRestMapper):
         # Pull the value from the rest data body
         rainDelay = self.getKeyOrThrowException(json_data, self.GENERIC_PROPERTY_VALUE_FIELD, json_data)
 
+        
+        # Check if the value is null, which is allowed
+        if rainDelay is None:
+            result = self.smgr.setRainDelay("")
+            return self.returnSuccessfulResponse()    
+
         shared.logger.debug(self, "Rain Delay requested = " + rainDelay)
+
 
         # Must be a valid date and must be in the future
         try:
             shared.logger.debug(self, "Converting rain delay setting to date time")
-
+            
             rainDelayDate = Conversions.convertRainDelaySettingToDatetime(rainDelay)
         except:
             self.raiseBadRequestException(self.GENERIC_PROPERTY_VALUE_FIELD, self.ERROR_TYPE_NOT_VALID_DATETIME_FORMAT, json_data)

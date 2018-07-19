@@ -59,12 +59,20 @@ class SettingsManager():
         self.config[SettingsManager.section_operational][SettingsManager.field_rain_delay] = date
         self.save()
 
-        # Convert the string to a date and send via event mgr
-        datetimeFormat = Conversions.convertRainDelaySettingToDatetime(date)
+        datetimeFormat = None
+        if date is not None:
+            # Convert the string to a date and send via event mgr
+            datetimeFormat = Conversions.convertRainDelaySettingToDatetime(date)
+            
         shared_events.event_publisher.publishRainDelayUpdated(datetimeFormat)
     
     def getRainDelay(self):
         # self.readConfig()
+        rainDelay = self.config[SettingsManager.section_operational][SettingsManager.field_rain_delay]
+
+        if rainDelay == '':
+            return None
+            
         return(self.config[SettingsManager.section_operational][SettingsManager.field_rain_delay])
 
     def setCity(self, city):
