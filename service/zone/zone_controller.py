@@ -3,7 +3,8 @@ from service.core import shared, shared_events
 from service.zone.zone_data_manager import ZoneDataManager
 from service.zone.zone_timing_bo import ZoneTiming
 from service.system.settings_manager import SettingsManager
-from service.database.db_schema import EnumReasonCodes
+from service.database.db_schema import EnumReasonCodes, EnumDecisionCodes, DecisionHistory
+from service.database.decision_dbo import DecisionDBO
 from datetime import datetime
 
 import json
@@ -17,6 +18,7 @@ class ZoneController():
         self.zrpi_controller = ZoneRPIController()
         self.zdm = ZoneDataManager()
         self.settingsManager = SettingsManager()
+        self.decisionDBO = DecisionDBO()
     
         
     # TODO: Add event to listen for kill switch
@@ -26,7 +28,7 @@ class ZoneController():
         killSwitch = self.settingsManager.getKillSwitch()
 
         if killSwitch is True:
-            self.deactivateAllZones(decisionHistoryReasonCode=EnumReasonCodes.KillSwitch)
+            self.deactivateAllZones(decisionHistoryReasonCode=EnumReasonCodes.KillSwitch, overrideEndTime=datetime.now())
 
     def eventRainDelayUpdated(self, rainDelayDate):
 
@@ -36,7 +38,7 @@ class ZoneController():
         if datetime.now() < rainDelayDate:
             self.deactivateAllZones()
 
-    def activateZone(self, zonetimingObj):
+    def activateZone(self, zonetimingObj, existingDecisionHistoryEvent=None, reasonCode=None):
 
         result = False
         shared.logger.debug(self, "ActivateZone - Waiting to acquire lock: lockActiveZones")
@@ -54,6 +56,16 @@ class ZoneController():
             if self.zrpi_controller.activateZone(zonetimingObj.zone):
                 shared.logger.debug(self,"Adding zone '" + zonetimingObj.zone.name + "' to list of active zones")
                 ZoneController.activeZones[zonetimingObj.zone.id] = zonetimingObj
+
+                dh = DecisionHistory()
+
+                if existingDecisionHistoryEvent is not None:
+                    # Append to it
+                    dh = existingDecisionHistoryEvent
+                
+                # Insert entry into decision history table
+                self.insertDecisionHistoryEvent(dh, zonetimingObj, reasonCode, EnumDecisionCodes.ActivateZone)
+
                 result = True
 
         finally:
@@ -63,25 +75,13 @@ class ZoneController():
         shared.logger.debug(self, "Activating Zone Result = " + str(result))
         return result
 
-    def deactivateZones(self, listOfKeysToDeactivate):
-        
-        shared.logger.debug(self, "deactivateZones - Waiting to acquire lock: lockActiveZones")
-        shared.lockActiveZones.acquire()
-        
+    def deactivateListOfZones(self, listOfKeysToDeactivate, decisionHistoryReasonCode=None):
+ 
+        for x in listOfKeysToDeactivate:
+            self.deactivateZone(activateZone[x].zone, decisionHistoryReasonCode)
 
-        try:
-            for x in listOfKeysToDeactivate:
-                # Fetch the zonetiming object and deactivate teh zone
-                self.zrpi_controller.deactivateZone(activateZone[x].zone)
 
-                # Remove the zone from the list of active zones
-                del ZoneController.activeZones[x]
-
-        finally:
-            shared.lockActiveZones.release()
-            shared.logger.debug(self, "deactivateZones - releasing lock: lockActiveZones")
-
-    def deactivateZone(self, zone):
+    def deactivateZone(self, zone, decisionHistoryReasonCode=None, overrideEndTime=None):
         result = False
         shared.logger.debug(self, "deactivateZone - Waiting to acquire lock: lockActiveZones")
         shared.lockActiveZones.acquire()
@@ -89,6 +89,13 @@ class ZoneController():
         try:
             # Call the RPI controller to deactivate the zone
             if self.zrpi_controller.deactivateZone(zone):
+                
+                if decisionHistoryReasonCode is not None:
+                    zoneTiming = self.activeZones[zone.id]
+
+                    # Insert a decision event
+                    dh = DecisionHistory()
+                    self.insertDecisionHistoryEvent(dh, zoneTiming, decisionHistoryReasonCode, EnumDecisionCodes.DeactivateZone,overrideEndTime)
 
                 # Remove the zone from the list of active zones
                 del ZoneController.activeZones[zone.id]
@@ -101,8 +108,22 @@ class ZoneController():
         
         return result
 
+    def insertDecisionHistoryEvent(self, decisionObject, zoneTiming, reasonCode, decisionCode, overrideEndTime=None):
+        decisionObject.zone = zoneTiming.zone
+        decisionObject.start_time = zoneTiming.start_time
 
-    def deactivateAllZones(self, decisionHistoryReasonCode=None):
+        # Allows for the end time to be overriden in the scenario where the zone is stopped manually
+        if overrideEndTime is not None:
+            decisionObject.end_time = overrideEndTime
+        else:
+            decisionObject.end_time = zoneTiming.end_time
+
+        decisionObject.decision = decisionCode
+        decisionObject.reason = reasonCode
+
+        self.decisionDBO.insertDecisionEvent(decisionObject)
+
+    def deactivateAllZones(self, decisionHistoryReasonCode=None, overrideEndTime=None):
     
         result = False
         shared.logger.debug(self,"Deactivating All Zones")
@@ -113,10 +134,16 @@ class ZoneController():
             for key, activeZone in ZoneController.activeZones.items():
                 shared.logger.debug(self, "Deactivating -> " + key + "-->" + activeZone.zone.name)
 
-                # TODO: Add logic to look at the decision history reason code and insert decision history events for each class
-
+                
                 #Call the RPI controller to deactivate this zone
-                self.zrpi_controller.deactivateZone(zone)
+                if self.zrpi_controller.deactivateZone(zone):
+                    if reasonCode is not None:
+                        zoneTiming = self.activeZones[activeZone.zone.id]
+
+                        # Insert a decision event
+                        dh = DecisionHistory()
+                        self.insertDecisionHistoryEvent(dh, zoneTiming, decisionHistoryReasonCode, EnumDecisionCodes.DeactivateZone, overrideEndTime)
+
             
             # Reset back to an empty hashmap
             ZoneController.activeZones = {}

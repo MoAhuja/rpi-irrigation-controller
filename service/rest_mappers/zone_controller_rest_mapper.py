@@ -60,18 +60,18 @@ class ZoneControllerRestMapper(BaseRestMapper):
             shared.logger.debug(self, "Manual Activation Requested for zone: " + zone.name + ". End time = " + str(end_time))
             
             # Activating zone
-            if self.zc.activateZone(zto) is False:
+            if self.zc.activateZone(zto, reasonCode=EnumReasonCodes.Manual) is False:
                 self.raiseServerErrorException(self.ERROR_TYPE_UNABLE_TO_ACTIVATE_ZONE)
             
             # Create a decision history event
-            dh = DecisionHistory()
-            dh.zone = zone
-            dh.start_time = start_time
-            dh.end_time = end_time
-            dh.decision = EnumDecisionCodes.ActivateZone 
-            dh.reason = EnumReasonCodes.Manual
+            # dh = DecisionHistory()
+            # dh.zone = zone
+            # dh.start_time = start_time
+            # dh.end_time = end_time
+            # dh.decision = EnumDecisionCodes.ActivateZone 
+            # dh.reason = EnumReasonCodes.Manual
 
-            self.decisionDbo.insertDecisionEvent(dh)
+            # self.decisionDbo.insertDecisionEvent(dh)
 
             return self.returnSuccessfulResponse()
         else:
@@ -91,23 +91,9 @@ class ZoneControllerRestMapper(BaseRestMapper):
             if zone.id not in ZoneController.activeZones:
                 self.raiseBadRequestException(self.FIELD_ID, self.ERROR_TYPE_ZONE_NOT_ACTIVE)
 
-            # Fetch teh zone timing object using the zone id
-            zoneTiming = ZoneController.activeZones[zone.id]
-
+            
             # Deactivate the zone
-            if self.zc.deactivateZone(zone):
-
-                # Write an entry to the decision history table
-                # TODO: Maybe this should be moved to the later below? THe rest layer just checks for a valid ID, then sends the request to the ZC
-                dh = DecisionHistory()
-                dh.zone = zone
-                dh.start_time = zoneTiming.start_time
-                dh.end_time = zoneTiming.end_time
-                dh.decision = EnumDecisionCodes.DeactivateZone 
-                dh.reason = EnumReasonCodes.Manual
-
-                self.decisionDbo.insertDecisionEvent(dh)
-            else:
+            if not self.zc.deactivateZone(zone, EnumReasonCodes.Manual, datetime.now()):
                 self.raiseServerErrorException(self.ERROR_TYPE_UNABLE_TO_DEACTIVATE_ZONE)
 
         return self.returnSuccessfulResponse()

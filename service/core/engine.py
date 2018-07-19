@@ -49,19 +49,12 @@ class Engine():
         try:
 
             for key, activeZone in self.zone_controller.activeZones.items():
-                dh =  DecisionHistory()
-
+                
                 shared.logger.debug(self,"Deactivation Check: [Zone ID] = " + str(key) + ", [CurrentTime] = " + Conversions.convertDBTimeToHumanReadableTime(currentTime)+ ", [Deactivation Time] =  " + Conversions.convertDBTimeToHumanReadableTime(activeZone.end_time))
                 if currentTime > activeZone.end_time:
-                    dh.zone = activeZone.zone
-                    dh.start_time = activeZone.start_time
-                    dh.end_time = activeZone.end_time
-                    dh.decision = EnumDecisionCodes.DeactivateZone 
-                    dh.reason = EnumReasonCodes.AllConditionsPassed
-
-                    self.decisionHistoryDBO.insertDecisionEvent(dh)
                     
-                    shared.logger.debug(self, "Zone will be deactivated")
+                    shared.logger.debug(self, "Adding zone to list pending deactivation")
+
                     # Add to list so we can remove it from our list of active zones
                     deactivateList.append(key)
 
@@ -70,7 +63,7 @@ class Engine():
             shared.lockActiveZones.release()
 
 
-        self.zone_controller.deactivateZones(deactivateList)
+        self.zone_controller.deactivateListOfZones(deactivateList, decisionHistoryReasonCode=EnumReasonCodes.AllConditionsPassed)
         shared.logger.debug(self,"Deactivation check complete")
         
         
@@ -131,7 +124,7 @@ class Engine():
                         # Create a decision event w/ current info
                         decisionEvent = None
                         decisionEvent = DecisionHistory(zone=zone, event_time=currentDateTime, start_time=sch.start_time, end_time=sch.end_time)
-                    
+                        # decisionEvent = DecisionHistory()
                         shared.logger.debug(self, "Current Time within boundries")
                         
                         #Check conditions
@@ -142,19 +135,17 @@ class Engine():
                         
                         if activateZone:
                             # Copy the zone timing object to the active running zones
-                            self.activateZone(zonetiming)
-                            decisionEvent.decision = EnumDecisionCodes.ActivateZone
-                            decisionEvent.reason = EnumReasonCodes.AllConditionsPassed
+                            self.zone_controller.activateZone(zonetiming, decisionEvent, EnumReasonCodes.AllConditionsPassed)
+                            # decisionEvent.decision = EnumDecisionCodes.ActivateZone
+                            # decisionEvent.reason = EnumReasonCodes.AllConditionsPassed
                             
                             # Set flag indicating the schedule needs to be re-built
                             rebuildSchedule = True
+                        else:
 
-                            #TODO: Update the next run schedule for the zone timing object that was started
-                            # self.scheduler.updateNextRunForZone(zonetiming.zone)
-
-                        #Log an event, if one is available to be logged.
-                        self.decisionHistoryDBO.insertDecisionEvent(decisionEvent)
-                        self.decisionHistoryDBO.saveAndClose()
+                            #Log an event, if one is available to be logged.
+                            self.decisionHistoryDBO.insertDecisionEvent(decisionEvent)
+                            self.decisionHistoryDBO.saveAndClose()
 
                         # Since the current time can only fall in one schedule, we can stop evaluating
                         # schedules for this zone
