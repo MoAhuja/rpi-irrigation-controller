@@ -21,6 +21,7 @@ class ZoneDataRestMapper(BaseRestMapper):
     ERROR_TYPE_INVALID_DAY_TYPE = "Invalid Value - Days must range between 0 and 6"
     ERROR_TYPE_ZONE_NAME_MUST_BE_UNIQUE = "Zone name already exists"
     ERROR_TYPE_ZONE_ID_NOT_FOUND = "Zone ID not found"
+    
     def getZone(self, zone_id):
         
         # Check if the zone exists
@@ -55,8 +56,12 @@ class ZoneDataRestMapper(BaseRestMapper):
         # Validate all the data
         newZone = self.validateDataAndCreateZoneObject(json_data, zone_id)
 
+         # Get the relay ID if it's provided
+        relay_id = self.getKeyOrSetAsNone(json_data, Zone.FIELD_RELAY)
+
+
         # Edit the zone
-        result = self.zdm.editZone(zone_id, newZone)
+        result = self.zdm.editZone(zone_id, newZone, relay_id=relay_id)
 
         if result is True:
             shared.logger.info(self, "Successfully edited zone")
@@ -69,8 +74,13 @@ class ZoneDataRestMapper(BaseRestMapper):
         shared.logger.debug(self, "ZoneManager - create zone")
 
         zone = self.validateDataAndCreateZoneObject(json_data)
-        result = self.zdm.createZone(zone)
+        # Get the relay ID if it's provided
+        relay_id = self.getKeyOrSetAsNone(json_data, Zone.FIELD_RELAY)
 
+
+        result = self.zdm.createZone(zone, relay_id)
+
+        
         # TODO: Create zone needs to be extended to return specific errors based on integrity checks?
         if result is True:
             shared.logger.info(self, "Successfully added zone")

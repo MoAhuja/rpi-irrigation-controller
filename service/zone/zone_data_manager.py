@@ -25,12 +25,12 @@ class ZoneDataManager():
         self.ops.insertRPItoPINConfig( 1,10)
 
     
-    def createZone(self, zone):
-        self.ops.createZone(zone)
+    def createZone(self, zone, relay_id=None):
+        self.ops.createZone(zone, relay_id)
         return self.ops.saveAndClose()
     
-    def editZone(self, zone_id, zone):
-        self.ops.editZone(zone_id, zone)
+    def editZone(self, zone_id, zone, relay_id=None):
+        self.ops.editZone(zone_id, zone, relay_id)
         return self.ops.saveAndClose()
     
     def deleteZone(self, zone):

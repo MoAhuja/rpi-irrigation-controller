@@ -18,6 +18,7 @@ class Zone(Base):
     FIELD_ZONE_NAME = "zone_name"
     FIELD_ZONE_DESCRIPTION = "zone_description"
     FIELD_ENABLED = "enabled"
+    FIELD_RELAY = "relay"
     
     __tablename__ = 'zone'
     id = Column('id', Integer, primary_key=True)

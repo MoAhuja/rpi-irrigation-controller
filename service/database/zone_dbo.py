@@ -16,10 +16,13 @@ class ZoneDBO(BaseDBOperations):
         self.event_pub = shared_events.event_publisher
 
         
-    def createZone(self, zone):
+    def createZone(self, zone, relayID = None):
         self.initialize()
         self.session.add(zone)
         self.session.flush()
+
+        if relayID is not None:
+            self.mapZoneToRelay(zone.id, relayID)
     
     def deleteZone(self, zone):
         self.initialize()
@@ -27,7 +30,7 @@ class ZoneDBO(BaseDBOperations):
         self.session.delete(zone)
         self.session.flush()
     
-    def editZone(self, zone_id, newZone):
+    def editZone(self, zone_id, newZone, relayID = None):
         print("Zone is is --> " + str(zone_id))
         self.initialize()
         # Query the old zone
@@ -40,6 +43,11 @@ class ZoneDBO(BaseDBOperations):
         self.session.add(newZone)
 
         self.session.flush()
+
+        if relayID is not None:
+            self.mapZoneToRelay(zone_id, relayID)
+
+        
 
         # TODO: What if I jsut specified the ID for the zone?
         
