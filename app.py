@@ -13,6 +13,7 @@ from service.rest_mappers.settings_rest_mapper import SettingsRestMapper
 from service.rest_mappers.zone_data_rest_mapper import ZoneDataRestMapper 
 from service.rest_mappers.zone_controller_rest_mapper import ZoneControllerRestMapper
 from service.rest_mappers.dashboard_rest_mapper import DashboardRestMapper
+from service.rest_mappers.logs_rest_mapper import LogsRestMapper
 import service.database.db_schema
 
 from service.zone.zone_controller import ZoneController
@@ -161,6 +162,17 @@ def service_get_zones():
 @app.route('/service_hub/dashboard', methods=['GET'])
 def service_get_dashboard():
 	return Response(DashboardRestMapper().getDashboard(), mimetype='application/json')
+
+
+@app.route('/service_hub/logs', methods=['GET'])
+def service_get_all_logs():
+	# Check if a log level was specified
+	level = request.args.get('level')
+
+	if level is None:
+		return Response(LogsRestMapper().getAllLogs(), mimetype='application/json')
+	else:
+		return Response(LogsRestMapper().getLogsByLevel(level), mimetype='application/json')
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):

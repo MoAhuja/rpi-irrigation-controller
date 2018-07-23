@@ -314,18 +314,32 @@ class RpiPinMapper(Base):
 # TODO: Create a table to support notifications configuration (URLS, what to notify on)
 
 class EnumLogLevel(enum.Enum):
-    DEBUG = 0
-    INFO = 1
-    WARN = 2
-    ERROR = 3
+    ERROR=1
+    INFO=2
+    DEBUG=3
 
 class Logs(Base):
+
+    FIELD_TIMESTAMP = "timestamp"
+    FIELD_LEVEL = "level"
+    FIELD_COMPONENT = "component"
+    FIELD_MESSAGE  = "message"
+
     __tablename__ = "logs"
     id = Column('id', Integer, primary_key=True)
     datetime = Column('timestamp', DateTime, default=datetime.now())
     level = Column('level', Enum(EnumLogLevel), nullable=False)
     component = Column('component', String(50), nullable=True)
     message =  Column('message', String(500), nullable=False)
+
+    def toDictionary(self):
+
+        logDict = {}
+        logDict[Logs.FIELD_TIMESTAMP] = Conversions.convertRainDelayDateTimeToString(self.datetime)
+        logDict[Logs.FIELD_LEVEL] = self.level.value
+        logDict[Logs.FIELD_COMPONENT] = self.component
+        logDict[Logs.FIELD_MESSAGE] = self.message
+        return logDict
 
 # ###########################
 # Event triggers go below

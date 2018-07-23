@@ -2,6 +2,7 @@ from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from service.database.base_db_operations import BaseDBOperations
+from service.database.db_schema import Logs
 # from service.utilities.logger import Logger
 
  
@@ -24,12 +25,46 @@ class LogDBO(BaseDBOperations):
         self.session.commit()
 
     #     #retrieve the zone_id
-    def retrieveAllLogsByLevel(logLevel):
+    def retrieveAllLogsByLevel(self, logLevel, asJSON=False):
 
         self.initialize()
-        logEntries = self.session.query(Logs).filter(level=logLevel).all()
+        if logLevel == 1:
+            enumLevel = EnumLogLevel.ERROR
+        elif logLevel == 2:
+            enumLevel = EnumLogLevel.INFO
+        elif logLevel == 3:
+            enumLevel = EnumLogLevel.DEBUG
+
+        logEntries = self.session.query(Logs).filter_by(level=enumLevel).all()
         self.session.flush()
-        return logEntries
+
+        if asJSON is True:
+            logDict = []
+            for log in logEntries:
+                logDict.append(log.toDictionary())
+            
+            return logDict
+        else:
+            return logEntries
+    
+    
+    
+    def retrieveAllLogs(self, asJSON=False):
+        self.initialize()
+        logEntries = self.session.query(Logs).all()
+        self.session.flush()
+
+        if asJSON is True:
+            logDict = []
+            for log in logEntries:
+                logDict.append(log.toDictionary())
+            
+            return logDict
+        else:
+            return logEntries
+    
+    # def retrieveLogsByRange(self, startRange, endRate):
+    #     # 
   
 
 
