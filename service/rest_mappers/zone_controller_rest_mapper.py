@@ -7,6 +7,7 @@ from service.zone.zone_timing_bo import ZoneTiming
 from service.core import shared
 from service.database.decision_dbo import DecisionDBO
 from service.database.db_schema import DecisionHistory, EnumDecisionCodes, EnumReasonCodes
+from service.system.settings_manager import SettingsManager
 
 class ZoneControllerRestMapper(BaseRestMapper):
 
@@ -20,11 +21,12 @@ class ZoneControllerRestMapper(BaseRestMapper):
 
     ERROR_TYPE_ZONE_NOT_ACTIVE = "Zone not active"
     ERROR_TYPE_NO_PIN_CONFIGURED_FOR_ZONE = "RPI Pin and relay not configured for this zone. Please set one before trying to activate."
-
+    ERROR_TYPE_KILL_SWITCH_IS_ACTIVE = "Kill switch is active. Unable to activate zone."
     def __init__(self):
         self.zdm = ZoneDataManager()
         self.zc = ZoneController()
         self.decisionDbo = DecisionDBO()
+        self.settingsMgr = SettingsManager()
 
     def activateZone(self, json_data):
         
@@ -35,15 +37,17 @@ class ZoneControllerRestMapper(BaseRestMapper):
         self.validateIsProvidedAndInt(zone_id, ZoneControllerRestMapper.FIELD_ID)
         self.validateIsProvidedAndInt(duration, ZoneControllerRestMapper.FIELD_DURATION)
 
-        shared.logger.debug(self, "GOT here1")
         # Fetch zone using ID
         zone = self.zdm.retrieveZone(zone_id)
 
-        shared.logger.debug(self, "GOT here2")
         if zone is not None:
 
             if zone.id in ZoneController.activeZones:
                 self.raiseBadRequestException(self.FIELD_ID, self.ERROR_TYPE_ZONE_ALREADY_ACTIVE)
+            
+            # check if the kill switch is on
+            if self.settingsMgr.getKillSwitch() is True:
+                self.raiseBadRequestException(self.FIELD_ID, self.ERROR_TYPE_KILL_SWITCH_IS_ACTIVE)
             
             shared.logger.debug(self, "Checking if pin config is set")
             if zone.pin_config is None:

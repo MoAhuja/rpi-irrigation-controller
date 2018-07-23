@@ -132,17 +132,17 @@ class ZoneController():
         
         try:
             for key, activeZone in ZoneController.activeZones.items():
-                shared.logger.debug(self, "Deactivating -> " + key + "-->" + activeZone.zone.name)
+                shared.logger.debug(self, "Deactivating -> " + str(key) + "-->" + activeZone.zone.name)
 
                 
                 #Call the RPI controller to deactivate this zone
-                if self.zrpi_controller.deactivateZone(zone):
-                    if reasonCode is not None:
+                if self.zrpi_controller.deactivateZone(activeZone.zone):
+                    if decisionHistoryReasonCode is not None:
                         zoneTiming = self.activeZones[activeZone.zone.id]
 
                         # Insert a decision event
                         dh = DecisionHistory()
-                        self.insertDecisionHistoryEvent(dh, zoneTiming, decisionHistoryReasonCode, EnumDecisionCodes.DeactivateZone, overrideEndTime)
+                        self.insertDecisionHistoryEvent(decisionObject=dh, zoneTiming=zoneTiming, reasonCode=decisionHistoryReasonCode, decisionCode=EnumDecisionCodes.DeactivateZone, overrideEndTime=overrideEndTime)
 
             
             # Reset back to an empty hashmap
