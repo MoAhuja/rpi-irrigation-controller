@@ -14,6 +14,7 @@ from service.rest_mappers.zone_data_rest_mapper import ZoneDataRestMapper
 from service.rest_mappers.zone_controller_rest_mapper import ZoneControllerRestMapper
 from service.rest_mappers.dashboard_rest_mapper import DashboardRestMapper
 from service.rest_mappers.logs_rest_mapper import LogsRestMapper
+from service.rest_mappers.decision_history_rest_mapper import DecisionHistoryRestMapper
 import service.database.db_schema
 
 from service.zone.zone_controller import ZoneController
@@ -71,7 +72,7 @@ def service_settings_kill_switch():
 	srm = SettingsRestMapper()
 
 	if request.method == 'GET':
-		result =  srm.getKillSwitch()
+		result =  Response(srm.getKillSwitch(), mimetype='application/json')
 	else:
 		json_data = request.get_json(force=True)
 		result = srm.setKillSwitch(json_data)
@@ -173,6 +174,15 @@ def service_get_all_logs():
 		return Response(LogsRestMapper().getAllLogs(), mimetype='application/json')
 	else:
 		return Response(LogsRestMapper().getLogsByLevel(level), mimetype='application/json')
+@app.route('/service_hub/decisionhistory', methods=['GET'])
+def service_get_all_decisions():
+	# Check if a log level was specified
+	zone = request.args.get('zone')
+
+	if zone is None:
+		return Response(DecisionHistoryRestMapper().getHistoryForAllZones(), mimetype='application/json')
+	else:
+		return Response(DecisionHistoryRestMapper().getHistoryByZone(zone), mimetype='application/json')
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):

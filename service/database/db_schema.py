@@ -270,6 +270,23 @@ class EnumReasonCodes(enum.Enum):
 
 # TODO: Complete this event history object (consider rename to "ZoneDecisionHistory")
 class DecisionHistory(Base):
+
+    FIELD_ZONE_ID = 'zone_id'
+    FIELD_TIME = 'event_time'
+    FIELD_CURRENT_TEMP = 'current_temp'
+    FIELD_CURRENT_3HOUR_FC = 'current_3_hour_rain_forecast' #3 hour rain forecast
+    FIELD_CURRENT_DAILY_FC = 'current_daily_rain_forecast' #daily rain forecast
+    FIELD_TEMP_ENABLED = 'temperature_enabled'
+    FIELD_TEMP_LOWER_LIMIT = 'temperature_lower_limit'
+    FIELD_TEMP_UPPER_LIMIT =  'temperature_upper_limit'
+    FIELD_RAIN_ENABLED = 'rain_enabled'
+    FIELD_RAIN_SHORT_TERM_LIMIT = 'rain_short_term_limit'
+    FIELD_RAIN_DAILY_LIMIT = 'rain_daily_limit'
+    FIELD_START_TIME = 'start_time'
+    FIELD_END_TIME = 'end_time'
+    FIELD_DECISION = 'decision'
+    FIELD_REASON = 'reason'
+
     __tablename__ = 'decision_history'
     id = Column('id', Integer, primary_key=True)
 
@@ -298,6 +315,28 @@ class DecisionHistory(Base):
 
     decision = Column('decision_code', Enum(EnumDecisionCodes), nullable=False) 
     reason = Column('reason_code', Enum(EnumReasonCodes), nullable=False)
+
+    def toDictionary(self):
+        out={}
+
+        out[self.FIELD_ZONE_ID] = self.zone_id
+        out[self.FIELD_TIME] = Conversions.convertRainDelayDateTimeToString(self.event_time)
+        out[self.FIELD_CURRENT_TEMP] = self.current_temperature
+        out[self.FIELD_CURRENT_3HOUR_FC] = self.current_3hour_forecast #3 hour rain forecast
+        out[self.FIELD_CURRENT_DAILY_FC] = self.current_daily_forecast #daily rain forecast
+        out[self.FIELD_TEMP_ENABLED] = self.temperature_enabled
+        out[self.FIELD_TEMP_LOWER_LIMIT] = self.temperature_lower_limit
+        out[self.FIELD_TEMP_UPPER_LIMIT] = self.temperature_upper_limit
+        out[self.FIELD_RAIN_ENABLED] = self.rain_enabled
+        out[self.FIELD_RAIN_SHORT_TERM_LIMIT] = self.rain_short_term_limit
+        out[self.FIELD_RAIN_DAILY_LIMIT] = self.rain_daily_limit
+        out[self.FIELD_START_TIME] = Conversions.convertRainDelayDateTimeToString(self.start_time)
+        out[self.FIELD_END_TIME] = Conversions.convertRainDelayDateTimeToString(self.end_time)
+        out[self.FIELD_DECISION] = self.decision.name
+        out[self.FIELD_REASON] = self.reason.name
+
+        return out
+
     
 class RpiPinMapper(Base):
     __tablename__ = "pin_mapper"

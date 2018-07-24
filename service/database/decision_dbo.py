@@ -14,12 +14,11 @@ class DecisionDBO(BaseDBOperations):
 
         shared.logger.debug(self, "Inserting decision event")
         self.initialize()
-        # self.session.add(decisionEvent)
-
         current_db_sessions = self.session.object_session(decisionEvent)
         current_db_sessions.add(decisionEvent)
         current_db_sessions.flush()
         current_db_sessions.commit()
+        
     
     def fetchLastRunRecord(self, zone_id):
 
@@ -36,3 +35,32 @@ class DecisionDBO(BaseDBOperations):
             return lastRun[0]
 
         return None
+    
+    def getAllDecisions(self, asJSON=False):
+        self.initialize()
+        decisionEntries = self.session.query(DecisionHistory).all()
+        self.session.flush()
+
+        if asJSON is True:
+            dhDict = []
+            for dh in decisionEntries:
+                dhDict.append(dh.toDictionary())
+            
+            return dhDict
+        else:
+            return decisionEntries
+    
+    def getAllDecisionsForZone(self, zone_id, asJSON=False):
+        self.initialize()
+        decisionEntries = self.session.query(DecisionHistory).filter_by(zone_id=zone_id).all()
+        self.session.flush()
+
+        if asJSON is True:
+            dhDict = []
+            for dh in decisionEntries:
+                dhDict.append(dh.toDictionary())
+            
+            return dhDict
+        else:
+            return decisionEntries
+
