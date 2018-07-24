@@ -42,12 +42,16 @@ class Zone(Base):
         zoneDict[Zone.FIELD_ZONE_NAME] = self.name
         zoneDict[Zone.FIELD_ZONE_DESCRIPTION] = self.description
         zoneDict[Zone.FIELD_ENABLED] = self.enabled
+        if self.pin_config is not None:
+            zoneDict[Zone.FIELD_RELAY] = self.pin_config.relay_id
+        else:
+            zoneDict[Zone.FIELD_RELAY] = None
+
         zoneDict[TemperatureRule.FIELD_TEMPERATURE] = self.temperature_rule.toDictionary()
         zoneDict[RainRule.FIELD_RAIN] = self.rain_rule.toDictionary()
         scheduleList = []
         
         for schedule in self.schedules:
-            print("found schedule")
             scheduleList.append(schedule.toDictionary())
         
         zoneDict[Schedule.FIELD_SCHEDULE] = scheduleList

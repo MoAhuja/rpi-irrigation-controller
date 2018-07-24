@@ -10,7 +10,7 @@ from service.utilities.conversion import Conversions
 
 class Scheduler():
 
-    nextRunSchedule = None
+    nextRunSchedule = {}
     nextRunScheduleIsDirty = True
 
     def __init__(self):
@@ -171,7 +171,7 @@ class Scheduler():
                 shared.logger.info(self, "Next run end time for Zone " + zone.name + " is " + str(endTime))
 
                 # Set the hashmap
-                self.nextRunSchedule[zone.id] = ZoneTiming.initialize(zone, nextRunDatetime, endTime)
+                Scheduler.nextRunSchedule[zone.id] = ZoneTiming.initialize(zone, nextRunDatetime, endTime)
             finally:
                 shared.lockNextRunSchedule.release()
                 shared.logger.debug(self, "BuildNextRunSchedule - Released lock: nextRunSchedule")
@@ -180,12 +180,12 @@ class Scheduler():
         return start_time + duration
     
     def getNextRunStartAndEndForZone(self, zone_id):
-        if self.nextRunSchedule is not None:
-
+        if Scheduler.nextRunSchedule is not None:
+            
             # Check if the key exists
-            if zone_id in self.nextRunSchedule:
+            if zone_id in Scheduler.nextRunSchedule:
                 # extract teh zone timing object
-                zto = self.nextRunSchedule[zone_id]
+                zto = Scheduler.nextRunSchedule[zone_id]
                 return zto.start_time, zto.end_time
         
         return None, None

@@ -25,6 +25,7 @@ class DashboardRestMapper(BaseRestMapper):
     FIELD_START = "start"
     FIELD_END = "end"
     FIELD_NEXT_RUN = "next_run"
+    FIELD_IS_RUNNING = "is_running"
 
     def __init__(self):
         self.settingsManager = SettingsManager()
@@ -65,6 +66,7 @@ class DashboardRestMapper(BaseRestMapper):
             zoneDict[DashboardRestMapper.FIELD_NAME] = zone.name
             zoneDict[DashboardRestMapper.FIELD_DESCRIPTION] = zone.description
             zoneDict[DashboardRestMapper.FIELD_ENABLED] = zone.enabled
+            zoneDict[DashboardRestMapper.FIELD_IS_RUNNING] = zone.id in ZoneController.activeZones
 
             # Query activation history table
             lastRunDecisionHistoryRecord = self.decisionDBO.fetchLastRunRecord(zone.id)
@@ -81,19 +83,11 @@ class DashboardRestMapper(BaseRestMapper):
                 nextRunDict[DashboardRestMapper.FIELD_START] = Conversions.convertRainDelayDateTimeToString(start_time)
                 nextRunDict[DashboardRestMapper.FIELD_END] = Conversions.convertRainDelayDateTimeToString(end_time)
                 zoneDict[DashboardRestMapper.FIELD_NEXT_RUN] = nextRunDict
+            
+            
             zone_array.append(zoneDict)
-
-
 
         
         result[DashboardRestMapper.FIELD_ZONES] = zone_array
-
-            # Status - On/Off
-            # Zone Name
-            # Zone Description
-            # Zone Picture / ICON (Future)
-            # Last Run --> From History table (last start and end)
-            # Next Scheduled Run --> From schedule table
-
         
         return self.returnSuccessfulResponse(result)
