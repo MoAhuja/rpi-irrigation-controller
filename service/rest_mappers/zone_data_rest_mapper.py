@@ -91,7 +91,6 @@ class ZoneDataRestMapper(BaseRestMapper):
     def validateDataAndCreateZoneObject(self, json_data, zone_id=None):
 
         # TODO: Add business logic to validate that the schedules don't overlap
-        # TODO: Add checkbox to UI to enable setting of the parameters
         # TODO: Add logic to check if start time < end time for all schedules
     
         #Enabled
@@ -130,8 +129,8 @@ class ZoneDataRestMapper(BaseRestMapper):
             temp_max = self.getKeyOrThrowException(json_data[TemperatureRule.FIELD_TEMPERATURE],TemperatureRule.FIELD_TEMPERATURE_MAX, json_data)
 
 
-            self.validateIsProvidedAndInt(temp_min, TemperatureRule.FIELD_TEMPERATURE_MIN, json_data)
-            self.validateIsProvidedAndInt(temp_max, TemperatureRule.FIELD_TEMPERATURE_MAX, json_data)
+            temp_min=self.validateIsProvidedAndInt(temp_min, TemperatureRule.FIELD_TEMPERATURE_MIN, json_data)
+            temp_max=self.validateIsProvidedAndInt(temp_max, TemperatureRule.FIELD_TEMPERATURE_MAX, json_data)
 
             # Validate the min and max don't cross
             if temp_min >= temp_max:
@@ -148,8 +147,8 @@ class ZoneDataRestMapper(BaseRestMapper):
             rain_short_term_limit = self.getKeyOrThrowException(json_data[RainRule.FIELD_RAIN],RainRule.FIELD_RAIN_SHORT_TERM_LIMIT, json_data)
             rain_daily_limit = self.getKeyOrThrowException(json_data[RainRule.FIELD_RAIN],RainRule.FIELD_RAIN_DAILY_LIMIT, json_data)
 
-            self.validateIsProvidedAndInt(rain_short_term_limit, RainRule.FIELD_RAIN_SHORT_TERM_LIMIT, json_data)
-            self.validateIsProvidedAndInt(rain_daily_limit, RainRule.FIELD_RAIN_DAILY_LIMIT, json_data)
+            rain_short_term_limit = self.validateIsProvidedAndInt(rain_short_term_limit, RainRule.FIELD_RAIN_SHORT_TERM_LIMIT, json_data)
+            rain_daily_limit= self.validateIsProvidedAndInt(rain_daily_limit, RainRule.FIELD_RAIN_DAILY_LIMIT, json_data)
 
         # #######################
         # Validate Schedules
@@ -167,7 +166,10 @@ class ZoneDataRestMapper(BaseRestMapper):
 
             # Validate enabled
             self.validateIsProvidedAndBool(enabled, Schedule.FIELD_ENABLED, json_data)
-
+            
+            # Validate schedule type
+            schedule_type = self.validateIsProvidedAndInt(schedule_type, Schedule.FIELD_SCHEDULE_TYPE, json_data)
+            # TODO:Validate it falls within 0,1 
             # Validate times
             self.validateIsProvidedAndString(start_time, Schedule.FIELD_SCHEDULE_START_TIME, json_data)
             self.validateIsProvidedAndString(end_time, Schedule.FIELD_SCHEDULE_END_TIME, json_data)
@@ -190,7 +192,7 @@ class ZoneDataRestMapper(BaseRestMapper):
 
             # Validate days
             for day in days:
-                self.validateIsProvidedAndInt(day, Schedule.FIELD_SCHEDULE_DAYS, json_data)
+                day = self.validateIsProvidedAndInt(day, Schedule.FIELD_SCHEDULE_DAYS, json_data)
                 if day <0 or day >6:
                     self.raiseBadRequestException(Schedule.FIELD_SCHEDULE_DAYS, self.ERROR_TYPE_INVALID_DAY_TYPE, json_data, day)
 

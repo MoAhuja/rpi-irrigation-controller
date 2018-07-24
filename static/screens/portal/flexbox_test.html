@@ -24,6 +24,7 @@
                     currentlyShowingPanel = $("#content_manager")
 
                     $("createzone").load("/static/screens/portal/create_zone_include.html");
+                    $("zonecards").load("/static/screens/portal/dashboard_include.html");
 
 
                     $("#nav_create_zone").click(function(){
@@ -88,7 +89,7 @@
 
 
                         $.ajax({
-                            url: 'http://127.0.0.1:5000/service_hub/zones/create_zone', // url where to submit the request
+                            url: 'http://127.0.0.1:5000/service_hub/zone', // url where to submit the request
                             type : "POST", // type of action POST || GET
                             dataType : 'json', // data type
                             data : jsonData, // post data || get data
@@ -238,51 +239,12 @@
                         <createzone>
                             <!-- see: create_zone_include.html -->
                         </createzone>
+                        <zonecards>
+
+                        </zonecards>
                         <!-- View Zones content -->
                         <zonecards>
-                            <zonecard>
-                                <zonesegment>Segment 1</zonesegment>
-                                <zonesegment class="middle">
-                                    I am text in the middle
-                                </zonesegment>
-                                <zonesegment class="end">
-                                    <ul class="action">
-                                        <li><a href="#">Edit</a></li>
-                                        <li><a href="#">Details</a></li>
-                                        <li><a href="#">Refresh</a></li>
-                                        <li class="bottom_item"><a href="#">History</a></li>
-                                    </ul>
-                                </zonesegment>
-                            </zonecard>
-                            <zonecard>
-                                <zonesegment>Segment 1</zonesegment>
-                                <zonesegment class="middle">
-
-                                </zonesegment>
-                                <zonesegment class="end">
-                                    <ul class="action">
-                                        <li><a href="#">Edit</a></li>
-                                        <li><a href="#">Details</a></li>
-                                        <li><a href="#">Refresh</a></li>
-                                        <li class="bottom_item"><a href="#">History</a></li>
-                                    </ul>
-                                </zonesegment>
-                            </zonecard>
-
-                            <zonecard>
-                                <zonesegment>Segment 1</zonesegment>
-                                <zonesegment class="middle">
-
-                                </zonesegment>
-                                <zonesegment class="end">
-                                    <ul class="action">
-                                        <li><a href="#">Edit</a></li>
-                                        <li><a href="#">Details</a></li>
-                                        <li><a href="#">Refresh</a></li>
-                                        <li class="bottom_item"><a href="#">History</a></li>
-                                    </ul>
-                                </zonesegment>
-                            </zonecard>
+                            
                            
 
 

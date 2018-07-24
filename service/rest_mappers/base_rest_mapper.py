@@ -35,7 +35,7 @@ class BaseRestMapper():
         return json.dumps(responseDict)
     
     def raiseBadRequestException(self, fieldName, error_message, payload=None, invalid_value=None):
-        shared.logger.debug(self, "Return bad request: " + error_message)
+        shared.logger.debug(self, "Return bad request: " + error_message + "[" + fieldName + "]")
         raise InvalidUsage(self.HTTP_ERROR_CODE_BAD_REQUEST, fieldName, error_message, payload, invalid_value )
         
     def raiseServerErrorException(self, error_message="Unknown Error"):
@@ -67,8 +67,15 @@ class BaseRestMapper():
         self.validateMandatory(dataToValidate, field_name, json_data)
         
         if type(dataToValidate) is not int:
-            self.raiseBadRequestException(field_name, BaseRestMapper.ERROR_TYPE_INVALID_TYPE_MUST_BE_INT, json_data, dataToValidate)
-    
+            # Try to parse it to an int
+            try:
+                parsedInt = int(dataToValidate)
+                return parsedInt
+            except:
+                self.raiseBadRequestException(field_name, BaseRestMapper.ERROR_TYPE_INVALID_TYPE_MUST_BE_INT, json_data, dataToValidate)
+
+        else:
+            return dataToValidate
     # Throws an exception if the data type is not a string
     def validateIsProvidedAndString(self, dataToValidate, field_name, json_data=None):
         self.validateMandatory(dataToValidate, field_name, json_data)
@@ -79,6 +86,7 @@ class BaseRestMapper():
     def getKeyOrThrowException(self, dictionary, key, json_data):
         data = None
         try:
+            shared.logger.debug(self, "Fetching " + key + " from dict")
             data = dictionary[key]
         except KeyError:
             self.raiseBadRequestException(key, self.ERROR_TYPE_FIELD_MISSING,json_data)
