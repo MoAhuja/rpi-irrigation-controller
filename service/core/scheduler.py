@@ -50,7 +50,7 @@ class Scheduler():
         shared.logger.debug(self, "load next run schedule entered. Next run schedule dirty = " + str(Scheduler.nextRunScheduleIsDirty))
 
         # Check if zone data needs to be reloaded
-        if Scheduler.nextRunScheduleIsDirty is True or self.nextRunSchedule is None:
+        if Scheduler.nextRunScheduleIsDirty is True or Scheduler.nextRunSchedule is None:
             # Because the zones may have changed, we're going to force shutoff all the zones
             # and allow them to re-activate if required
             shared.logger.debug(self, "Next run schedule is dirty. Going to obtain updated data")
@@ -71,8 +71,8 @@ class Scheduler():
        
         if self.settingsManager.getKillSwitch() is True:
             shared.logger.info(self, "Kill switch is enabled - No schedules will be built. Existing schedules will be destroyed.")
-            if self.nextRunSchedule is not None:
-                self.nextRunSchedule.clear()
+            if Scheduler.nextRunSchedule is not None:
+                Scheduler.nextRunSchedule.clear()
             return
 
         # create a zone manager instance

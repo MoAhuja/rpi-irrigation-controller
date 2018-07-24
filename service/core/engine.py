@@ -102,7 +102,7 @@ class Engine():
             shared.logger.debug(self, "CheckAndActivateZones - Waiting for lock: nextRunSchedule")
             shared.lockNextRunSchedule.acquire()
             try:
-                for id, zonetiming in self.scheduler.nextRunSchedule.items():
+                for id, zonetiming in Scheduler.nextRunSchedule.items():
                     
                     shared.logger.debug(self, "Evaluating Zone: " + zonetiming.zone.name)
 
@@ -120,6 +120,7 @@ class Engine():
                     shared.logger.debug(self, "Activate if: " + str(zonetiming.start_time) + " < " + str(currentDateTime)  + " < " + str(zonetiming.end_time))
                     # Check if the current time is past the start time, but before the end time
                     if zonetiming.start_time <= currentDateTime < zonetiming.end_time:
+                        rebuildSchedule = True
 
                         # Create a decision event w/ current info
                         decisionEvent = None
@@ -135,12 +136,7 @@ class Engine():
                         
                         if activateZone:
                             # Copy the zone timing object to the active running zones
-                            if self.zone_controller.activateZone(zonetiming, decisionEvent, EnumReasonCodes.AllConditionsPassed):
-                            # decisionEvent.decision = EnumDecisionCodes.ActivateZone
-                            # decisionEvent.reason = EnumReasonCodes.AllConditionsPassed
-                            
-                            # Set flag indicating the schedule needs to be re-built
-                                rebuildSchedule = True
+                            self.zone_controller.activateZone(zonetiming, decisionEvent, EnumReasonCodes.AllConditionsPassed)
                         else:
 
                             #Log an event, if one is available to be logged.
@@ -156,7 +152,7 @@ class Engine():
                     
             
             if rebuildSchedule is True:
-                shared.logger.debug(self, "A zone was activated. Schedule needs to be updated.")
+                shared.logger.debug(self, "A zone was evaluated. Schedule needs to be updated.")
                 Scheduler.nextRunScheduleIsDirty = True
 
             # Reset the evaluating zones flag so someone else can evaluate it next time.
