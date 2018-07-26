@@ -93,8 +93,11 @@ class ZoneDataRestMapper(BaseRestMapper):
         # TODO: Add business logic to validate that the schedules don't overlap
         # TODO: Add logic to check if start time < end time for all schedules
     
-        #Enabled
-        zone_enabled = self.getKeyOrThrowException(json_data, Zone.FIELD_ENABLED, json_data)
+        #Enabled - Workaround since unchecked checkboxes are not posted
+        zone_enabled = self.getKeyOrSetAsNone(json_data, Zone.FIELD_ENABLED)
+        if zone_enabled is None:
+            zone_enabled = False
+
         self.validateIsProvidedAndBool(zone_enabled, Zone.FIELD_ENABLED, json_data)
         
         # Check zone name
@@ -118,7 +121,9 @@ class ZoneDataRestMapper(BaseRestMapper):
         # ###################
         # Temperature Validations
         #####################
-        temperature_rule_enabled = self.getKeyOrThrowException(json_data[TemperatureRule.FIELD_TEMPERATURE],TemperatureRule.FIELD_ENABLED, json_data)
+        temperature_rule_enabled = self.getKeyOrSetAsNone(json_data[TemperatureRule.FIELD_TEMPERATURE],TemperatureRule.FIELD_ENABLED)
+        if temperature_rule_enabled is None:
+            temperature_rule_enabled = False
         
         # Check to make sure the data type of the enabled flag is set correctly
         self.validateIsProvidedAndBool(temperature_rule_enabled, Zone.FIELD_ENABLED, json_data)
@@ -139,7 +144,9 @@ class ZoneDataRestMapper(BaseRestMapper):
         # #######################
         # Rain Validations
         # #######################
-        rain_rule_enabled = self.getKeyOrThrowException(json_data[RainRule.FIELD_RAIN],RainRule.FIELD_ENABLED, json_data)
+        rain_rule_enabled = self.getKeyOrSetAsNone(json_data[RainRule.FIELD_RAIN],RainRule.FIELD_ENABLED)
+        if rain_rule_enabled is None:
+            rain_rule_enabled = False
         
         self.validateIsProvidedAndBool(rain_rule_enabled,RainRule.FIELD_ENABLED, json_data)
 
@@ -158,7 +165,10 @@ class ZoneDataRestMapper(BaseRestMapper):
         # Validate each schedule
         for schedule in schedules:
 
-            enabled = self.getKeyOrThrowException(schedule ,Schedule.FIELD_ENABLED, json_data)
+            
+            enabled = self.getKeyOrSetAsNone(schedule ,Schedule.FIELD_ENABLED)
+            if enabled is None:
+                enabled = False
             start_time = self.getKeyOrThrowException(schedule, Schedule.FIELD_SCHEDULE_START_TIME, json_data)
             end_time = self.getKeyOrThrowException(schedule, Schedule.FIELD_SCHEDULE_END_TIME, json_data)
             schedule_type = self.getKeyOrThrowException(schedule,Schedule.FIELD_SCHEDULE_TYPE, json_data)

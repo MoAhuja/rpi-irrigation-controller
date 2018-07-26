@@ -67,7 +67,10 @@ class Zone(Base):
 
         cl.description=jsonData[Zone.FIELD_ZONE_NAME]
         cl.name=jsonData[Zone.FIELD_ZONE_NAME]
-        cl.enabled=jsonData[Zone.FIELD_ENABLED]
+        if Zone.FIELD_ENABLED in jsonData:
+            cl.enabled=jsonData[Zone.FIELD_ENABLED]
+        else:
+            cl.enabled = False
         
         cl.temperature = TemperatureRule.initializeWithJSON(jsonData[TemperatureRule.FIELD_TEMPERATURE], cl)
         cl.rain = RainRule.initializeWithJSON(jsonData[RainRule.FIELD_RAIN], cl)
@@ -109,9 +112,11 @@ class TemperatureRule(Base):
         cl = cls()
         cl.lower_limit = jsonData[TemperatureRule.FIELD_TEMPERATURE_MIN]
         cl.upper_limit = jsonData[TemperatureRule.FIELD_TEMPERATURE_MAX]
-        cl.enabled = jsonData[Zone.FIELD_ENABLED]
+        if TemperatureRule.FIELD_ENABLED in jsonData:
+            cl.enabled = jsonData[TemperatureRule.FIELD_ENABLED]
+        else:
+            cl.enabled = False
         cl.zone = zone
-        # TODO: make this dynamic??
 
         return cl
 
@@ -138,7 +143,10 @@ class RainRule(Base):
         cl = cls()
         cl.short_term_limit = jsonData[RainRule.FIELD_RAIN_SHORT_TERM_LIMIT]
         cl.daily_limit = jsonData[RainRule.FIELD_RAIN_DAILY_LIMIT]
-        cl.enabled = jsonData[RainRule.FIELD_ENABLED]
+        if RainRule.FIELD_ENABLED in jsonData:
+            cl.enabled = jsonData[RainRule.FIELD_ENABLED]
+        else:
+            cl.enabled = False
         cl.zone = zone
 
         return cl
@@ -178,7 +186,11 @@ class Schedule(Base):
     def initializeWithJSON(cls, json_data, zone):
         cl = cls()
         # print("Creating schedule DO")
-        cl.enabled = json_data[Schedule.FIELD_ENABLED]
+        if Schedule.FIELD_ENABLED in json_data:
+            cl.enabled = json_data[Schedule.FIELD_ENABLED]
+        else:
+            cl.enabled = False
+
         cl.start_time = Conversions.convertHumanReadableTimetoDBTime(json_data[Schedule.FIELD_SCHEDULE_START_TIME])
         cl.end_time = Conversions.convertHumanReadableTimetoDBTime(json_data[Schedule.FIELD_SCHEDULE_END_TIME])
         cl.schedule_type = EnumScheduleType(int(json_data[Schedule.FIELD_SCHEDULE_TYPE]))
@@ -188,7 +200,6 @@ class Schedule(Base):
             for val in json_data[Schedule.FIELD_SCHEDULE_DAYS]:
                 cl.days.append(ScheduleDays(dayOfWeek = EnumDayOfWeek(int(val))))
 
-        cl.enabled = True
         cl.zone = zone
 
         return cl
