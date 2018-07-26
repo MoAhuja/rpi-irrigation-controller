@@ -7,58 +7,50 @@
             <script type="text/javascript" src="/static/js/timepicker/jquery.timepicker.js"></script>
             <script type="text/javascript" src="/static/js/timepicker/lib/bootstrap-datepicker.js"></script>
             <script type="text/javascript" src="/static/js/jquery.serialize-object.min.js"></script>
+            <script type="text/javascript" src="/static/js/create_zone.js"></script>
             <link rel= "stylesheet" type= "text/css" href= "/static/js/timepicker/jquery.timepicker.css">
             <link rel= "stylesheet" type= "text/css" href= "/static/js/timepicker/lib/bootstrap-datepicker.css">
             <link rel="stylesheet" type="text/css" href="/static/css/content_zone_manager.css?id=1">
             <link rel="stylesheet" type="text/css" href="/static/css/checkbox.css">
             <link rel="stylesheet" type="text/css" href="/static/css/button.css">
+            
             <script>
-               String.prototype.replaceAll = function(search, replacement) {
-                    var target = this;
-                    return target.replace(new RegExp(search, 'g'), replacement);
-                };
+               
 
                 $(document).ready(function(){
                     
-                    scheduleCounter = 0;
-                    currentlyShowingPanel = $("#content_manager")
+                    currentlyShowingPanel = $("#content_dashboard")
 
-                    $("createzone").load("/static/screens/portal/create_zone_include.html");
                     $("zonecards").load("/static/screens/portal/dashboard_include.html");
-
 
                     $("#nav_create_zone").click(function(){
                         // hide the others
                         $("zonecards").hide()
                         $("createzone").show()
-
                     });
 
                     
-
+                    // Hide/show content by default
                     $(function(){
-                        
-                        $("#content_dashboard").hide() 
-                        $("zonecards").hide()
-                        $("createzone").show()
+                        // Show this pane to start
+                        $("#content_dashboard").show()
+
+                        // Hide these ones to start
+                        $("#content_manager").hide()
+                        // $("zonecards").hide()
+                        // $("createzone").show()
 
                         // Load teh schedule section
-                        $.get("/static/screens/portal/schedule_template_include.html", function(data){
-                            // alert(data);
-                            var data2 = data.replaceAll("NUMBER_HOLDER", scheduleCounter)
-                            $("#schedule_area").append(data2);
-                            scheduleCounter++
-                        });
+                        // $.get("/static/screens/portal/schedule_template_include.html", function(data){
+                        //     // alert(data);
+                        //     var data2 = data.replaceAll("NUMBER_HOLDER", scheduleCounter)
+                        //     $("#schedule_area").append(data2);
+                        //     scheduleCounter++
+                        // });
                         
                     });
 
-                    $('body').on('click', '#btnAddSchedule', function() {
-                        $.get("/static/screens/portal/schedule_template_include.html", function(data){
-                            var data2 = data.replaceAll("NUMBER_HOLDER", scheduleCounter)
-                            $("#schedule_area").append(data2);
-                            scheduleCounter++
-                        });
-                   });
+                    
 
                    $('body').on('submit', 'form', function(e) {
                         e.preventDefault();
@@ -82,30 +74,6 @@
                         // });
                     });
 
-                   $('body').on('click', '#btnCreateZone', function() {
-                        // e.preventDefault();
-                        var jsonData = $("#formData").serializeJSON();
-                        console.log(jsonData);
-
-
-                        $.ajax({
-                            url: 'http://127.0.0.1:5000/service_hub/zone', // url where to submit the request
-                            type : "POST", // type of action POST || GET
-                            dataType : 'json', // data type
-                            data : jsonData, // post data || get data
-                            success : function(result) {
-                                // you can see the result from the console
-                                // tab of the developer tools
-                                console.log(result);
-                            },
-                            error: function(xhr, resp, text) {
-                                console.log(text);
-                            }
-                        });
-                    });
-                  
-
-    
 
                     $("#nav_view_zone").click(function(){
                         // hide the others
@@ -114,6 +82,7 @@
 
                     });
 
+                    // TODO: Move this to a navigate JS file
                     // Logic to show the right panel based on the nav item
                     $(".nav li").click(function() {
                         id = ($(this).attr('id'))
@@ -130,69 +99,6 @@
                         
 
                     })
-
-                    var scheduleCounter = 0;
-
-                    // $('.time').timepicker();
-
-                   $('body').on('click', '.time', function() {
-                       $(this).timepicker({'step': 10, 'timeFormat': 'H:i'});
-                   });
-                    
-
-                    //This needs to be done on teh live function in order for dynamically added components to be recognized
-                    // $('.delButton').click(function() {
-                    //     $(this).parent().remove();
-                    // });
-
-                    $('body').on('click', '.delButton', function() {
-                        var id  = $(this).attr('id');
-                        console.log(id);
-
-                        //If they hit delete on the schedule button, then we need to decrement the counter
-                        if(id == "scheduleDelButton")
-                        {
-                            scheduleCounter--;
-                            console.log("Schedule Counter == " + scheduleCounter);
-                        }
-                        $(this).parent().parent().remove();
-
-
-                    });
-                    
-
-                    
-
-
-                    $("#formData").submit(function(e){
-                        // alert("x");
-                        e.preventDefault();
-                        alert("y");
-                        
-                        // var jsonData = $("form#formData").serializeJSON();
-                        // console.log(jsonData);
-
-
-                        // $.ajax({
-                        //     url: 'http://127.0.0.1:5000/service_hub/zones/create_zone', // url where to submit the request
-                        //     type : "POST", // type of action POST || GET
-                        //     dataType : 'json', // data type
-                        //     data : jsonData, // post data || get data
-                        //     success : function(result) {
-                        //         // you can see the result from the console
-                        //         // tab of the developer tools
-                        //         console.log(result);
-                        //     },
-                        //     error: function(xhr, resp, text) {
-                        //         console.log(text);
-                        //     }
-                        // });
-                    });
-                    
-                   
-
-                    
-                        
 
 
                 });
@@ -225,6 +131,7 @@
             </header>
 
             <content>
+                <!-- Dashboard Content -->
                 <div id="content_dashboard" class="show">Dashboard Content</div>
                 
                 <!-- manager content -->
