@@ -8,12 +8,13 @@
             <script type="text/javascript" src="/static/js/timepicker/lib/bootstrap-datepicker.js"></script>
             <script type="text/javascript" src="/static/js/jquery.serialize-object.min.js"></script>
             <script type="text/javascript" src="/static/js/create_zone.js"></script>
+            <script type="text/javascript" src="/static/js/dashboard.js"></script>
             <link rel= "stylesheet" type= "text/css" href= "/static/js/timepicker/jquery.timepicker.css">
             <link rel= "stylesheet" type= "text/css" href= "/static/js/timepicker/lib/bootstrap-datepicker.css">
             <link rel="stylesheet" type="text/css" href="/static/css/content_zone_manager.css?id=1">
             <link rel="stylesheet" type="text/css" href="/static/css/checkbox.css">
             <link rel="stylesheet" type="text/css" href="/static/css/button.css">
-            
+            <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css">
             <script>
                
 
@@ -21,8 +22,7 @@
                     
                     currentlyShowingPanel = $("#content_dashboard")
 
-                    $("zonecards").load("/static/screens/portal/dashboard_include.html");
-
+                    
                     $("#nav_create_zone").click(function(){
                         // hide the others
                         $("zonecards").hide()
@@ -96,7 +96,6 @@
                         // $(panelID).toggleClass("show")
                         $(panelID).show("puff")
                         currentlyShowingPanel = panelID
-                        
 
                     })
 
@@ -151,10 +150,7 @@
                         </zonecards>
                         <!-- View Zones content -->
                         <zonecards>
-                            
-                           
-
-
+         
                         </zonecards>
                     </content>
                 </div>

@@ -65,7 +65,7 @@ class Zone(Base):
 
         cl = cls()
 
-        cl.description=jsonData[Zone.FIELD_ZONE_NAME]
+        cl.description=jsonData[Zone.FIELD_ZONE_DESCRIPTION]
         cl.name=jsonData[Zone.FIELD_ZONE_NAME]
         if Zone.FIELD_ENABLED in jsonData:
             cl.enabled=jsonData[Zone.FIELD_ENABLED]
