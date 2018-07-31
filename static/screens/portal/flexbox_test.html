@@ -7,14 +7,18 @@
             <script type="text/javascript" src="/static/js/timepicker/jquery.timepicker.js"></script>
             <script type="text/javascript" src="/static/js/timepicker/lib/bootstrap-datepicker.js"></script>
             <script type="text/javascript" src="/static/js/jquery.serialize-object.min.js"></script>
-            <script type="text/javascript" src="/static/js/create_zone.js"></script>
+            <script type="text/javascript" src="/static/js/zone_manager.js"></script>
             <script type="text/javascript" src="/static/js/dashboard.js"></script>
+
+            <script type="text/javascript" src="/static/js/logs.js"></script>
             <link rel= "stylesheet" type= "text/css" href= "/static/js/timepicker/jquery.timepicker.css">
             <link rel= "stylesheet" type= "text/css" href= "/static/js/timepicker/lib/bootstrap-datepicker.css">
             <link rel="stylesheet" type="text/css" href="/static/css/content_zone_manager.css?id=1">
             <link rel="stylesheet" type="text/css" href="/static/css/checkbox.css">
             <link rel="stylesheet" type="text/css" href="/static/css/button.css">
             <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css">
+
+            <link rel="stylesheet" type="text/css" href="/static/css/logs.css">
             <script>
                
 
@@ -22,14 +26,6 @@
                     
                     currentlyShowingPanel = $("#content_dashboard")
 
-                    
-                    $("#nav_create_zone").click(function(){
-                        // hide the others
-                        $("zonecards").hide()
-                        $("createzone").show()
-                    });
-
-                    
                     // Hide/show content by default
                     $(function(){
                         // Show this pane to start
@@ -37,50 +33,17 @@
 
                         // Hide these ones to start
                         $("#content_manager").hide()
-                        // $("zonecards").hide()
-                        // $("createzone").show()
-
-                        // Load teh schedule section
-                        // $.get("/static/screens/portal/schedule_template_include.html", function(data){
-                        //     // alert(data);
-                        //     var data2 = data.replaceAll("NUMBER_HOLDER", scheduleCounter)
-                        //     $("#schedule_area").append(data2);
-                        //     scheduleCounter++
-                        // });
                         
+                        $("#content_logs").hide()
                     });
 
                     
 
                    $('body').on('submit', 'form', function(e) {
                         e.preventDefault();
-                        // var jsonData = $("#formData").serializeJSON();
-                        // console.log(jsonData);
-
-
-                        // $.ajax({
-                        //     url: 'http://127.0.0.1:5000/service_hub/zones/create_zone', // url where to submit the request
-                        //     type : "POST", // type of action POST || GET
-                        //     dataType : 'json', // data type
-                        //     data : jsonData, // post data || get data
-                        //     success : function(result) {
-                        //         // you can see the result from the console
-                        //         // tab of the developer tools
-                        //         console.log(result);
-                        //     },
-                        //     error: function(xhr, resp, text) {
-                        //         console.log(text);
-                        //     }
-                        // });
                     });
 
-
-                    $("#nav_view_zone").click(function(){
-                        // hide the others
-                        $("zonecards").show()
-                        $("createzone").hide()
-
-                    });
+                    
 
                     // TODO: Move this to a navigate JS file
                     // Logic to show the right panel based on the nav item
@@ -133,6 +96,7 @@
                 <!-- Dashboard Content -->
                 <div id="content_dashboard" class="show">Dashboard Content</div>
                 
+                <!-- TODO: Move this into an include at some point -->
                 <!-- manager content -->
                 <div id="content_manager">
                     <ul class="sub_nav content_nav">
@@ -157,6 +121,11 @@
 
 
                 <div id="content_controller">Controller</div>
+                <div id="content_logs">
+                    <logs>
+                        testing
+                    </logs>
+                </div>
             </content>
 
             <!-- <footer>Sticky footer</footer> -->

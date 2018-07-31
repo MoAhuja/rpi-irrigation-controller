@@ -48,6 +48,21 @@ $(document).ready(function(){
         });
     });
 
+    // Side menu navigation - hides zone cards, shows create zone
+    $("#nav_create_zone").click(function(){
+        // hide the others
+        $("zonecards").hide()
+        $("createzone").show()
+    });
+
+    // Side menu navigation - hides create zone, shows all zones
+    $("#nav_view_zone").click(function(){
+        // hide the others
+        $("zonecards").show()
+        $("createzone").hide()
+
+    });
+
     // Handles the delete button click
     $('body').on('click', '.delButton', function() {
         var id  = $(this).attr('id');

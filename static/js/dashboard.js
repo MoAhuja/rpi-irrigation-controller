@@ -64,6 +64,7 @@ $(document).ready(function()
             lastRunString = "N/A"
         }
 
+        //TODO: Move this above theloop so it's only done once. Then use the same template to all zones.
         $.ajax({
             url: '/static/screens/portal/dashboard_include_zone_template.html', // url where to submit the request
             type : "GET", // type of action POST || GET

@@ -158,11 +158,16 @@ def service_edit_zone():
 
 @app.route('/service_hub/zones', methods=['GET'])
 def service_get_zones():
-	return Response(ZoneDataRestMapper().getAllZones(), mimetype='application/json')
+	resp =  Response(ZoneDataRestMapper().getAllZones(), mimetype='application/json')
+	resp.headers['Access-Control-Allow-Origin'] = '*'
+	return resp
+
 
 @app.route('/service_hub/dashboard', methods=['GET'])
 def service_get_dashboard():
-	return Response(DashboardRestMapper().getDashboard(), mimetype='application/json')
+	resp = Response(DashboardRestMapper().getDashboard(), mimetype='application/json')
+	resp.headers['Access-Control-Allow-Origin'] = '*'
+	return resp
 
 
 @app.route('/service_hub/logs', methods=['GET'])
@@ -170,10 +175,17 @@ def service_get_all_logs():
 	# Check if a log level was specified
 	level = request.args.get('level')
 
+	
+
 	if level is None:
-		return Response(LogsRestMapper().getAllLogs(), mimetype='application/json')
+		resp = Response(LogsRestMapper().getAllLogs(), mimetype='application/json')
+		resp.headers['Access-Control-Allow-Origin'] = '*'
+		return resp
+		
 	else:
-		return Response(LogsRestMapper().getLogsByLevel(level), mimetype='application/json')
+		resp = Response(LogsRestMapper().getLogsByLevel(level), mimetype='application/json')
+		resp.headers['Access-Control-Allow-Origin'] = '*'
+		return resp
 @app.route('/service_hub/decisionhistory', methods=['GET'])
 def service_get_all_decisions():
 	# Check if a log level was specified

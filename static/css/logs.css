@@ -1,0 +1,47 @@
+#content_logs{
+    display: flex;
+    flex: 1;
+    overflow-y: scroll;
+}
+
+logs {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+log {
+    flex: 1;
+    border-bottom: 1px solid black;
+    margin: 2px;
+    display: flex;
+    flex-direction: row;
+    min-height: 3em;
+}
+
+message {
+    flex: 1;
+}
+
+.static_column {
+    padding-left: 3px;
+    padding-right: 3px;
+    border-right: 1px solid green;
+    overflow-x: scroll;
+    overflow-wrap: break-word;
+}
+
+level {
+    width: 5em;
+    min-width: 5em;
+    max-width: 5em;
+}
+
+date {
+    width: 6em;
+
+}
+
+component {
+    width: 12em;
+}
