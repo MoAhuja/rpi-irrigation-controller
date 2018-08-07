@@ -2,6 +2,44 @@
     display: flex;
     flex: 1;
     overflow-y: scroll;
+    flex-direction: column
+}
+
+inputlevels
+{
+    display: flex;
+    flex-direction: row;
+    margin: 8px;
+}
+
+inputlevels button
+{
+    flex: 1;
+}
+
+inputlevels button.logLevelFilter {
+    background-color: var(--color-tertiary);
+    color: var(--color-tertiary-text1);
+}
+
+inputlevels button.logLevelFilter:hover {
+    color: var(--color-primary);
+    background-color: var(--color-primary-text1);
+}
+
+inputlevels button.active {
+    background: var(--color-primary);
+    background-color: var(--color-secondary-text1);
+}
+
+inputlevels button.left {
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+}
+
+inputlevels button.right {
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
 }
 
 logs {

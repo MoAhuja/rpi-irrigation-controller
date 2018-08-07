@@ -216,7 +216,7 @@ if __name__ == '__main__':
 	engine = Engine()
 	
 	# zm = ZoneManager(event_pub)
-	app.run(debug=False)
+	app.run(debug=False, threaded=True)
 
 	
 

@@ -167,7 +167,7 @@ class Engine():
         self.checkAndDeactivateZones()
 
         # Run the heartbeat every minute
-        threading.Timer(10, self.heartbeat).start()
+        threading.Timer(60, self.heartbeat).start()
 
     def meetsTemperatureConditions(self, temperature_bo, decisionEvent):
 
