@@ -1,10 +1,33 @@
 $(document).ready(function()
 {
+    var dashboard_template = ""
+
+    //TODO: Move this above theloop so it's only done once. Then use the same template to all zones.
+    $.ajax({
+        url: '/static/screens/portal/dashboard_include_zone_template.html', // url where to submit the request
+        type : "GET", // type of action POST || GET
+        dataType : 'html', // data type
+        async: true,
+        success : function(data) {
+            dashboard_template = data
+            
+        },
+        error: function(xhr, resp, text) {
+            console.log(text);
+        }
+    });
+
     // $("#content_dashboard").load("/static/screens/portal/dashboard_include.html");
     $("#btn_dashboard").click(function(){
+        
+        loadDashboardContent();
+
+    });
+
+    function loadDashboardContent()
+    {
         $("#content_dashboard").html("");
         
-
         $.ajax({
             url: 'http://127.0.0.1:5000/service_hub/dashboard', // url where to submit the request
             type : "GET", // type of action POST || GET
@@ -22,14 +45,13 @@ $(document).ready(function()
                 console.log(text);
             }
         });
-
-
-    });
+    }
 
     function addZoneToScreen(item, index)
     {  
         console.log(index)
         console.log(item)
+        id = item["id"]
         name = item["name"]
         description = item["description"]
         enabled = item["enabled"]
@@ -64,27 +86,34 @@ $(document).ready(function()
             lastRunString = "N/A"
         }
 
-        //TODO: Move this above theloop so it's only done once. Then use the same template to all zones.
-        $.ajax({
-            url: '/static/screens/portal/dashboard_include_zone_template.html', // url where to submit the request
-            type : "GET", // type of action POST || GET
-            dataType : 'html', // data type
-            async: false,
-            success : function(data) {
-                var data2 = data.replaceAll("#NAME#", name)
-                data2 = data2.replaceAll("#DESCRIPTION#", description)
-                data2 = data2.replaceAll("#ENABLED#", enabled)
-                data2 = data2.replaceAll("#NEXT_RUN#", nextRunString )
-                data2 = data2.replaceAll("#LAST_RUN#", lastRunString)
-                data2 = data2.replaceAll("#CURRENT_STATUS#", is_running)
-                $("#content_dashboard").append(data2);
-            },
-            error: function(xhr, resp, text) {
-                console.log(text);
-            }
-        });
+        if(dashboard_template != "")
+        {
+            var data2 = dashboard_template
+            data2 = data2.replaceAll("#NAME#", name)
+            data2 = data2.replaceAll("#DESCRIPTION#", description)
+            data2 = data2.replaceAll("#ENABLED#", enabled)
+            data2 = data2.replaceAll("#NEXT_RUN#", nextRunString )
+            data2 = data2.replaceAll("#LAST_RUN#", lastRunString)
+            data2 = data2.replaceAll("#CURRENT_STATUS#", is_running)
+            data2 = data2.replaceAll("#ID#", id);
+            $("#content_dashboard").append(data2);
+        }
+        else
+        {
+            console.log("Template is empty, can't populate zones")
+        }
+        
+
+        
 
     }
+
+
+    // Load history on click
+    $('body').on('click', 'a#history', function() {
+        
+        // Get the hidden ID field to find the ID of this zone
+    })
     
 
 });
