@@ -19,6 +19,58 @@ zonecard {
     min-height: 8em;
 }
 
+/* Decision History styling */
+historycard {
+    border: 1px solid grey;
+    border-top: 0px;
+    margin-top: 1em;
+    /* -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;*/
+    display: flex; 
+    flex: 1;
+    flex-direction: column;
+    /* margin-top: 10px; */
+    /* overflow: scroll; */
+    min-height: max-content;
+}
+
+
+
+decisionitem, decisionheader {
+    border-bottom: 1px solid var(--color-secondary); 
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    min-height: max-content;
+    
+}
+
+
+decisionitem > *, decisionheader > * {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+decisionheader {
+    background-color:var(--color-tertiary);
+    color: var(--color-tertiary-text1);
+}
+
+time, starttime, endtime {
+    min-width: 7em;
+    max-width: 7em;
+}
+
+/* All elements within decision item tag */
+reason, decision {
+    /* min-width: 4em; */
+    /* border: 1px solid red; */
+    flex: 1;
+   
+}
+
+
 zonesegment {
     display: flex;
     align-items: center; /* Aligns items vertically in the segment */
@@ -115,3 +167,11 @@ zonesegment.left {
     max-width: 8em;; 
 }
 
+
+hidden {
+    display: none;
+}
+
+.hide {
+    display: none;
+}

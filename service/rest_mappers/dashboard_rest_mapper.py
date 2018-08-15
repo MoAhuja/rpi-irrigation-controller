@@ -17,6 +17,7 @@ class DashboardRestMapper(BaseRestMapper):
     FIELD_COUNTRY = "country"
 
     # Zone fields
+    FIELD_ID = "id"
     FIELD_ZONES = "zones"
     FIELD_NAME = "name"
     FIELD_DESCRIPTION = "description"
@@ -63,6 +64,7 @@ class DashboardRestMapper(BaseRestMapper):
         zones = self.zdm.retrieveAllZones()
         for zone in zones:
             zoneDict = {}
+            zoneDict[DashboardRestMapper.FIELD_ID] = zone.id
             zoneDict[DashboardRestMapper.FIELD_NAME] = zone.name
             zoneDict[DashboardRestMapper.FIELD_DESCRIPTION] = zone.description
             zoneDict[DashboardRestMapper.FIELD_ENABLED] = zone.enabled

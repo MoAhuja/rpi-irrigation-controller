@@ -175,7 +175,7 @@ def service_get_all_logs():
 	# Check if a log level was specified
 	level = request.args.get('level')
 
-	
+	resp = None
 
 	if level is None:
 		resp = Response(LogsRestMapper().getAllLogs(), mimetype='application/json')
@@ -192,9 +192,12 @@ def service_get_all_decisions():
 	zone = request.args.get('zone')
 
 	if zone is None:
-		return Response(DecisionHistoryRestMapper().getHistoryForAllZones(), mimetype='application/json')
+		resp =  Response(DecisionHistoryRestMapper().getHistoryForAllZones(), mimetype='application/json')
 	else:
-		return Response(DecisionHistoryRestMapper().getHistoryByZone(zone), mimetype='application/json')
+		resp =  Response(DecisionHistoryRestMapper().getHistoryByZone(zone), mimetype='application/json')
+
+	resp.headers['Access-Control-Allow-Origin'] = '*'
+	return resp
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
