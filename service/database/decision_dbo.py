@@ -38,7 +38,7 @@ class DecisionDBO(BaseDBOperations):
     
     def getAllDecisions(self, asJSON=False):
         self.initialize()
-        decisionEntries = self.session.query(DecisionHistory).all()
+        decisionEntries = self.session.query(DecisionHistory).order_by(DecisionHistory.event_time.desc()).all()
         self.session.flush()
 
         if asJSON is True:
@@ -52,7 +52,7 @@ class DecisionDBO(BaseDBOperations):
     
     def getAllDecisionsForZone(self, zone_id, asJSON=False):
         self.initialize()
-        decisionEntries = self.session.query(DecisionHistory).filter_by(zone_id=zone_id).all()
+        decisionEntries = self.session.query(DecisionHistory).filter_by(zone_id=zone_id).order_by(DecisionHistory.event_time.desc()).all()
         self.session.flush()
 
         if asJSON is True:
