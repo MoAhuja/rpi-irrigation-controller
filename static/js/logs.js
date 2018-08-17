@@ -3,6 +3,43 @@ $(document).ready(function()
     logTemplateContent = null;
     pageTemplateContent = null;
 
+
+
+    //Fetch the template content
+    if(logTemplateContent == null)
+    {
+        $.ajax({
+            url: '/static/screens/portal/logs_include_log_template.html', // url where to submit the request
+            type : "GET", // type of action POST || GET
+            dataType : 'html', // data type
+            async: true,
+            success : function(data) {
+                logTemplateContent = data;
+                console.log("Loaded log template");
+            },
+            error: function(xhr, resp, text) {
+                console.log(text);
+            }
+        });
+    }
+
+    if(pageTemplateContent == null)
+    {
+        $.ajax({
+            url: '/static/screens/portal/logs_include_page_template.html', // url where to submit the request
+            type : "GET", // type of action POST || GET
+            dataType : 'html', // data type
+            false: true,
+            success : function(result) {
+                pageTemplateContent = result
+                console.log("loaded page template");
+            },
+            error: function(xhr, resp, text) {
+                console.log(text);
+            }
+        });
+    }
+
     // Handles the "Add Schedule" button
     $('body').on('click', '.logLevelFilter', function() {
         id = $(this).attr('id');
@@ -19,6 +56,8 @@ $(document).ready(function()
          
     });
 
+
+
     
     // $("#content_dashboard").load("/static/screens/portal/dashboard_include.html");
     $("#btn_logs").click(function(){
@@ -34,22 +73,9 @@ $(document).ready(function()
     function loadPageTemplate(){
         $("#content_logs").html("");
 
-        if(pageTemplateContent == null)
-        {
-            $.ajax({
-                url: '/static/screens/portal/logs_include_page_template.html', // url where to submit the request
-                type : "GET", // type of action POST || GET
-                dataType : 'html', // data type
-                false: true,
-                success : function(result) {
-                    pageTemplateContent = result
-                },
-                error: function(xhr, resp, text) {
-                    console.log(text);
-                }
-            });
-        }
+        
 
+        
         $("#content_logs").html(pageTemplateContent);
 
 
@@ -75,24 +101,15 @@ $(document).ready(function()
                 
                 zones = result['LOGS']
 
-                //Fetch the template content
-                if(logTemplateContent == null)
+                
+                if (logTemplateContent != null)
                 {
-                    $.ajax({
-                        url: '/static/screens/portal/logs_include_log_template.html', // url where to submit the request
-                        type : "GET", // type of action POST || GET
-                        dataType : 'html', // data type
-                        async: false,
-                        success : function(data) {
-                            templateContent = data;
-                        },
-                        error: function(xhr, resp, text) {
-                            console.log(text);
-                        }
-                    });
+                    zones.forEach(addLogToScreen)
                 }
-
-                zones.forEach(addLogToScreen)
+                else
+                {
+                    console.log("log template not loaded yet");
+                }
             },
             error: function(xhr, resp, text) {
                 console.log(text);
@@ -123,7 +140,7 @@ $(document).ready(function()
             level = "DEBUG"
         }
 
-        data = templateContent;
+        data = logTemplateContent;
 
         data = data.replaceAll("#LEVEL#", level)
         data = data.replaceAll("#DATE#", timestamp)

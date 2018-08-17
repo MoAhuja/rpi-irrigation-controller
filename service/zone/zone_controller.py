@@ -78,7 +78,7 @@ class ZoneController():
     def deactivateListOfZones(self, listOfKeysToDeactivate, decisionHistoryReasonCode=None):
  
         for x in listOfKeysToDeactivate:
-            self.deactivateZone(activateZone[x].zone, decisionHistoryReasonCode)
+            self.deactivateZone(ZoneController.activeZones[x].zone, decisionHistoryReasonCode)
 
 
     def deactivateZone(self, zone, decisionHistoryReasonCode=None, overrideEndTime=None):
@@ -91,7 +91,7 @@ class ZoneController():
             if self.zrpi_controller.deactivateZone(zone):
                 
                 if decisionHistoryReasonCode is not None:
-                    zoneTiming = self.activeZones[zone.id]
+                    zoneTiming = ZoneController.activeZones[zone.id]
 
                     # Insert a decision event
                     dh = DecisionHistory()
@@ -138,7 +138,7 @@ class ZoneController():
                 #Call the RPI controller to deactivate this zone
                 if self.zrpi_controller.deactivateZone(activeZone.zone):
                     if decisionHistoryReasonCode is not None:
-                        zoneTiming = self.activeZones[activeZone.zone.id]
+                        zoneTiming = ZoneController.activeZones[activeZone.zone.id]
 
                         # Insert a decision event
                         dh = DecisionHistory()

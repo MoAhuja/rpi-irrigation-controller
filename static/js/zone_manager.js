@@ -24,7 +24,7 @@ $(document).ready(function(){
 
 
         $.ajax({
-            url: 'http://127.0.0.1:5000/service_hub/zone', // url where to submit the request
+            url: 'http://localhost:5000/service_hub/zone', // url where to submit the request
             type : "POST", // type of action POST || GET
             dataType : 'json', // data type
             data : jsonData, // post data || get data

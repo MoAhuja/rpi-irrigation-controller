@@ -57,6 +57,11 @@ log {
     min-height: 3em;
 }
 
+log > * {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
 message {
     flex: 1;
 }

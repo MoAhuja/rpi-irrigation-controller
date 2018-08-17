@@ -67,7 +67,7 @@ $(document).ready(function()
             url: 'http://127.0.0.1:5000/service_hub/dashboard', // url where to submit the request
             type : "GET", // type of action POST || GET
             dataType : 'json', // data type
-            async: false,
+            async: true,
             success : function(result) {
                 // you can see the result from the console
                 // tab of the developer tools
@@ -93,13 +93,18 @@ $(document).ready(function()
         is_running = item["is_running"]
         if (item["next_run"] != null)
         {
-            next_run_start = item["next_run"]["start"]
-            nr_startDate = new Date(next_run_start)
-            console.log(nr_startDate)
-            next_run_end = item["next_run"]["end"]
-            nr_endDate = new Date(item["next_run"]["end"])
-            console.log(nr_endDate)
-            nextRunString = next_run_start + " - " + next_run_end
+            start = item["next_run"]["start"]
+            startDate = Date.parse(start);
+            startDateString = toDateString(startDate);
+            
+            end = item["next_run"]["end"]
+            endDate = Date.parse(end)
+            endDateString = toDateString(endDate);
+            
+            duration = calculateDuration(startDate, endDate);
+
+            // console.log(lr_endDate);
+            nextRunString = startDateString  + " for " + duration;
         }
         else
         {
@@ -108,13 +113,18 @@ $(document).ready(function()
 
         if(item["last_run"] != null)
         {
-            last_run_start = item["last_run"]["start"]
-            lr_startDate = new Date(next_run_start)
-            console.log(nr_startDate)
-            last_run_end = item["last_run"]["end"]
-            lr_endDate = new Date(item["next_run"]["end"])
-            console.log(nr_endDate)
-            lastRunString = last_run_start   + " - " +  last_run_end
+            start = item["last_run"]["start"]
+            startDate = Date.parse(start);
+            startDateString = toDateString(startDate);
+            
+            end = item["last_run"]["end"]
+            endDate = Date.parse(end)
+            endDateString = toDateString(endDate);
+            
+            duration = calculateDuration(startDate, endDate);
+
+            // console.log(lr_endDate);
+            lastRunString = startDateString + " for " + duration;
         }
         else
         {
@@ -131,6 +141,21 @@ $(document).ready(function()
             data2 = data2.replaceAll("#LAST_RUN#", lastRunString)
             data2 = data2.replaceAll("#CURRENT_STATUS#", is_running)
             data2 = data2.replaceAll("#ID#", id);
+
+
+            // nextRunDate = Date.parse(next_run_start);
+            // alert(nextRunDate);
+            
+            if(is_running)
+            {
+                data2 = data2.replaceAll("#STATUS#", "Stop");
+                data2 = data2.replaceAll("#STATUS_CLASS#", "Active");
+            }
+            else
+            {
+                data2 = data2.replaceAll("#STATUS#", "Start");
+                data2 = data2.replaceAll("#STATUS_CLASS#", "Deactive");
+            }
             $("#content_dashboard").append(data2);
         }
         else
@@ -170,11 +195,89 @@ $(document).ready(function()
                 console.log(text);
             }
         });
+    });
+
+        // Activation/Deactivation of zone on click
+    $('body').on('click', 'a#controller', function() {
+        
+        // Get the hidden ID field to find the ID of this zone
+        var zone_id = $(this).parent().parent().parent().parent().find("#zone_id").text();
+
+        // alert(zone_id);
+        
+        // Get the current status
+        if($(this).hasClass("Active"))
+        {
+            // Deactivate operation
+            // alert("Need to deactivate");
+            deactivateZone(zone_id, $(this));
+        }
+        else
+        {
+            // //Activate operation
+            // // alert("need to activate");
+            // $(this).html("Stop");
+            // $(this).removeClass("Deactive");
+            // $(this).addClass("Active");
+            activateZone(zone_id, 10, $(this));
+        }
+
+        
 
         // alert(selector);
         // $(selector).toggleClass("hide");
         // $(selector).toggle(500);
-    })
+    });
+
+    function activateZone(zone_id, duration, elementToUpdate)
+    {
+        // let zone_id_var = zone_id;
+        // let duration_var = duration;
+
+        var request = `{"id": ${zone_id}, "duration": ${duration}}`;
+
+        console.log(request);
+        $.ajax({
+            url: 'http://localhost:5000/service_hub/zones/activate', 
+            type : "POST", // type of action POST || GET
+            dataType : 'json', // data type
+            data: request,
+            async: true,
+            success : function(result) {
+                $(elementToUpdate).html("Stop");
+                $(elementToUpdate).removeClass("Deactive");
+                $(elementToUpdate).addClass("Active");
+            },
+            error: function(xhr, resp, text) {
+                console.log(text);
+            }
+        });
+    }
+
+    function deactivateZone(zone_id, elementToUpdate)
+    {
+        // let zone_id_var = zone_id;
+        // let duration_var = duration;
+
+        var request = `{"id": ${zone_id}}`;
+
+        console.log(request);
+        $.ajax({
+            url: 'http://localhost:5000/service_hub/zones/deactivate', 
+            type : "POST", // type of action POST || GET
+            dataType : 'json', // data type
+            data: request,
+            async: true,
+            success : function(result) {
+                $(elementToUpdate).html("Start");
+                $(elementToUpdate).removeClass("Active");
+                $(elementToUpdate).addClass("Deactive");
+            },
+            error: function(xhr, resp, text) {
+                console.log(text);
+            }
+        });
+    }
 
     function addDecisionToScreen(item, index)
     {
@@ -185,17 +288,57 @@ $(document).ready(function()
         template = template.replaceAll("#START_TIME#", item["start_time"].replaceAll("T", " "));
         template = template.replaceAll("#END_TIME#", item["end_time"].replaceAll("T", " "));
         template = template.replaceAll("#REASON#", SplitByUppercase(item["reason"]));
-
+        
 
         $(current_history_selector).append(template);
-    }
+    };
 
     function SplitByUppercase(stringToSplit)
     {
         var splitString = stringToSplit.split(/(?=[A-Z])/).join(" ");
         return splitString;
+    };
 
-            // return stringToSplit.match(/[A-Z][a-z]+|[0-9]+/g).join(" ");
+    function msToTime(duration) 
+    {
+        var milliseconds = parseInt((duration % 1000) / 100),
+          seconds = parseInt((duration / 1000) % 60),
+          minutes = parseInt((duration / (1000 * 60)) % 60),
+          hours = parseInt((duration / (1000 * 60 * 60)) % 24);
+      
+        hours = (hours < 10) ? "0" + hours : hours;
+        minutes = (minutes < 10) ? "0" + minutes : minutes;
+        // seconds = (seconds < 10) ? "0" + seconds : seconds;
+      
+        if(hours > 0)
+        {
+            return hours + ":" + minutes + " hours";
+        }
+        else
+        {
+            return minutes + " minutes"
+        }
+        
+      }
+
+    function calculateDuration(fromDate, toDate)
+    {   
+        var diff = Math.abs(fromDate-toDate);
+        return msToTime(diff);
     }
 
+    function toDateString(timeAsMilliseconds)
+    {
+        dateObject = new Date(timeAsMilliseconds);
+        // alert(dateObject);
+        var dateYear = dateObject.getFullYear();
+        var hour = dateObject.getHours();
+        var minute = dateObject.getMinutes();
+        var dateMonth = dateObject.getMonth() + 1;
+        var day = dateObject.getDate();
+        var dateString = `${dateMonth}\\${day} ${hour}:${minute}`
+
+        return dateString;
+
+    }
 });
