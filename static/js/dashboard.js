@@ -4,11 +4,12 @@ $(document).ready(function()
     var history_template = ""
     var history_header_template = ""
     var current_history_selector = ""
+    var dashboard_settings_template = ""
 
 
 
     $.ajax({
-        url: '/static/screens/portal/dashboard_include_zone_template.html', // url where to submit the request
+        url: '/static/screens/portal/dashboard/dashboard_include_zone_template.html', // url where to submit the request
         type : "GET", // type of action POST || GET
         dataType : 'html', // data type
         async: true,
@@ -23,7 +24,7 @@ $(document).ready(function()
     });
 
     $.ajax({
-        url: '/static/screens/portal/dashboard_include_history_row_template.html', // url where to submit the request
+        url: '/static/screens/portal/dashboard/dashboard_include_history_row_template.html', // url where to submit the request
         type : "GET", // type of action POST || GET
         dataType : 'html', // data type
         async: true,
@@ -38,7 +39,22 @@ $(document).ready(function()
     });
 
     $.ajax({
-        url: '/static/screens/portal/dashboard_include_history_header_template.html', // url where to submit the request
+        url: '/static/screens/portal/dashboard/dashboard_include_dashboard_settings_template.html', // url where to submit the request
+        type : "GET", // type of action POST || GET
+        dataType : 'html', // data type
+        async: true,
+        success : function(data) {
+            dashboard_settings_template = data;
+            console.log("Dashboard settings template loaded");
+            
+        },
+        error: function(xhr, resp, text) {
+            console.log(text);
+        }
+    });
+
+    $.ajax({
+        url: '/static/screens/portal/dashboard/dashboard_include_history_header_template.html', // url where to submit the request
         type : "GET", // type of action POST || GET
         dataType : 'html', // data type
         async: true,
@@ -55,6 +71,7 @@ $(document).ready(function()
     // $("#content_dashboard").load("/static/screens/portal/dashboard_include.html");
     $("#btn_dashboard").click(function(){
         
+
         loadDashboardContent();
 
     });
@@ -62,6 +79,7 @@ $(document).ready(function()
     function loadDashboardContent()
     {
         $("#content_dashboard").html("");
+
         
         $.ajax({
             url: 'http://127.0.0.1:5000/service_hub/dashboard', // url where to submit the request
@@ -74,6 +92,9 @@ $(document).ready(function()
                 system_settings = result['system_settings'];
                 zones = result['zones']
 
+                // First we add the header row that has the
+                addSystemSettingsToScreen(system_settings);
+
                 zones.forEach(addZoneToScreen)
             },
             error: function(xhr, resp, text) {
@@ -82,6 +103,38 @@ $(document).ready(function()
         });
     }
 
+    function addSystemSettingsToScreen(settings)
+    {
+        console.log("Adding system settings header");
+
+        var kill_switch = settings["kill_switch"];
+        var city = settings["city"];
+        var country = settings ["country"];
+        var rain_delay = settings["rain_delay"];
+
+        if(rain_delay == null)
+        {
+            rain_delay = "OFF";
+        }
+
+        if(kill_switch == false)
+        {
+            kill_switch = "OFF"
+        }
+        else
+        {
+            kill_switch = "ON";
+        }
+
+        var modifiedTemplate = dashboard_settings_template;
+        modifiedTemplate = modifiedTemplate.replaceAll("#KILL_SWITCH#", kill_switch);
+        modifiedTemplate = modifiedTemplate.replaceAll("#RAIN_DELAY#", rain_delay);
+        modifiedTemplate = modifiedTemplate.replaceAll("#LOCATION#", city + " , " + country);
+        
+
+        $("#content_dashboard").append(modifiedTemplate);
+
+    }
     function addZoneToScreen(item, index)
     {  
         console.log(index)

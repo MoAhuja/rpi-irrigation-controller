@@ -26,13 +26,49 @@ historycard {
     margin-top: 1em;
     /* -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
-    border-radius: 8px;*/
+    border-radius: 8px; */
     display: flex; 
     flex: 1;
     flex-direction: column;
     /* margin-top: 10px; */
     /* overflow: scroll; */
     min-height: max-content;
+}
+
+settingscard {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid grey;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    min-height: max-content;
+    overflow: hidden;
+    
+
+}
+
+settingscard column {
+    display: flex;
+    flex: 1;
+    border-right: 1px solid green;
+    flex-direction: column; 
+    justify-content: center;
+}
+
+settingscard column.right {
+    border: none;
+}
+
+top {
+    border-bottom: 1px solid black;
+    text-align: center;
+    background-color: var(--color-tertiary); 
+    color: var(--color-tertiary-text1);
+    font-weight: 500;
+}
+bottom {
+    text-align: center;
 }
 
 

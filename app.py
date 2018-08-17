@@ -132,6 +132,7 @@ def service_zone_delete_or_get(zone_id):
 		result = mapper.getZone(zone_id)
 		result = Response(result, mimetype='application/json')
 
+	result.headers['Access-Control-Allow-Origin'] = '*'
 
 	return result
 
@@ -143,7 +144,12 @@ def service_zone_create():
 	mapper = ZoneDataRestMapper()
 
 	json_data = request.get_json(force=True)
-	return mapper.createZone(json_data)
+	resp = Response(mapper.createZone(json_data), mimetype='application/json')
+	resp.headers['Access-Control-Allow-Origin'] = '*'
+	
+	# resp.headers['Access-Control-Allow-Headers'] = 'application/json'
+
+	return resp
 
 
 @app.route('/service_hub/zone/edit', methods=['POST'])
@@ -219,7 +225,7 @@ if __name__ == '__main__':
 	engine = Engine()
 	
 	# zm = ZoneManager(event_pub)
-	app.run(debug=False, threaded=True)
+	app.run(debug=False, threaded=True, host='0.0.0.0')
 
 	
 
