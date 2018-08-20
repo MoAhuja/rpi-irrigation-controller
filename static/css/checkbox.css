@@ -12,6 +12,7 @@ label.checkboxframe {
 	cursor: pointer;
 	text-indent: -9999px;
 	width: 50px;
+	max-width: 60px;
 	height: 24px;
 	background: lightgrey;
 	display: block;

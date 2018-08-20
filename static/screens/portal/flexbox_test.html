@@ -9,6 +9,8 @@
             <script type="text/javascript" src="/static/js/jquery.serialize-object.min.js"></script>
             <script type="text/javascript" src="/static/js/zone_manager.js"></script>
             <script type="text/javascript" src="/static/js/dashboard.js"></script>
+
+            <script type="text/javascript" src="/static/js/settings.js"></script>
             
             <script type="text/javascript" src="/static/js/logs.js"></script>
             <link rel= "stylesheet" type= "text/css" href= "/static/js/timepicker/jquery.timepicker.css">
@@ -17,6 +19,7 @@
             <link rel="stylesheet" type="text/css" href="/static/css/checkbox.css">
             <link rel="stylesheet" type="text/css" href="/static/css/button.css">
             <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css">
+            <link rel="stylesheet" type="text/css" href="/static/css/settings.css">
             
             <link rel="stylesheet" type="text/css" href="/static/css/logs.css">
             <script>
@@ -35,6 +38,8 @@
                         $("#content_manager").hide()
                         
                         $("#content_logs").hide()
+
+                        $("#content_settings").hide();
                     });
 
                     
@@ -87,7 +92,7 @@
                         <li class="bar">|</li>
                         <li id="btn_logs"><a href="#" >Logs</a></li>
                         <li class="bar">|</li>
-                        <li id="btn_settings"><a href="#" >System Settings</a></li>
+                        <li id="btn_settings"><a href="#" >Settings</a></li>
                         <!-- </ul> -->
                     </ul>
             </header>
@@ -125,6 +130,9 @@
                     <logs>
                         Logs
                     </logs>
+                </div>
+
+                <div id="content_settings">
                 </div>
             </content>
 
