@@ -1,8 +1,10 @@
 
 <notifications>
     <group>
+        <form id="pbform">
         <row class="title">
             <h3>Push Bullet</h3>
+            <button  class="btn btn-blue"  id="save_pb">Save</button>
         </row>
         
         <subgroup>
@@ -11,24 +13,38 @@
             </row>
             <row>
                 <label>Enable Disable</label>
-                <input type="checkbox" class="fancycheckbox" name="schedule[NUMBER_HOLDER][days][]" id="Monday[NUMBER_HOLDER]" value="0">
-                <label for="Monday[NUMBER_HOLDER]" class="checkboxframe"></label>
+                <input type="checkbox" class="fancycheckbox" name="enable" id="enable" value="0">
+                <label for="enable" class="checkboxframe"></label>
             </row>
+
+            <!-- Notify on watering start -->
             <row>
-                <label for="api_key">API Key</label>
-                <input type="text" name="api_key" id="api_key"></input>
+                <label>Notify on watering start</label>
+                <input type="checkbox" class="fancycheckbox" name="notify[start]" id="notify_start" value="0">
+                <label for="notify_start" class="checkboxframe"></label>
             </row>
+            <!-- Notify when zone starts -->
+            <row>
+                <label>Notify on watering stop</label>
+                <input type="checkbox" class="fancycheckbox" name="notify[stop]" id="notify_stop" value="0">
+                <label for="notify_stop" class="checkboxframe"></label>
+            </row>
+            
+            <!-- Notify when there is an error -->
+            <row>
+                <label>Notify on error</label>
+                <input type="checkbox" class="fancycheckbox" name="notify[error]" id="notify_on_error" value="0">
+                <label for="notify_on_error" class="checkboxframe"></label>
+            </row>
+            
         </subgroup> 
 
-        <subgroup>
-                <row class="subtitle">
-                    <h4>Users</h3>
-                    <button>+</button>
-                </row>
-                <row>
-                    <label for="user[]">Users</label>
-                    <input type="text" name="api_key" id="api_key"></input>
-                </row>
-            </subgroup> 
+        <subgroup id="pushbullet_users">
+            <row class="subtitle">
+                <h4>Users</h3>
+                <button  class="btn btn-blue"  id="add_pb_user">Add</button>
+            </row>
+        </subgroup> 
+    </form>
     </group>
 </notifications>

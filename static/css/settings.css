@@ -77,3 +77,13 @@ row input {
 row button,input {
     align-content: right;
 }
+
+row.input_users
+{
+    display: flex;
+}
+
+row.input_users input {
+    flex: 1;
+    margin: 8px;
+}

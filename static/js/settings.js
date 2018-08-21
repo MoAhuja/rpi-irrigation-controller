@@ -2,7 +2,23 @@ $(document).ready(function()
 {
     page_template = "";
     notification_template = "";
+    push_bullet_input_user_row_template = ""
+    number_of_users = 0;
 
+    $.ajax({
+        url: '/static/screens/portal/settings/include_pushbullet_input_user_row_template.html', // url where to submit the request
+        type : "GET", // type of action POST || GET
+        dataType : 'html', // data type
+        async: true,
+        success : function(data) {
+            push_bullet_input_user_row_template = data
+            console.log("Push Bullet Input user template")
+            
+        },
+        error: function(xhr, resp, text) {
+            console.log(text);
+        }
+    });
 
     $.ajax({
         url: '/static/screens/portal/settings/include_settings_page_template.html', // url where to submit the request
@@ -47,6 +63,16 @@ $(document).ready(function()
     $('body').on('click', '#nav_push_notifications', function() {
         loadPushNotificationSettings();
     });
+
+    $('body').on('click', '#add_pb_user', function() {
+        addPushBulletUserInputRow();
+    });
+
+
+    $('body').on('click', '#save_pb', function() {
+        savePushBulletSettings();
+    });
+    
     
 
 
@@ -63,5 +89,19 @@ $(document).ready(function()
     function loadPushNotificationSettings()
     {
         $("#content_settings content").html(notification_template);
+    }
+
+    function addPushBulletUserInputRow()
+    {
+        curTemplate = push_bullet_input_user_row_template;
+        curTemplate = curTemplate.replaceAll("NUMBER_HOLDER", number_of_users++);
+        $("#pushbullet_users").append(curTemplate);
+    }
+
+    function savePushBulletSettings()
+    {
+        // TODO: Fill in the API call to save push bullet settings
+        var jsonData = $("#pbform").serializeJSON();
+        console.log(jsonData);
     }
 });

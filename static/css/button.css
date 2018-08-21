@@ -29,3 +29,8 @@
     background-color: #3C677B;
     border-color: rgba(0,0,0,0.9);
 }
+
+.btn.btn-blue:disabled {
+    background-color: slategrey;
+    border-color: rgba(0,0,0,0.9);
+}
