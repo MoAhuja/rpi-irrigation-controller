@@ -222,6 +222,10 @@ class SettingsRestMapper(BaseRestMapper):
     def getNotificationSettings(self):
         
         response = {}
+        response[SettingsRestMapper.FIELD_NOTIFY_START] = self.smgr.getNotifyOnWateringStart()
+        response[SettingsRestMapper.FIELD_NOTIFY_STOP] = self.smgr.getNotifyOnWateringEnd()
+        response[SettingsRestMapper.FIELD_NOTIFY_ERROR] = self.smgr.getNotifyOnError()
+        
         # response[self.FIELD_KILL_SWITCH] = self.smgr.getKillSwitch()
         return self.returnSuccessfulResponse(response)
 
