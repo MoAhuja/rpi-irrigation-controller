@@ -192,6 +192,7 @@ def service_get_all_logs():
 		resp = Response(LogsRestMapper().getLogsByLevel(level), mimetype='application/json')
 		resp.headers['Access-Control-Allow-Origin'] = '*'
 		return resp
+
 @app.route('/service_hub/decisionhistory', methods=['GET'])
 def service_get_all_decisions():
 	# Check if a log level was specified
@@ -204,6 +205,22 @@ def service_get_all_decisions():
 
 	resp.headers['Access-Control-Allow-Origin'] = '*'
 	return resp
+
+@app.route('/service_hub/settings/notification/config', methods=['GET', 'POST'])
+def service_settings_notification_config():
+	srm = SettingsRestMapper()
+	if request.method == 'GET':
+		resp = Response(srm.getNotificationSettings(), mimetype='application/json')
+		resp.headers['Access-Control-Allow-Origin'] = '*'
+		
+	else:
+		# POst request, so we need to update the notification settings
+		json_data = request.get_json(force=True)
+		resp = Response(srm.setNotificationSettings(json_data), mimetype='application/json')
+		resp.headers['Access-Control-Allow-Origin'] = '*'
+
+	return resp
+		
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):

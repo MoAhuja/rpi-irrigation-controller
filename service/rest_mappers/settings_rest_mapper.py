@@ -21,6 +21,9 @@ class SettingsRestMapper(BaseRestMapper):
     FIELD_RAIN_DELAY = "rain_delay"
     FIELD_LOG_LEVEL = "log_level"
     FIELD_KILL_SWITCH = "kill_switch"
+    FIELD_NOTIFY_START = "notify_on_watering_start"
+    FIELD_NOTIFY_STOP = "notify_on_watering_stop"
+    FIELD_NOTIFY_ERROR = "notify_on_error"
     
     def __init__(self):
         self.smgr = SettingsManager()
@@ -188,5 +191,37 @@ class SettingsRestMapper(BaseRestMapper):
         
         response = {}
         response[self.FIELD_KILL_SWITCH] = self.smgr.getKillSwitch()
+        return self.returnSuccessfulResponse(response)
+
+    def setNotificationSettings(self, json_data):
+        
+        shared.logger.debug(self, "setNotificationSettings - Entered")
+        shared.logger.debug(self, "Data = " + json.dumps(json_data))
+        
+        notifyStart = self.getKeyOrSetAsNone(json_data, SettingsRestMapper.FIELD_NOTIFY_START)
+        notifyEnd = self.getKeyOrSetAsNone(json_data, SettingsRestMapper.FIELD_NOTIFY_STOP)
+        notifyError = self.getKeyOrSetAsNone(json_data, SettingsRestMapper.FIELD_NOTIFY_ERROR)
+        
+        if notifyStart is None:
+            notifyStart = False
+        
+        if notifyEnd is None:
+            notifyEnd = False
+        
+        if notifyError is None:
+            notifyError = False
+
+        # Validate values are bools
+        self.validateIsProvidedAndBool(notifyStart, SettingsRestMapper.FIELD_NOTIFY_START, json_data)
+        self.validateIsProvidedAndBool(notifyEnd, SettingsRestMapper.FIELD_NOTIFY_STOP, json_data)
+        self.validateIsProvidedAndBool(notifyError, SettingsRestMapper.FIELD_NOTIFY_ERROR, json_data)
+
+        response = self.smgr.setAllNotificationPreferences(notifyStart, notifyEnd, notifyError)
+        return self.returnSuccessfulResponse()
+    
+    def getNotificationSettings(self):
+        
+        response = {}
+        # response[self.FIELD_KILL_SWITCH] = self.smgr.getKillSwitch()
         return self.returnSuccessfulResponse(response)
 

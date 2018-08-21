@@ -20,9 +20,16 @@ class SettingsManager():
     field_console_log_level = 'consoleLogLevel'
     field_database_log_level = 'databaseLogLevel'
 
+    # Notify section and fields
+    section_notifications = 'Notifications'
+    field_notify_on_error = 'notifyOnError'
+    field_notify_on_watering_start = 'notifyOnWateringStart'
+    field_notify_on_watering_end = 'notifyOnWateringEnd'
+
     # Locks for each property so we don't read while a write is ongoing
     lockRainDelay = Lock()
     lockLoggingLevel = Lock()
+    lockNotificationSettings = Lock()
 
     #Class level "asOf" date so we know if the current config is stale
     lastUpdatedDate = datetime.now()
@@ -94,7 +101,6 @@ class SettingsManager():
         return(self.config[SettingsManager.section_operational][SettingsManager.field_country])
     
     def setKillSwitch(self, kill_switch):
-        # self.readConfig()
         self.config[SettingsManager.section_operational][SettingsManager.field_kill_switch] = str(kill_switch)
         self.save()
         shared_events.event_publisher.publishKillSwitchUpdated()
@@ -104,7 +110,9 @@ class SettingsManager():
         # self.readConfig()
         return(self.config[SettingsManager.section_operational].getboolean(SettingsManager.field_kill_switch))
 
-    # Logging Fields
+    ########################################
+    #  Logging Fields
+    ########################################
     def getConsoleLogLevel(self):
         # self.readConfig()
         print("getConsoleLogLevel - Acquriing lock")
@@ -145,7 +153,47 @@ class SettingsManager():
         self.save()
         shared_events.event_publisher.publishLogLevelUpdated()
 
+
+    ########################################
+    #  Notification Fields
+    ########################################
     
+    def setNotifyOnError(self, value):
+        self.config[SettingsManager.section_notifications][SettingsManager.field_notify_on_error] = str(value)
+        self.save()
+        shared_events.event_publisher.publishNotificationConfigUpdated()
+
+    
+    def getNotifyOnError(self):
+        # self.readConfig()
+        return(self.config[SettingsManager.section_notifications].getboolean(SettingsManager.field_notify_on_error))
+
+    def setNotifyOnWateringStart(self, value):
+        self.config[SettingsManager.section_notifications][SettingsManager.field_notify_on_watering_start] = str(value)
+        self.save()
+        shared_events.event_publisher.publishNotificationConfigUpdated()
+    
+    def getNotifyOnWateringStart(self):
+        # self.readConfig()
+        return(self.config[SettingsManager.section_notifications].getboolean(SettingsManager.field_notify_on_watering_start))
+
+    def setNotifyOnWateringEnd(self, value):
+        self.config[SettingsManager.section_notifications][SettingsManager.field_notify_on_watering_end] = str(value)
+        self.save()
+        shared_events.event_publisher.publishNotificationConfigUpdated()
+    
+    def getNotifyOnWateringEnd(self):
+        # self.readConfig()
+        return(self.config[SettingsManager.section_notifications].getboolean(SettingsManager.field_notify_on_watering_end))
+
+    def setAllNotificationPreferences(self, start, end, error):
+        self.config[SettingsManager.section_notifications][SettingsManager.field_notify_on_watering_start] = str(start)
+        self.config[SettingsManager.section_notifications][SettingsManager.field_notify_on_watering_end] = str(end)
+        self.config[SettingsManager.section_notifications][SettingsManager.field_notify_on_error] = str(error)
+        self.save()
+        shared_events.event_publisher.publishNotificationConfigUpdated()
+    
+
     def save(self):
         # self.lock.acquire()
         # try:

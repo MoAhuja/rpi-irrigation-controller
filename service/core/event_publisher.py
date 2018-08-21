@@ -8,8 +8,9 @@ class EventPublisher():
             self.logging_subscribers = set()
             self.settings_subscribers = set()
             self.killswitch_subscribers = set()
+            self.notification_config_subscribers = set()
 
-    def register(self, who, listenForZoneUpdates=False, listenForRainDelayUpdates=False, listenForLoggingUpdates=False, listenForSettingsChanges=False, listenForKillSwitchUpdates=False):
+    def register(self, who, listenForZoneUpdates=False, listenForRainDelayUpdates=False, listenForLoggingUpdates=False, listenForSettingsChanges=False, listenForKillSwitchUpdates=False, listenForNotificationConfigChanges=False):
         if listenForZoneUpdates:
             self.zone_subscribers.add(who)
         
@@ -24,6 +25,9 @@ class EventPublisher():
         
         if listenForKillSwitchUpdates:
             self.killswitch_subscribers.add(who)
+        
+        if listenForNotificationConfigChanges:
+            self.notification_config_subscribers.add(who)
 
     def unregister(self, who):
         self.rain_delay_subscribers.discard(who)
@@ -31,6 +35,7 @@ class EventPublisher():
         self.logging_subscribers.discard(who)
         self.settings_subscribers.discard(who)
         self.killswitch_subscribers.discard(who)
+        self.notification_config_subscribers.discard(who)
 
     def publishZoneInfoUpdated(self):
         for subscriber in self.zone_subscribers:
@@ -52,4 +57,8 @@ class EventPublisher():
     def publishKillSwitchUpdated(self):
         for subscriber in self.killswitch_subscribers:
             subscriber.eventKillSwitchUpdated()
+    
+    def publishNotificationConfigUpdated(self):
+        for subscriber in self.notification_config_subscribers:
+            subscriber.eventNotificationConfigUpdated()
       
