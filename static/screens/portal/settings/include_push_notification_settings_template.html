@@ -1,5 +1,38 @@
 
 <notifications>
+
+    <group>
+        <form id="notification_settings">
+        <row class="title">
+            <h3>Notification Settings</h3>
+            <button  class="btn btn-blue"  id="save_notification_settings">Save</button>
+        </row>
+        
+        <subgroup>
+            <!-- Notify on watering start -->
+            <row>
+                <label>Notify on watering start</label>
+                <input type="checkbox" class="fancycheckbox" name="notify_on_watering_start" id="notify_start" value="True">
+                <label for="notify_start" class="checkboxframe"></label>
+            </row>
+            <!-- Notify when zone starts -->
+            <row>
+                <label>Notify on watering stop</label>
+                <input type="checkbox" class="fancycheckbox" name="notify_on_watering_stop" id="notify_stop" value="True">
+                <label for="notify_stop" class="checkboxframe"></label>
+            </row>
+            
+            <!-- Notify when there is an error -->
+            <row>
+                <label>Notify on error</label>
+                <input type="checkbox" class="fancycheckbox" name="notify_on_error" id="notify_on_error" value="True">
+                <label for="notify_on_error" class="checkboxframe"></label>
+            </row>
+            
+        </subgroup> 
+    </form>
+    </group>
+
     <group>
         <form id="pbform">
         <row class="title">
@@ -8,33 +41,10 @@
         </row>
         
         <subgroup>
-            <row class="subtitle">
-                <h4>Settings</h3>
-            </row>
             <row>
                 <label>Enable Disable</label>
                 <input type="checkbox" class="fancycheckbox" name="enable" id="enable" value="0">
                 <label for="enable" class="checkboxframe"></label>
-            </row>
-
-            <!-- Notify on watering start -->
-            <row>
-                <label>Notify on watering start</label>
-                <input type="checkbox" class="fancycheckbox" name="notify[start]" id="notify_start" value="0">
-                <label for="notify_start" class="checkboxframe"></label>
-            </row>
-            <!-- Notify when zone starts -->
-            <row>
-                <label>Notify on watering stop</label>
-                <input type="checkbox" class="fancycheckbox" name="notify[stop]" id="notify_stop" value="0">
-                <label for="notify_stop" class="checkboxframe"></label>
-            </row>
-            
-            <!-- Notify when there is an error -->
-            <row>
-                <label>Notify on error</label>
-                <input type="checkbox" class="fancycheckbox" name="notify[error]" id="notify_on_error" value="0">
-                <label for="notify_on_error" class="checkboxframe"></label>
             </row>
             
         </subgroup> 

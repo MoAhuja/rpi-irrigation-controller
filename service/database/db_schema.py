@@ -364,6 +364,23 @@ class RpiPinMapper(Base):
     # Maps a relay pin to a raspberry pi pin
     rpi_pin = Column('rpi_pin', Integer, nullable=False, unique=True)
 
+class PushBulletUsers(Base):
+    __tablename__ = "pushbullet_users"
+
+    FIELD_NAME = "name"
+    FIELD_API_KEY = "api_key"
+    
+    id = Column('id', Integer, primary_key=True)
+    name = Column('name', String(50), nullable=True)
+    api_key = Column('api_key', String(100), nullable=False, unique=True)
+
+    def toDictionary(self):
+        out = {}
+        out[PushBulletUsers.FIELD_NAME] = self.name
+        out[PushBulletUsers.FIELD_API_KEY] = self.api_key
+
+        return out
+
 # TODO: Add table for system settings (location, safety shutoff, auto-disable if safety shutoff was invoked, alerting)
 # TODO: Create a table to support notifications configuration (URLS, what to notify on)
 

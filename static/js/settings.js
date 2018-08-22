@@ -72,6 +72,10 @@ $(document).ready(function()
     $('body').on('click', '#save_pb', function() {
         savePushBulletSettings();
     });
+
+    $('body').on('click', '#save_notification_settings', function() {
+        saveNotificationSettings();
+    });
     
     
 
@@ -102,6 +106,32 @@ $(document).ready(function()
     {
         // TODO: Fill in the API call to save push bullet settings
         var jsonData = $("#pbform").serializeJSON();
+        
         console.log(jsonData);
+
+        // $("#pbform")
+    }
+
+    function saveNotificationSettings()
+    {
+        // TODO: Fill in the API call to save push bullet settings
+        var jsonData = $("#notification_settings").serializeJSON();
+        
+        jsonData = jsonData.replaceAll("\"True\"", "true");
+        console.log(jsonData);
+        $.ajax({
+            url: 'http://localhost:5000/service_hub/settings/notification/config', // url where to submit the request
+            type : "POST", // type of action POST || GET
+            dataType : 'json', // data type
+            data : jsonData, // post data || get data
+            success : function(result) {
+                // you can see the result from the console
+                // tab of the developer tools
+                console.log(result);
+            },
+            error: function(xhr, resp, text) {
+                console.log(text);
+            }
+        });
     }
 });
