@@ -15,6 +15,7 @@ from service.rest_mappers.zone_controller_rest_mapper import ZoneControllerRestM
 from service.rest_mappers.dashboard_rest_mapper import DashboardRestMapper
 from service.rest_mappers.logs_rest_mapper import LogsRestMapper
 from service.rest_mappers.decision_history_rest_mapper import DecisionHistoryRestMapper
+from service.rest_mappers.notification_users_rest_mapper import NotificationUsersRestMapper
 import service.database.db_schema
 
 from service.zone.zone_controller import ZoneController
@@ -220,7 +221,27 @@ def service_settings_notification_config():
 		resp.headers['Access-Control-Allow-Origin'] = '*'
 
 	return resp
-		
+
+@app.route('/service_hub/settings/notification/pushbullet/user', methods=['POST'])
+def service_settings_pushbullet_user():
+	rm = NotificationUsersRestMapper()
+	
+	# POst request, so we need to update the notification settings
+	json_data = request.get_json(force=True)
+	resp = Response(rm.addPushBulletUser(json_data), mimetype='application/json')
+	resp.headers['Access-Control-Allow-Origin'] = '*'
+
+	return resp
+
+@app.route('/service_hub/settings/notification/pushbullet/users', methods=['GET'])
+def service_settings_pushbullet_users():
+	rm = NotificationUsersRestMapper()
+	
+	# POst request, so we need to update the notification settings
+	resp = Response(rm.getPushBulletNotificationUsers(), mimetype='application/json')
+	resp.headers['Access-Control-Allow-Origin'] = '*'
+
+	return resp		
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
