@@ -25,6 +25,7 @@ group
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
+    margin-bottom: 15px;
 }
 
 subgroup
@@ -46,6 +47,10 @@ row
     align-items: center;
     padding-right: 10px;
     padding-left: 10px;
+}
+
+row h3 {
+    margin: 5px;
 }
 
 row.title {

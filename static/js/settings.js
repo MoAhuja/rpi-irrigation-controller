@@ -4,6 +4,9 @@ $(document).ready(function()
     notification_template = "";
     push_bullet_input_user_row_template = ""
     number_of_users = 0;
+    notificationConfigData = ""
+    pushBulletUsers = ""
+
 
     $.ajax({
         url: '/static/screens/portal/settings/include_pushbullet_input_user_row_template.html', // url where to submit the request
@@ -92,13 +95,118 @@ $(document).ready(function()
 
     function loadPushNotificationSettings()
     {
-        $("#content_settings content").html(notification_template);
+        notificationConfigData = ""
+        step = 0
+
+        // $.when(loadConfigData(), loadPushBulletUsersData()).then(drawScreen(), drawErrorScreen())
+        $.when(
+            $.get('http://127.0.0.1:5000/service_hub/settings/notification/config', function(data){
+                console.log("Loaded config data: " + data);
+                notificationConfigData = data;
+
+            }), $.get('http://127.0.0.1:5000/service_hub/settings/notification/pushbullet/users', function(data){
+                console.log("Loaded user data: " + data);
+                pushBulletUsers = data;
+            })).then(drawScreen, drawErrorScreen);
     }
+
+    // function loadConfigData()
+    // {
+    //     var deferred = $.Deferred();
+
+    //     $.ajax({
+    //         url: 'http://127.0.0.1:5000/service_hub/settings/notification/config', // url where to submit the request
+    //         type : "GET", // type of action POST || GET
+    //         dataType : 'json', // data type
+    //         async: true,
+    //         success : function(data) {
+                
+    //             console.log("Fetched notification config")
+    //             // console.log(data)
+    //             notificationConfigData = data
+    //             deferred.resolve(data);
+    //             // return deferred.promise();
+    //         },
+    //         error: function(xhr, resp, text) {
+    //             console.log(text);
+    //             deferred.reject("ERROR: " + xhr.status);
+    //             // return deferred.promise();  
+    //         }
+    //     });
+
+    //     return deferred.promise();
+        
+    // }
+
+    // function loadPushBulletUsersData()
+    // {
+    //     var deferred = $.Deferred();
+
+    //     $.ajax({
+    //         url: 'http://127.0.0.1:5000/service_hub/settings/notification/pushbullet/users', // url where to submit the request
+    //         type : "GET", // type of action POST || GET
+    //         dataType : 'json', // data type
+    //         async: true,
+    //         success : function(data) {
+                
+    //             console.log("Fetched pushbullet users config")
+    //             // console.log(data)
+    //             pushBulletUsers = data
+    //             deferred.resolve(data);
+
+    //         },
+    //         error: function(xhr, resp, text) {
+    //             console.log(text);
+    //             deferred.resolve(text);
+    //         }
+    //     });
+
+    //     return deferred.promise();
+
+    // }
+
+    function drawScreen()
+    {
+        console.log("Draw screen invoked!");
+        console.log(notificationConfigData);
+        console.log(pushBulletUsers);
+
+        // Update template with the real data
+        temp = notification_template;
+        temp = temp.replaceAll("#NOTIFY_ON_WATERING_START_CHECKED#", (notificationConfigData["notify_on_watering_start"] == true) ? "checked": "");
+        temp = temp.replaceAll("#NOTIFY_ON_WATERING_STOP_CHECKED#", (notificationConfigData["notify_on_watering_stop"] == true) ? "checked": "");
+        temp = temp.replaceAll("#NOTIFY_ON_ERROR_CHECKED#", (notificationConfigData["notify_on_error"] == true) ? "checked": "");
+        $("#content_settings content").html(temp);
+
+        // Add the users
+        pushBulletUsers["users"].forEach(addPushBulletUserInputRowWithData);
+        
+    }
+
+    function drawErrorScreen()
+    {
+        console.log("ERROR SCREEN")
+    }
+
 
     function addPushBulletUserInputRow()
     {
         curTemplate = push_bullet_input_user_row_template;
         curTemplate = curTemplate.replaceAll("NUMBER_HOLDER", number_of_users++);
+        curTemplate = curTemplate.replaceAll("#NAME#", "");
+        curTemplate = curTemplate.replaceAll("#API_KEY#", "");
+        $("#pushbullet_users").append(curTemplate);
+    }
+
+    function addPushBulletUserInputRowWithData(item, index)
+    {
+        name = item["name"];
+        apikey = item["api_key"];
+
+        curTemplate = push_bullet_input_user_row_template;
+        curTemplate = curTemplate.replaceAll("NUMBER_HOLDER", number_of_users++);
+        curTemplate = curTemplate.replaceAll("#NAME#", name);
+        curTemplate = curTemplate.replaceAll("#API_KEY#", apikey);
         $("#pushbullet_users").append(curTemplate);
     }
 
