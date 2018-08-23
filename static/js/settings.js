@@ -79,6 +79,27 @@ $(document).ready(function()
     $('body').on('click', '#save_notification_settings', function() {
         saveNotificationSettings();
     });
+
+    $('body').on('click', '#del_pb_user', function() {
+        // Get the name of the user
+        console.log($(this).parent());
+
+        name = $(this).parent().find("#name").val();
+
+        deletePushBulletUser(name);
+       
+    });
+
+    $('body').on('click', '#save_pb_user', function() {
+        // Get the name of the user
+        
+        name = $(this).parent().find("#name").val();
+        key = $(this).parent().find("#key").val();
+        
+
+        addPushBulletUser(name, key);
+       
+    });
     
     
 
@@ -110,60 +131,6 @@ $(document).ready(function()
             })).then(drawScreen, drawErrorScreen);
     }
 
-    // function loadConfigData()
-    // {
-    //     var deferred = $.Deferred();
-
-    //     $.ajax({
-    //         url: 'http://127.0.0.1:5000/service_hub/settings/notification/config', // url where to submit the request
-    //         type : "GET", // type of action POST || GET
-    //         dataType : 'json', // data type
-    //         async: true,
-    //         success : function(data) {
-                
-    //             console.log("Fetched notification config")
-    //             // console.log(data)
-    //             notificationConfigData = data
-    //             deferred.resolve(data);
-    //             // return deferred.promise();
-    //         },
-    //         error: function(xhr, resp, text) {
-    //             console.log(text);
-    //             deferred.reject("ERROR: " + xhr.status);
-    //             // return deferred.promise();  
-    //         }
-    //     });
-
-    //     return deferred.promise();
-        
-    // }
-
-    // function loadPushBulletUsersData()
-    // {
-    //     var deferred = $.Deferred();
-
-    //     $.ajax({
-    //         url: 'http://127.0.0.1:5000/service_hub/settings/notification/pushbullet/users', // url where to submit the request
-    //         type : "GET", // type of action POST || GET
-    //         dataType : 'json', // data type
-    //         async: true,
-    //         success : function(data) {
-                
-    //             console.log("Fetched pushbullet users config")
-    //             // console.log(data)
-    //             pushBulletUsers = data
-    //             deferred.resolve(data);
-
-    //         },
-    //         error: function(xhr, resp, text) {
-    //             console.log(text);
-    //             deferred.resolve(text);
-    //         }
-    //     });
-
-    //     return deferred.promise();
-
-    // }
 
     function drawScreen()
     {
@@ -195,6 +162,7 @@ $(document).ready(function()
         curTemplate = curTemplate.replaceAll("NUMBER_HOLDER", number_of_users++);
         curTemplate = curTemplate.replaceAll("#NAME#", "");
         curTemplate = curTemplate.replaceAll("#API_KEY#", "");
+        curTemplate = curTemplate.replaceAll("#PLACEHOLDER_FOR_BUTTON#", "<button id='save_pb_user'>Save</button>");
         $("#pushbullet_users").append(curTemplate);
     }
 
@@ -207,7 +175,36 @@ $(document).ready(function()
         curTemplate = curTemplate.replaceAll("NUMBER_HOLDER", number_of_users++);
         curTemplate = curTemplate.replaceAll("#NAME#", name);
         curTemplate = curTemplate.replaceAll("#API_KEY#", apikey);
+        curTemplate = curTemplate.replaceAll("#IS_DISABLED#", "disabled");
+        curTemplate = curTemplate.replaceAll("#PLACEHOLDER_FOR_BUTTON#", "<button id='del_pb_user'>Del</button>");
+        
         $("#pushbullet_users").append(curTemplate);
+    }
+
+    function addPushBulletUser(name, key)
+    {
+        jsonData = `{"name": "${name}", "api_key": "${key}"}`
+
+        $.post("/service_hub/settings/notification/pushbullet/user", jsonData);
+        
+    }
+    function deletePushBulletUser(name)
+    {
+        
+        $.ajax({
+            url: 'http://127.0.0.1:5000/service_hub/settings/notification/pushbullet/user/' + name, // url where to submit the request
+            type : "DELETE", // type of action POST || GET || DELETE
+            dataType : 'json', // data type
+            // data : jsonData, // post data || get data
+            success : function(result) {
+                // you can see the result from the console
+                // tab of the developer tools
+                console.log(result);
+            },
+            error: function(xhr, resp, text) {
+                console.log(text);
+            }
+        });
     }
 
     function savePushBulletSettings()
@@ -217,7 +214,6 @@ $(document).ready(function()
         
         console.log(jsonData);
 
-        // $("#pbform")
     }
 
     function saveNotificationSettings()

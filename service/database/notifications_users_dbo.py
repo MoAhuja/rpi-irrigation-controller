@@ -15,7 +15,7 @@ class NotificationUsersDBO(BaseDBOperations):
 
     def addPushBulletUser(self, name, api_key):
         self.initialize()
-        
+
         user =  PushBulletUsers(name=name, api_key=api_key)
    
         self.session.add(user)
@@ -23,8 +23,11 @@ class NotificationUsersDBO(BaseDBOperations):
         self.session.commit()
 
     
-    def removeUser(self, name):
-        return True
+    def deletePushBulletUser(self, name):
+        self.initialize()
+
+        self.session.query(PushBulletUsers).filter(PushBulletUsers.name == name).delete()
+        self.session.commit()
 
     def getPushBulletUsers(self):
 

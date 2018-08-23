@@ -20,6 +20,12 @@ class NotificationUsersRestMapper(BaseRestMapper):
         responseData["users"] = users
 
         return self.returnSuccessfulResponse(responseData)
+
+    def deletePushBulletNotificationUser(self, name):
+
+        self.notificationUsersDBO.deletePushBulletUser(name)
+
+        return self.returnSuccessfulResponse()
     
     def addPushBulletUser(self, json_data):
         

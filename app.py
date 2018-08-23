@@ -236,12 +236,22 @@ def service_settings_pushbullet_user():
 @app.route('/service_hub/settings/notification/pushbullet/users', methods=['GET'])
 def service_settings_pushbullet_users():
 	rm = NotificationUsersRestMapper()
-	
+
 	# POst request, so we need to update the notification settings
 	resp = Response(rm.getPushBulletNotificationUsers(), mimetype='application/json')
 	resp.headers['Access-Control-Allow-Origin'] = '*'
 
-	return resp		
+	return resp	
+
+@app.route('/service_hub/settings/notification/pushbullet/user/<string:name>', methods=['DELETE'])
+def service_settings_pushbullet_user_delete(name):
+	rm = NotificationUsersRestMapper()
+
+	# POst request, so we need to update the notification settings
+	resp = Response(rm.deletePushBulletNotificationUser(name), mimetype='application/json')
+	resp.headers['Access-Control-Allow-Origin'] = '*'
+
+	return resp	
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
