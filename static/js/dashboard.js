@@ -267,12 +267,24 @@ $(document).ready(function()
         }
         else
         {
-            // //Activate operation
-            // // alert("need to activate");
-            // $(this).html("Stop");
-            // $(this).removeClass("Deactive");
-            // $(this).addClass("Active");
-            activateZone(zone_id, 10, $(this));
+            var duration = prompt("How many minutes should it run?", "30");
+            if (duration == null || duration == "") {
+                console.log("Duration not provided")
+            } else 
+            {
+                // Check it's a number
+                durationInt = parseInt(duration)
+                console.log(durationInt)
+                if (!isNaN(durationInt))
+                {
+                    activateZone(zone_id, duration, $(this));
+        
+                }
+                else
+                {
+                    console.log("Duration specified is not a number")
+                }
+            }
         }
 
         
