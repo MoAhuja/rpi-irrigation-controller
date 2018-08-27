@@ -6,6 +6,7 @@ from service.core.scheduler import Scheduler
 from service.zone.zone_controller import ZoneController
 from service.core import shared
 from service.system.settings_manager import SettingsManager
+from service.notifications.notifier_engine import NotifierEngine
 
 # Not sure i should be accessing DAO's at this layer, but it seems unneccessary to create a new object to track the same data
 from service.database.db_schema import DecisionHistory, EnumDecisionCodes, EnumReasonCodes
@@ -31,6 +32,7 @@ class Engine():
         self.zone_controller = ZoneController()
         self.weather_centre = WeatherCenter()
         self.settingsManager = SettingsManager()
+        NotifierEngine()
         self.heartbeat()
         
 
