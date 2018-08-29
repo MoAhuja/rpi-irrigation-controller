@@ -107,7 +107,7 @@ def service_settings_database_log_level():
 def service_settings_location():
 	srm = SettingsRestMapper()
 	if request.method == 'GET':
-		return srm.getLocation()
+		return Response(srm.getLocation(), mimetype='application/json')
 	else:
 		# POst request, so we need to update
 		json_data = request.get_json(force=True)
@@ -117,7 +117,7 @@ def service_settings_location():
 def service_settings_raindelay():
 	srm = SettingsRestMapper()
 	if request.method == 'GET':
-		return srm.getRainDelay()
+		return Response(srm.getRainDelay(), mimetype='application/json')
 	else:
 		# POst request, so we need to update
 		json_data = request.get_json(force=True)

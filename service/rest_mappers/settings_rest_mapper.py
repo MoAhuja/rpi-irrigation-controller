@@ -132,15 +132,12 @@ class SettingsRestMapper(BaseRestMapper):
     def getRainDelay(self):
         shared.logger.debug(self, "getRainDelay entered")
 
-        try:
-            rainDelay = self.smgr.getRainDelay()
-            shared.logger.debug(self, "Rain Delay ==" + rainDelay)
+        rainDelay = self.smgr.getRainDelay()
 
-            response = {}
-            response[self.FIELD_RAIN_DELAY] = rainDelay
-            return self.returnSuccessfulResponse(response)
-        except:
-            return self.handleSystemError()
+        response = {}
+        response[self.FIELD_RAIN_DELAY] = rainDelay
+        return self.returnSuccessfulResponse(response)
+        
 
 
     def getLocation(self):

@@ -103,13 +103,15 @@ class Scheduler():
 
         shared.logger.debug(self, "Current DOW = " + str(currentDow))
 
+        nextRunDuration  = timedelta()
 
         for zone in enabledZones:
 
             shared.logger.debug(self, "Building next run for Zone " + zone.name)
 
             # Setup some arbitrary value in the past
-            nextRunDatetime = datetime.now() + timedelta(days=30)
+            nextRunDatetime = datetime.now() + timedelta(days=365)
+            
 
             shared.logger.debug(self, "BuildNextRunSchedule - Waiting for lock: nextRunSchedule")
             shared.lockNextRunSchedule.acquire()
@@ -161,8 +163,6 @@ class Scheduler():
                                 nextRunDatetime = scheduledWatertime
                                 nextRunDuration = sch.getDuration()
                                 shared.logger.debug(self, "Setting this as the temporary next run time")
-
-
 
                 shared.logger.info(self, "Next run date for Zone " + zone.name +  " is " + str(nextRunDatetime))
                 

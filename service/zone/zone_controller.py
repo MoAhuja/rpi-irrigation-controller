@@ -66,6 +66,9 @@ class ZoneController():
                 # Insert entry into decision history table
                 self.insertDecisionHistoryEvent(dh, zonetimingObj, reasonCode, EnumDecisionCodes.ActivateZone)
 
+                # publish the event indicating the watering has started
+                shared_events.event_publisher.publishWateringStarted(zonetimingObj.zone.name)
+
                 result = True
 
         finally:
@@ -90,12 +93,16 @@ class ZoneController():
             # Call the RPI controller to deactivate the zone
             if self.zrpi_controller.deactivateZone(zone):
                 
+                # Publish the event indicating the watering stopped
+                shared_events.event_publisher.publishWateringStopped(zone.name)
+
                 if decisionHistoryReasonCode is not None:
                     zoneTiming = ZoneController.activeZones[zone.id]
 
                     # Insert a decision event
                     dh = DecisionHistory()
                     self.insertDecisionHistoryEvent(decisionObject=dh, zoneTiming=zoneTiming, reasonCode=decisionHistoryReasonCode, decisionCode=EnumDecisionCodes.DeactivateZone,overrideEndTime=overrideEndTime)
+
 
                 # Remove the zone from the list of active zones
                 del ZoneController.activeZones[zone.id]
@@ -134,7 +141,8 @@ class ZoneController():
             for key, activeZone in ZoneController.activeZones.items():
                 shared.logger.debug(self, "Deactivating -> " + str(key) + "-->" + activeZone.zone.name)
 
-                
+                # TODO: Can this just call self.deactivate zone since that has the same code??
+
                 #Call the RPI controller to deactivate this zone
                 if self.zrpi_controller.deactivateZone(activeZone.zone):
                     if decisionHistoryReasonCode is not None:
