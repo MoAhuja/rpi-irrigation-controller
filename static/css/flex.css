@@ -11,8 +11,9 @@ body {
     margin: 0;
     width: 100vw;
     height: 100vh;
-    font-family: 'Montserrat', sans-serif;
-    line-height: 1.6;
+    font-family: 'Montserrat', sans-serif !important; ;
+    line-height: 1.6 !important;
+    font-size: 11pt !important;
 }
 
 
@@ -59,6 +60,8 @@ header h1 {
     font-size: 3em;
     color: var(--color-primary-text1);
     text-align: center;
+    line-height: 4em;
+    
 }
 
 footer {
@@ -69,7 +72,7 @@ footer {
 }
 
 /* Adjust navigation styling */
-.nav {
+.main_nav {
     /* flex: 0 0 auto; */
     display: flex;
     border-width: 1px 0px 1px 0px;
@@ -86,26 +89,28 @@ footer {
 }
 
 /* Remove bullet and add some padding for list items within the header */
-.nav li {
+.main_nav li {
     padding: 10px 15px;
     display: block; 
 }
 
-.nav li.bar {
+.main_nav li.bar {
     font-size: 1.25em;
     padding: 0;
     }
 
-.nav a {
+.main_nav a {
     color: var(--color-primary-text1);
     font-size: .99em;
     text-decoration: none;
     
 }
 
-.nav a:hover {
+.main_nav a:hover {
     color: var(--color-primary-text2);
     font-weight: bolder;
+    text-decoration: none;
+
 }
 
 

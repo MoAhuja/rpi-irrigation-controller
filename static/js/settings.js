@@ -1,12 +1,22 @@
 $(document).ready(function()
 {
     page_template = "";
+    system_settings_template = ""
     notification_template = "";
     push_bullet_input_user_row_template = ""
     number_of_users = 0;
     notificationConfigData = ""
     pushBulletUsers = ""
+    kill_switch_modified = false
+    rain_delay_modified = false
 
+
+    $.get('/static/screens/portal/settings/include_system_settings_template.html', 
+    function(data)
+    {
+        system_settings_template = data;
+        console.log("System settings template loaded")
+    });
 
     $.ajax({
         url: '/static/screens/portal/settings/include_pushbullet_input_user_row_template.html', // url where to submit the request
@@ -74,7 +84,7 @@ $(document).ready(function()
 
     $('body').on('click', '#save_pb', function() {
         savePushBulletSettings();
-    });
+    });    
 
     $('body').on('click', '#save_notification_settings', function() {
         saveNotificationSettings();
@@ -96,10 +106,78 @@ $(document).ready(function()
         name = $(this).parent().find("#name").val();
         key = $(this).parent().find("#key").val();
         
-
         addPushBulletUser(name, key);
        
     });
+
+    $('body').on('change', '#kill_switch', function() {
+        console.log("kill switch toggled");
+        kill_switch_modified = true
+        enableSaveButton();
+    });
+
+    $('body').on('input', '#rain_delay', function() {
+        console.log("rain delay modified");
+        rain_delay_modified = true
+        enableSaveButton();
+    });
+
+    $('body').on('click', '#save_system_settings', function() {
+        // saveSystem settings
+        saveSystemSettings()
+    });
+
+    
+
+    function saveSystemSettings()
+    {
+        
+        // get kill switch value
+        kill_swtich_value = true
+        rain_delay_value = "2018-10-01T00:00:40";
+
+        ks_request = `{"value": ${kill_swtich_value}}`
+        rd_request = `{"value": "${rain_delay_value}"}`
+
+        console.log(rd_request);
+
+        $.when(
+            $.post('http://localhost:5000/service_hub/settings/kill', ks_request), 
+            $.post('http://localhost:5000/service_hub/settings/raindelay', rd_request))
+        .then(savedSuccessfully, saveFailed);
+    }
+
+    function savedSuccessfully()
+    {
+        console.log("Saved successfully invoked!!");
+        rain_delay_modified = false
+        kill_switch_modified = false
+
+        // disable the save button
+        disableSaveButton();
+
+        // Throw up an alert
+        displayAlert($("#alerts_container"), "success", "Settings saved successfully!");
+
+    }
+
+    function saveFailed()
+    {
+        console.log("save failed!!");
+        displayAlert($("#alerts_container"), "danger", "Failed to save settings. Please try again.");
+
+   
+    }
+
+    function enableSaveButton()
+    {
+        $("#save_system_settings").prop('disabled', false);
+    }
+
+    function disableSaveButton()
+    {
+        $("#save_system_settings").prop('disabled', true);
+    }
     
     
 
@@ -111,7 +189,19 @@ $(document).ready(function()
 
     function loadSystemSettings()
     {
-        $("#content_settings content").html("System");
+        
+        // $.when(loadConfigData(), loadPushBulletUsersData()).then(drawScreen(), drawErrorScreen())
+        $.when(
+            $.ajax('http://localhost:5000/service_hub/settings/kill'), 
+            $.ajax('http://localhost:5000/service_hub/settings/raindelay'))
+            .done(function(kill_switch_data, rain_delay_data)
+            {
+                kill_switch = kill_switch_data[0]["kill_switch"];
+                rain_delay = rain_delay_data[0]["rain_delay"]
+
+                drawSystemSettingsScreen(kill_switch, rain_delay);
+            });
+            
     }
 
     function loadPushNotificationSettings()
@@ -128,13 +218,30 @@ $(document).ready(function()
             }), $.get('http://127.0.0.1:5000/service_hub/settings/notification/pushbullet/users', function(data){
                 console.log("Loaded user data: " + data);
                 pushBulletUsers = data;
-            })).then(drawScreen, drawErrorScreen);
+            })).then(drawNotificationSettingsScreen, drawErrorScreen);
     }
 
 
-    function drawScreen()
+    function drawSystemSettingsScreen(kill_switch, rain_delay)
     {
-        console.log("Draw screen invoked!");
+        if(rain_delay == null)
+        {
+            rain_delay = ""
+        }
+        console.log("Draw system settings screen invoked!");
+        
+        // Update template with the real data
+        temp = system_settings_template;
+        temp = temp.replaceAll("#KILL_SWITCH_CHECKED#", (kill_switch == 1) ? "checked": "");
+        temp = temp.replaceAll("#RAIN_DELAY#", rain_delay)
+        $("#content_settings content subcontent").html(temp);
+
+        
+    }
+
+    function drawNotificationSettingsScreen()
+    {
+        console.log("Draw notification screen invoked!");
         console.log(notificationConfigData);
         console.log(pushBulletUsers);
 
@@ -143,7 +250,7 @@ $(document).ready(function()
         temp = temp.replaceAll("#NOTIFY_ON_WATERING_START_CHECKED#", (notificationConfigData["notify_on_watering_start"] == true) ? "checked": "");
         temp = temp.replaceAll("#NOTIFY_ON_WATERING_STOP_CHECKED#", (notificationConfigData["notify_on_watering_stop"] == true) ? "checked": "");
         temp = temp.replaceAll("#NOTIFY_ON_ERROR_CHECKED#", (notificationConfigData["notify_on_error"] == true) ? "checked": "");
-        $("#content_settings content").html(temp);
+        $("#content_settings content subcontent").html(temp);
 
         // Add the users
         pushBulletUsers["users"].forEach(addPushBulletUserInputRowWithData);
@@ -238,4 +345,19 @@ $(document).ready(function()
             }
         });
     }
+
+    //Eligible types = success, info, warning, danger
+    function displayAlert(container, type, message)
+    {
+
+        body = `<div class="alert alert-${type} alert-dismissible">
+            ${message}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>`
+
+        $(container).append(body);
+    }
+
 });

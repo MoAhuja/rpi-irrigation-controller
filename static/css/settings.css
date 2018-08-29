@@ -35,7 +35,20 @@ subgroup
     margin-top: 15px;
 }
 
+alerts {
+    display: flex;
+    flex-direction: column;
+    min-height: max-content;
+    min-width: max-content;
+    border: none;
+    padding: none;
+}
 
+alerts div {
+    flex: 1;
+    display: block;
+    
+}
 
 row 
 {
@@ -73,6 +86,11 @@ row label,h4,h3,h2,h1 {
     line-height: 2em;
     padding-top: 5px;
     padding-left: 10px;
+}
+
+row div {
+    flex: 1;
+    display:block;
 }
 
 row input {
