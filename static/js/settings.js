@@ -157,14 +157,14 @@ $(document).ready(function()
         disableSaveButton();
 
         // Throw up an alert
-        displayAlert($("#alerts_container"), "success", "Settings saved successfully!");
+        displayAlert("success", "Settings saved successfully!");
 
     }
 
     function saveFailed()
     {
         console.log("save failed!!");
-        displayAlert($("#alerts_container"), "danger", "Failed to save settings. Please try again.");
+        displayAlert("danger", "Failed to save settings. Please try again.");
 
    
     }
@@ -292,14 +292,15 @@ $(document).ready(function()
     {
         jsonData = `{"name": "${name}", "api_key": "${key}"}`
 
-        $.post("/service_hub/settings/notification/pushbullet/user", jsonData);
+        $.post("/service_hub/settings/notification/pushbullet/user", jsonData, 
+        function(data){displayAlert("success", "User successfully added!")});
         
     }
     function deletePushBulletUser(name)
     {
         
         $.ajax({
-            url: 'http://127.0.0.1:5000/service_hub/settings/notification/pushbullet/user/' + name, // url where to submit the request
+            url: 'http://localhost:5000/service_hub/settings/notification/pushbullet/user/' + name, // url where to submit the request
             type : "DELETE", // type of action POST || GET || DELETE
             dataType : 'json', // data type
             // data : jsonData, // post data || get data
@@ -307,21 +308,16 @@ $(document).ready(function()
                 // you can see the result from the console
                 // tab of the developer tools
                 console.log(result);
+                displayAlert("success", "User successfully deleted!")
             },
             error: function(xhr, resp, text) {
                 console.log(text);
+                displayAlert("danger", "Failed to delete user. Please try again.");
             }
         });
     }
 
-    function savePushBulletSettings()
-    {
-        // TODO: Fill in the API call to save push bullet settings
-        var jsonData = $("#pbform").serializeJSON();
-        
-        console.log(jsonData);
-
-    }
+   
 
     function saveNotificationSettings()
     {
@@ -339,15 +335,19 @@ $(document).ready(function()
                 // you can see the result from the console
                 // tab of the developer tools
                 console.log(result);
+                
+                displayAlert("success", "Notification preferences saved!")
             },
             error: function(xhr, resp, text) {
                 console.log(text);
+
+                displayAlert("danger", "Failed to save notifications. Please try again.")
             }
         });
     }
 
     //Eligible types = success, info, warning, danger
-    function displayAlert(container, type, message)
+    function displayAlert( type, message)
     {
 
         body = `<div class="alert alert-${type} alert-dismissible">
@@ -357,7 +357,7 @@ $(document).ready(function()
             </button>
         </div>`
 
-        $(container).append(body);
+        $("#alerts_container").append(body);
     }
 
 });
