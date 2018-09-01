@@ -131,20 +131,37 @@ $(document).ready(function()
 
     function saveSystemSettings()
     {
-        
         // get kill switch value
-        kill_swtich_value = true
-        rain_delay_value = "2018-10-01T00:00:40";
+        kill_swtich_value = $("#kill_switch").prop('checked')
+        rain_delay_value = $("#rain_delay").val();
 
         ks_request = `{"value": ${kill_swtich_value}}`
         rd_request = `{"value": "${rain_delay_value}"}`
 
         console.log(rd_request);
+        console.log(ks_request);
 
         $.when(
             $.post('http://localhost:5000/service_hub/settings/kill', ks_request), 
             $.post('http://localhost:5000/service_hub/settings/raindelay', rd_request))
-        .then(savedSuccessfully, saveFailed);
+        .done(function(a1, a2){
+            if((a1[2]["status"] == 200) && (a2[2]["status"] == 200))
+            {
+                savedSuccessfully();
+            }
+            else
+            {
+                if(a1[2]["status"] != 200)
+                {
+                    displayAlert(a1[2]["responseText"]);
+                }
+
+                if(a2[2]["status"] != 200)
+                {
+                    displayAlert(a2[2]["responseText"]);
+                }
+            }
+        });
     }
 
     function savedSuccessfully()
@@ -161,12 +178,10 @@ $(document).ready(function()
 
     }
 
-    function saveFailed()
+    function saveFailed(data)
     {
         console.log("save failed!!");
         displayAlert("danger", "Failed to save settings. Please try again.");
-
-   
     }
 
     function enableSaveButton()
@@ -293,7 +308,7 @@ $(document).ready(function()
         jsonData = `{"name": "${name}", "api_key": "${key}"}`
 
         $.post("/service_hub/settings/notification/pushbullet/user", jsonData, 
-        function(data){displayAlert("success", "User successfully added!")});
+        function(data){displayAlert("success", "User successfully added!"); loadPushNotificationSettings();});
         
     }
     function deletePushBulletUser(name)
@@ -308,7 +323,8 @@ $(document).ready(function()
                 // you can see the result from the console
                 // tab of the developer tools
                 console.log(result);
-                displayAlert("success", "User successfully deleted!")
+                displayAlert("success", "User successfully deleted!");
+                loadPushNotificationSettings();
             },
             error: function(xhr, resp, text) {
                 console.log(text);
