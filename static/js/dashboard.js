@@ -80,6 +80,10 @@ $(document).ready(function()
     {
         $("#content_dashboard").html("");
 
+        var alerts_container =  `<div id="alerts_container"></div>`
+
+        $("#content_dashboard").append(alerts_container)
+
         
         $.ajax({
             url: 'http://127.0.0.1:5000/service_hub/dashboard', // url where to submit the request
@@ -314,7 +318,7 @@ $(document).ready(function()
                 $(elementToUpdate).addClass("Active");
             },
             error: function(xhr, resp, text) {
-                console.log(text);
+                displayAlert("danger", xhr.responseJSON.error);
             }
         });
     }
@@ -405,5 +409,19 @@ $(document).ready(function()
 
         return dateString;
 
+    }
+
+    //Eligible types = success, info, warning, danger
+    function displayAlert( type, message)
+    {
+
+        body = `<div class="alert alert-${type} alert-dismissible">
+            ${message}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>`
+
+        $("#alerts_container").append(body);
     }
 });

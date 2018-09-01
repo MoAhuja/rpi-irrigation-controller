@@ -211,3 +211,16 @@ hidden {
 .hide {
     display: none;
 }
+
+#alerts_container {
+    /* border: 1px solid red; */
+    display: flex;
+    min-height: max-content;
+    flex-direction: column;
+
+}
+
+#alerts_container div {
+    flex: 1;
+    display: block;
+}
