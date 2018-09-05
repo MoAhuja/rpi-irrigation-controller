@@ -35,7 +35,7 @@ class ZoneController():
         shared.logger.debug(self, "Received event: Rain delay updated")
         
         # Check if hte rain delay value is is the future. If so, stop all active zones.
-        if datetime.now() < rainDelayDate:
+        if rainDelayDate is True and datetime.now() < rainDelayDate:
             self.deactivateAllZones()
 
     def activateZone(self, zonetimingObj, existingDecisionHistoryEvent=None, reasonCode=None):
