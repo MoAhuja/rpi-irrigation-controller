@@ -67,7 +67,7 @@ class SettingsManager():
         self.save()
 
         datetimeFormat = None
-        if date is not None:
+        if date is not None and date is True:
             # Convert the string to a date and send via event mgr
             datetimeFormat = Conversions.convertRainDelaySettingToDatetime(date)
             

@@ -103,7 +103,11 @@ class SettingsRestMapper(BaseRestMapper):
         # Check if the value is null, which is allowed
         if rainDelay is None:
             result = self.smgr.setRainDelay("")
-            return self.returnSuccessfulResponse()    
+            return self.returnSuccessfulResponse() 
+           
+        elif not rainDelay:
+            result = self.smgr.setRainDelay("")
+            return self.returnSuccessfulResponse()
 
         shared.logger.debug(self, "Rain Delay requested = " + rainDelay)
 

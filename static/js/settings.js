@@ -131,37 +131,105 @@ $(document).ready(function()
 
     function saveSystemSettings()
     {
-        // get kill switch value
-        kill_swtich_value = $("#kill_switch").prop('checked')
-        rain_delay_value = $("#rain_delay").val();
-
-        ks_request = `{"value": ${kill_swtich_value}}`
-        rd_request = `{"value": "${rain_delay_value}"}`
-
-        console.log(rd_request);
-        console.log(ks_request);
-
         $.when(
-            $.post('http://localhost:5000/service_hub/settings/kill', ks_request), 
-            $.post('http://localhost:5000/service_hub/settings/raindelay', rd_request))
+            callKillSwitchService(), 
+            callRainDelayService())
         .done(function(a1, a2){
-            if((a1[2]["status"] == 200) && (a2[2]["status"] == 200))
+            console.log("Both promises resolved")
+            if((a1[0] == 200 && a2[0] == 200))
             {
+                console.log("Saved successfully");
                 savedSuccessfully();
             }
             else
             {
-                if(a1[2]["status"] != 200)
+                if(a1[0]!= 200)
                 {
-                    displayAlert(a1[2]["responseText"]);
+                    console.log("KS != 200 ");
+                    displayAlert(a1[1]);
                 }
 
-                if(a2[2]["status"] != 200)
+                if(a2[0] != 200)
                 {
-                    displayAlert(a2[2]["responseText"]);
+                    console.log("RD != 200");
+                    displayAlert(a2[1]);
                 }
             }
         });
+    }
+
+    function callKillSwitchService()
+    {
+        var deferredPromise = jQuery.Deferred();
+        
+        if(kill_switch_modified == true)
+        {
+
+            kill_switch_value = $("#kill_switch").prop('checked')
+            ks_request = `{"value": ${kill_switch_value}}`
+            console.log("Kill switch request  is " + ks_request);
+
+            $.ajax({
+                url: 'http://localhost:5000/service_hub/settings/kill', // url where to submit the request
+                type : "POST", // type of action POST || GET || DELETE
+                dataType : 'json', // data type
+                data : ks_request, // post data || get data
+                contentType: "application/json; charset=utf-8",
+                async: true,
+                success : function(result) {
+                    deferredPromise.resolve(200, "")
+                },
+                error: function(xhr, resp, text) {
+                    deferredPromise.resolve(xhr.status, text)
+                }
+            });
+        }
+        else
+        {
+            console.log('Kill switch not modified - Resolving Promise');
+            deferredPromise.resolve(200, "");
+        }
+
+        
+
+        return deferredPromise.promise();
+    }
+
+    function callRainDelayService()
+    {
+        var deferredPromise = jQuery.Deferred();
+        
+        if(rain_delay_modified == true)
+        {
+            rain_delay_value = $("#rain_delay").val();
+
+            rd_request = `{"value": "${rain_delay_value}"}`
+    
+            console.log(rd_request);
+            
+
+            $.ajax({
+                url: 'http://localhost:5000/service_hub/settings/raindelay', // url where to submit the request
+                type : "POST", // type of action POST || GET || DELETE
+                dataType : 'json', // data type
+                data : rd_request, // post data || get data
+                contentType: "application/json; charset=utf-8",
+                async: true,
+                success : function(result) {
+                    deferredPromise.resolve(200, "")
+                },
+                error: function(xhr, resp, text) {
+                    deferredPromise.resolve(xhr.status, text)
+                }
+            });
+        }
+        else
+        {
+            console.log("Rain delay not modified - Resolving promise");
+            deferredPromise.resolve(200, "");
+        }
+
+        return deferredPromise.promise();
     }
 
     function savedSuccessfully()
@@ -365,6 +433,7 @@ $(document).ready(function()
     //Eligible types = success, info, warning, danger
     function displayAlert( type, message)
     {
+        console.log("Displaying alert - " + type);
 
         body = `<div class="alert alert-${type} alert-dismissible">
             ${message}
