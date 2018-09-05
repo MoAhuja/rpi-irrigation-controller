@@ -124,7 +124,7 @@ $(document).ready(function()
 
     $('body').on('click', '#save_system_settings', function() {
         // saveSystem settings
-        saveSystemSettings()
+        saveSystemSettings();
     });
 
     
@@ -391,8 +391,9 @@ $(document).ready(function()
                 // you can see the result from the console
                 // tab of the developer tools
                 console.log(result);
-                displayAlert("success", "User successfully deleted!");
                 loadPushNotificationSettings();
+                displayAlert("success", "User successfully deleted!");
+                
             },
             error: function(xhr, resp, text) {
                 console.log(text);
@@ -435,7 +436,7 @@ $(document).ready(function()
     {
         console.log("Displaying alert - " + type);
 
-        body = `<div class="alert alert-${type} alert-dismissible">
+        var body = `<div class="alert alert-${type} alert-dismissible">
             ${message}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>

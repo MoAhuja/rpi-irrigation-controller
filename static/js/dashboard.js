@@ -6,6 +6,10 @@ $(document).ready(function()
     var current_history_selector = ""
     var dashboard_settings_template = ""
 
+    // Initialize all history panels to hide
+    console.log("hiding history panels")
+    $("historycard").hide();
+
 
 
     $.ajax({
@@ -83,7 +87,7 @@ $(document).ready(function()
         var alerts_container =  `<div id="alerts_container"></div>`
 
         $("#content_dashboard").append(alerts_container)
-
+        
         
         $.ajax({
             url: 'http://127.0.0.1:5000/service_hub/dashboard', // url where to submit the request
@@ -100,6 +104,8 @@ $(document).ready(function()
                 addSystemSettingsToScreen(system_settings);
 
                 zones.forEach(addZoneToScreen)
+                $("historycard").hide()
+
             },
             error: function(xhr, resp, text) {
                 console.log(text);
@@ -228,7 +234,7 @@ $(document).ready(function()
         
         // Get the hidden ID field to find the ID of this zone
         var zone_id = $(this).parent().parent().parent().parent().find("#zone_id").text();
-
+        
         // alert(zone_id);
         current_history_selector = "historycard#" + zone_id;
 
