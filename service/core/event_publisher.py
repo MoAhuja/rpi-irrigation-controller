@@ -56,39 +56,39 @@ class EventPublisher():
         self.watering_stopped_subscribers.discard(who)
 
     def publishZoneInfoUpdated(self):
-        for subscriber in self.zone_subscribers:
+        for subscriber in self.zone_subscribers.copy():
             subscriber.eventZoneInfoUpdated()
     
     def publishRainDelayUpdated(self, rainDelayDate):
-        for subscriber in self.rain_delay_subscribers:
+        for subscriber in self.rain_delay_subscribers.copy():
             subscriber.eventRainDelayUpdated(rainDelayDate)
     
     def publishLogLevelUpdated(self):
-        for subscriber in self.logging_subscribers:
+        for subscriber in self.logging_subscribers.copy():
             subscriber.eventLogLevelUpdated()
     
     def publishSettingsUpdated(self):
-        for subscriber in self.settings_subscribers:
+        for subscriber in self.settings_subscribers.copy():
             # print(subscriber)
             subscriber.eventSettingsUpdated()
     
     def publishKillSwitchUpdated(self):
-        for subscriber in self.killswitch_subscribers:
+        for subscriber in self.killswitch_subscribers.copy():
             subscriber.eventKillSwitchUpdated()
     
     def publishNotificationConfigUpdated(self):
-        for subscriber in self.notification_config_subscribers:
+        for subscriber in self.notification_config_subscribers.copy():
             subscriber.eventNotificationConfigUpdated()
     
     def publishWateringStarted(self, zone):
-        for subscriber in self.watering_started_subscribers:
+        for subscriber in self.watering_started_subscribers.copy():
             subscriber.eventWateringStarted(zone)
     
     def publishWateringStopped(self, zone):
-        for subscriber in self.watering_stopped_subscribers:
+        for subscriber in self.watering_stopped_subscribers.copy():
             subscriber.eventWateringStopped(zone)
 
     def publishError(self, errorMessage):
-        for subscriber in self.error_subscribers:
+        for subscriber in self.error_subscribers.copy():
             subscriber.eventErrorRaised(errorMessage)
       
