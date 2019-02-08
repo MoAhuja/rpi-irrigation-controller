@@ -1,7 +1,9 @@
 from service.rest_mappers.base_rest_mapper import BaseRestMapper
 from service.database.db_schema import EnumLogLevel, Logs
 from service.database.notifications_users_dbo import NotificationUsersDBO
-from service.core import shared
+from service.core import shared, shared_events
+
+
 import json
 
 class NotificationUsersRestMapper(BaseRestMapper):
@@ -25,6 +27,9 @@ class NotificationUsersRestMapper(BaseRestMapper):
 
         self.notificationUsersDBO.deletePushBulletUser(name)
 
+        # Fire an event indicating the user list was updated and needs to be reloaded
+        shared_events.event_publisher.publishPushbulletUserListUpdated()
+        
         return self.returnSuccessfulResponse()
     
     def addPushBulletUser(self, json_data):
@@ -42,4 +47,7 @@ class NotificationUsersRestMapper(BaseRestMapper):
         self.validateIsProvidedAndString(api_key, NotificationUsersRestMapper.FIELD_API_KEY, json_data)
         
         response = self.notificationUsersDBO.addPushBulletUser(name, api_key)
+
+        # Send an event indicating the push bullet user list needs to be reloaded
+        shared_events.event_publisher.publishPushbulletUserListUpdated()
         return self.returnSuccessfulResponse()

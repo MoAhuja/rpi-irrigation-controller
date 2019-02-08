@@ -9,13 +9,14 @@ class EventPublisher():
             self.settings_subscribers = set()
             self.killswitch_subscribers = set()
             self.notification_config_subscribers = set()
+            self.pushbullet_notification_users_updated_subscribers = set()
             self.watering_started_subscribers = set()
             self.watering_stopped_subscribers = set()
             self.error_subscribers = set()
 
 
 
-    def register(self, who, listenForZoneUpdates=False, listenForRainDelayUpdates=False, listenForLoggingUpdates=False, listenForSettingsChanges=False, listenForKillSwitchUpdates=False, listenForNotificationConfigChanges=False, listenForWateringStarted=False, listenForWateringStopped=False, listenForError = False):
+    def register(self, who, listenForZoneUpdates=False, listenForRainDelayUpdates=False, listenForLoggingUpdates=False, listenForSettingsChanges=False, listenForKillSwitchUpdates=False, listenForNotificationConfigChanges=False, listenForPushBulletUserChanges = False, listenForWateringStarted=False, listenForWateringStopped=False, listenForError = False):
         if listenForZoneUpdates:
             self.zone_subscribers.add(who)
         
@@ -42,6 +43,9 @@ class EventPublisher():
         
         if listenForError:
             self.error_subscribers.add(who)
+        
+        if listenForPushBulletUserChanges:
+            self.pushbullet_notification_users_updated_subscribers.add(who)
 
 
     def unregister(self, who):
@@ -54,6 +58,7 @@ class EventPublisher():
         self.error_subscribers.discard(who)
         self.watering_started_subscribers.discard(who)
         self.watering_stopped_subscribers.discard(who)
+        self.pushbullet_notification_users_updated_subscribers(who)
 
     def publishZoneInfoUpdated(self):
         for subscriber in self.zone_subscribers.copy():
@@ -80,6 +85,10 @@ class EventPublisher():
         for subscriber in self.notification_config_subscribers.copy():
             subscriber.eventNotificationConfigUpdated()
     
+    def publishPushbulletUserListUpdated(self):
+        for subscriber in self.pushbullet_notification_users_updated_subscribers.copy():
+            subscriber.eventNotificationPusbulletUsersUpdated()
+    
     def publishWateringStarted(self, zone):
         for subscriber in self.watering_started_subscribers.copy():
             subscriber.eventWateringStarted(zone)
@@ -91,4 +100,5 @@ class EventPublisher():
     def publishError(self, errorMessage):
         for subscriber in self.error_subscribers.copy():
             subscriber.eventErrorRaised(errorMessage)
+
       
