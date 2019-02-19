@@ -70,12 +70,15 @@ def service_zones_deactivate():
 
 @app.route('/service_hub/settings/kill', methods=['GET', 'POST'])
 def service_settings_kill_switch():
+	print("Kill switch post data:")
+	print(request.data)
 	srm = SettingsRestMapper()
 
 	if request.method == 'GET':
 		result =  Response(srm.getKillSwitch(), mimetype='application/json')
 	else:
 		json_data = request.get_json(force=True)
+		print(json_data)
 		result = srm.setKillSwitch(json_data)
 
 	return result
@@ -179,18 +182,35 @@ def service_get_dashboard():
 
 @app.route('/service_hub/logs', methods=['GET'])
 def service_get_all_logs():
+
 	# Check if a log level was specified
 	level = request.args.get('level')
+	page = request.args.get('page')
+	page_size = request.args.get('page_size')
+
+	if page is None:
+		print("setting page to 0 from None")
+		page = 0
+	else:
+		page = int(page)
+	
+	if page_size is None:
+		print("setting page to 40 from None")
+		page_size = 40
+	else:
+		page_size = int(page_size)
+
 
 	resp = None
 
 	if level is None:
-		resp = Response(LogsRestMapper().getAllLogs(), mimetype='application/json')
+		resp = Response(LogsRestMapper().getAllLogs(page, page_size), mimetype='application/json')
 		resp.headers['Access-Control-Allow-Origin'] = '*'
 		return resp
 		
 	else:
-		resp = Response(LogsRestMapper().getLogsByLevel(level), mimetype='application/json')
+		resp = Response(LogsRestMapper().getLogsByLevel(level, page, page_size), mimetype='application/json')
+		
 		resp.headers['Access-Control-Allow-Origin'] = '*'
 		return resp
 
@@ -273,7 +293,7 @@ if __name__ == '__main__':
 	engine = Engine()
 	
 	# zm = ZoneManager(event_pub)
-	app.run(debug=False, threaded=True, host='0.0.0.0')
+	app.run(debug=True, threaded=True, host='0.0.0.0')
 
 	
 

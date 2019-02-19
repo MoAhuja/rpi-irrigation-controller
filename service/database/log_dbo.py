@@ -32,9 +32,11 @@ class LogDBO(BaseDBOperations):
         self.queue.put(log)
 
     #     #retrieve the zone_id
-    def retrieveAllLogsByLevel(self, logLevel, asJSON=False):
+    def retrieveAllLogsByLevel(self, logLevel,  page, page_size, asJSON=False):
 
+       
         self.initialize()
+
         if logLevel == 1:
             enumLevel = EnumLogLevel.ERROR
         elif logLevel == 2:
@@ -42,7 +44,17 @@ class LogDBO(BaseDBOperations):
         elif logLevel == 3:
             enumLevel = EnumLogLevel.DEBUG
 
-        logEntries = self.session.query(Logs).filter_by(level=enumLevel).all()
+        
+        
+        # Add the limit if the page size is greater than 0
+        logEntries = []
+
+        if(page_size > 0) and (page > 0):
+            print("limiting logs by page and chunk")
+            logEntries = self.session.query(Logs).filter_by(level=enumLevel).order_by(Logs.datetime.desc()).offset(page*page_size).limit(page_size)
+        else:
+            logEntries = self.session.query(Logs).filter_by(level=enumLevel).order_by(Logs.datetime.desc())
+
         self.session.flush()
 
         if asJSON is True:
@@ -56,9 +68,18 @@ class LogDBO(BaseDBOperations):
     
     
     
-    def retrieveAllLogs(self, asJSON=False):
+    def retrieveAllLogs(self, page, page_size, asJSON=False):
         self.initialize()
-        logEntries = self.session.query(Logs).all()
+
+         # Add the limit if the page size is greater than 0
+        logEntries = []
+
+        if(page_size > 0) and (page > 0):
+            print("limiting logs by page and chunk")
+            logEntries = self.session.query(Logs).order_by(Logs.datetime.desc()).offset(page*page_size).limit(page_size)
+        else:
+            logEntries = self.session.query(Logs).order_by(Logs.datetime.desc())
+
         self.session.flush()
 
         if asJSON is True:
