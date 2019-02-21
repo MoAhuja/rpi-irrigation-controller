@@ -58,10 +58,16 @@ class LogDBO(BaseDBOperations):
         self.session.flush()
 
         if asJSON is True:
-            logDict = []
+            logList = []
+            logDict = {}
             for log in logEntries:
-                logDict.append(log.toDictionary())
-            
+                logList.append(log.toDictionary())
+                   
+            logDict["LOGS"] = logList
+            if (page_size > 0) and (logEntries.count() < page_size):
+                logDict["has_more"] = False
+            else:
+                logDict["has_more"] = True
             return logDict
         else:
             return logEntries
@@ -83,10 +89,16 @@ class LogDBO(BaseDBOperations):
         self.session.flush()
 
         if asJSON is True:
-            logDict = []
+            logList = []
+            logDict = {}
             for log in logEntries:
-                logDict.append(log.toDictionary())
-            
+                logList.append(log.toDictionary())
+                   
+            logDict["LOGS"] = logList
+            if (page_size > 0) and (logEntries.count() < page_size):
+                logDict["has_more"] = False
+            else:
+                logDict["has_more"] = True
             return logDict
         else:
             return logEntries

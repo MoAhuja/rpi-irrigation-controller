@@ -21,8 +21,6 @@ class ZoneController():
         self.decisionDBO = DecisionDBO()
     
         
-    # TODO: Add event to listen for kill switch
-        # TODO:Write an entry to the decision history table to indicate all zones were shutoff due to kil switch (reason code: KillSwitch?)
     
     def eventKillSwitchUpdated(self):
         killSwitch = self.settingsManager.getKillSwitch()
@@ -140,8 +138,6 @@ class ZoneController():
         try:
             for key, activeZone in ZoneController.activeZones.items():
                 shared.logger.debug(self, "Deactivating -> " + str(key) + "-->" + activeZone.zone.name)
-
-                # TODO: Can this just call self.deactivate zone since that has the same code??
 
                 #Call the RPI controller to deactivate this zone
                 if self.zrpi_controller.deactivateZone(activeZone.zone):

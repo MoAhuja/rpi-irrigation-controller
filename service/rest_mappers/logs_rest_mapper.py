@@ -9,12 +9,8 @@ class LogsRestMapper(BaseRestMapper):
     def __init__(self):
         self.logDBO = LogDBO()
 
-    
     def getAllLogs(self, page, page_size):
-        allLogs = self.logDBO.retrieveAllLogs(page, page_size, asJSON=True)
-
-        responseData = {}
-        responseData["LOGS"] = allLogs
+        responseData = self.logDBO.retrieveAllLogs(page, page_size, asJSON=True)
 
         return self.returnSuccessfulResponse(responseData)
     
@@ -29,9 +25,6 @@ class LogsRestMapper(BaseRestMapper):
         if not levelAsInt in [EnumLogLevel.DEBUG.value, EnumLogLevel.INFO.value, EnumLogLevel.ERROR.value]:
             self.raiseBadRequestException(Logs.FIELD_LEVEL, LogsRestMapper.ERROR_TYPE_INVALID_LOG_LEVEL)
 
-        allLogs = self.logDBO.retrieveAllLogsByLevel(levelAsInt, page, page_size, asJSON=True, )
-
-        responseData = {}
-        responseData["LOGS"] = allLogs
+        responseData = self.logDBO.retrieveAllLogsByLevel(levelAsInt, page, page_size, asJSON=True)
 
         return self.returnSuccessfulResponse(responseData)
