@@ -16,7 +16,7 @@ zonecard {
     flex: 1;
     margin-top: 10px;
     overflow: scroll;
-    min-height: 8em;
+    min-height: 6em;
 }
 
 /* Decision History styling */
@@ -110,31 +110,59 @@ reason, decision {
 zonesegment {
     display: flex;
     align-items: center; /* Aligns items vertically in the segment */
-    justify-content: center; /* ALigns items horizontalls in the segment */
+    justify-content: center; /* ALigns items horizontally in the segment */
     padding: 10px;
     overflow: scroll;
 }
 
 zonesegment.middle {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     background: var(--color-secondary);
     color: var(--color-secondary-text1);
     flex: 1;
     border-left: 1px solid grey;
     border-right: 1px solid grey;
     align-items: stretch;
+    padding:0px;
 }
 
-statussegment {
+/* statussegment {
     flex: 1;
     display: flex;
+    border: 1px solid red;
+} */
+
+segment {
+    flex: 1;
+    flex-direction: column;
+    display: flex;
+    border-right: 1px solid grey;
+    
 }
 
-statussegment segment {
-    flex: 1;
-    border: 1px solid green;
+segment > * {
+    overflow: hidden;
+    text-align: center;
 }
+
+segmentbottom {
+    flex: 1;
+}
+
+segmenttop {
+    margin-bottom: 10px;
+    font-weight: 800;
+    background: lightslategray;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid lightslategray;
+    color:white;
+
+}
+
+
 
 zonesegment.end {
     padding: 0px;

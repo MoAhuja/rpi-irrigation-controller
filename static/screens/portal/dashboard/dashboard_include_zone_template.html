@@ -3,15 +3,14 @@
     <hidden id="zone_id">#ID#</hidden>
     <zonesegment class="left">#NAME#</zonesegment>
     <zonesegment class="middle">
-        <ul class="content">
-            <li><b>Description</b> - #DESCRIPTION#</li>
-            <li><b>Next Run:</b> #NEXT_RUN#</li>
-            <li><b>Last Ran:</b> #LAST_RUN#</li>
-        </ul>
-        <statussegment>
-            <segment><b>Enabled:</b> #ENABLED#</segment>
-            <segment><b>Is Running:</b> #CURRENT_STATUS#</segment>
-        </statussegment>
+        <!-- <statussegment> -->
+        
+            <segment><segmenttop>Description</segmenttop> <segmentbottom>#DESCRIPTION#</segmentbottom></segment>
+            <segment><segmenttop>Next Run:</segmenttop> <segmentbottom>#NEXT_RUN#</segmentbottom></segment>
+            <segment><segmenttop>Last Ran:</segmenttop> <segmentbottom>#LAST_RUN#</segmentbottom></segment>
+            <segment><segmenttop>Enabled:</segmenttop> <segmentbottom>#ENABLED#</segmentbottom></segment>
+            <segment><segmenttop>Is Running:</segmenttop> <segmentbottom>#CURRENT_STATUS#</segmentbottom></segment>
+        <!-- </statussegment> -->
     </zonesegment>
     <zonesegment class="end">
         <ul class="action">
@@ -23,7 +22,7 @@
         </ul>
     </zonesegment>
 </zonecard>
-<historycard class="hide" id=#ID#>
+<historycard id=#ID#>
     Something
 </historycard>
 

@@ -160,14 +160,14 @@ $(document).ready(function()
             startDate = Date.parse(start);
             startDateString = toDateString(startDate);
             
-            end = item["next_run"]["end"]
-            endDate = Date.parse(end)
-            endDateString = toDateString(endDate);
+            // end = item["next_run"]["end"]
+            // endDate = Date.parse(end)
+            // endDateString = toDateString(endDate);
             
-            duration = calculateDuration(startDate, endDate);
+            // duration = calculateDuration(startDate, endDate);
 
             // console.log(lr_endDate);
-            nextRunString = startDateString  + " for " + duration;
+            nextRunString = startDateString;
         }
         else
         {
@@ -180,14 +180,14 @@ $(document).ready(function()
             startDate = Date.parse(start);
             startDateString = toDateString(startDate);
             
-            end = item["last_run"]["end"]
-            endDate = Date.parse(end)
-            endDateString = toDateString(endDate);
+            // end = item["last_run"]["end"]
+            // endDate = Date.parse(end)
+            // endDateString = toDateString(endDate);
             
-            duration = calculateDuration(startDate, endDate);
+            // duration = calculateDuration(startDate, endDate);
 
             // console.log(lr_endDate);
-            lastRunString = startDateString + " for " + duration;
+            lastRunString = startDateString;
         }
         else
         {
@@ -411,7 +411,7 @@ $(document).ready(function()
         var minute = dateObject.getMinutes();
         var dateMonth = dateObject.getMonth() + 1;
         var day = dateObject.getDate();
-        var dateString = `${dateMonth}\\${day} ${hour}:${minute}`
+        var dateString = `${dateMonth}\\${day}`
 
         return dateString;
 
