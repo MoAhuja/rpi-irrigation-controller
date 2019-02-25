@@ -5,6 +5,7 @@
     flex-direction: column
 }
 
+/* Settings for the input level picker */
 inputlevels
 {
     display: flex;
@@ -42,6 +43,7 @@ inputlevels button.right {
     border-bottom-right-radius: 15px;
 }
 
+/* Settings for the logs display */
 logs {
     display: flex;
     flex: 1;
@@ -87,4 +89,21 @@ date {
 
 component {
     width: 12em;
+}
+
+/* Setting for the page navigation */
+pagenavigation {
+    width: 100%;
+    text-align: center;
+    margin: 7px;
+}
+
+pagenavigation button {
+    background-color: var(--color-tertiary);
+    color: var(--color-tertiary-text1);
+}
+
+pagenavigation button:hover {
+    color: var(--color-primary);
+    background-color: var(--color-primary-text1);
 }
