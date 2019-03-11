@@ -9,6 +9,8 @@
 inputlevels
 {
     display: flex;
+    flex-shrink:0;
+    flex-grow: 1;
     flex-direction: row;
     margin: 8px;
 }
@@ -45,7 +47,6 @@ inputlevels button.right {
 
 /* Settings for the logs display */
 logs {
-    display: flex;
     flex: 1;
     flex-direction: column;
 }
