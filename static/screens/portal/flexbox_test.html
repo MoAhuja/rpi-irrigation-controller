@@ -20,7 +20,9 @@
             <link rel= "stylesheet" type= "text/css" href= "/static/js/timepicker/lib/bootstrap-datepicker.css">
 
             <link rel= "stylesheet" type= "text/css" href= "/static/css/jquery.datetimepicker.css">
-            <link rel="stylesheet" type="text/css" href="/static/css/content_zone_manager.css?id=1">
+            <link rel="stylesheet" type="text/css" href="/static/css/create_zone.css?id=1">
+            <link rel="stylesheet" type="text/css" href="/static/css/manage_zones.css?id=1">
+            
             <link rel="stylesheet" type="text/css" href="/static/css/checkbox.css">
             <link rel="stylesheet" type="text/css" href="/static/css/button.css">
             <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css">
@@ -98,8 +100,6 @@
                         <li class="bar">|</li>
                         <li id="btn_manager"><a href="#" >Zone Manager</a></li>
                         <li class="bar">|</li>
-                        <li id="btn_controller"><a href="#">Controller</a></li>
-                        <li class="bar">|</li>
                         <li id="btn_logs"><a href="#" >Logs</a></li>
                         <li class="bar">|</li>
                         <li id="btn_settings"><a href="#" >Settings</a></li>
@@ -111,31 +111,19 @@
                 <!-- Dashboard Content -->
                 <div id="content_dashboard">Dashboard Content</div>
                 
-                <!-- TODO: Move this into an include at some point -->
                 <!-- manager content -->
                 <div id="content_manager">
                     <ul class="sub_nav content_nav">
-                        <li id="nav_view_zone"><a href="#">View Zones</a></li>
+                        <li id="nav_manage_zone"><a href="#">Manage Zones</a></li>
                         <li id="nav_create_zone"><a href="#">Create Zone</a></li>
                     </ul>
                     <content>
 
-                        <!-- Create Zone content-->
-                        <createzone>
-                            <!-- see: create_zone_include.html -->
-                        </createzone>
-                        <zonecards>
-
-                        </zonecards>
-                        <!-- View Zones content -->
-                        <zonecards>
-         
-                        </zonecards>
                     </content>
                 </div>
 
 
-                <div id="content_controller">Controller</div>
+                <!-- <div id="content_controller">Controller</div> -->
                 <div id="content_logs">
                     <logs>
                         Logs

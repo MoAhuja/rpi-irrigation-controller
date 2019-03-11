@@ -260,7 +260,7 @@ $(document).ready(function()
         });
     });
 
-        // Activation/Deactivation of zone on click
+    // Activation/Deactivation of zone on click
     $('body').on('click', 'a#controller', function() {
         
         // Get the hidden ID field to find the ID of this zone

@@ -159,6 +159,8 @@ segmenttop {
     border-radius: 5px;
     border: 1px solid lightslategray;
     color:white;
+    margin-left:2px;
+    margin-right: 2px;
 
 }
 

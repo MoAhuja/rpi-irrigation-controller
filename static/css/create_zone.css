@@ -71,6 +71,7 @@ h4 {
     margin-top: 15px;
     font-weight: bolder;
     color: var(--color-primary);
+    padding-left: 0px;
 }
 
 .create_zone_fields > li > label {
