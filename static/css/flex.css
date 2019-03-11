@@ -99,18 +99,17 @@ footer {
     padding: 0;
     }
 
-.main_nav a {
+.main_nav a, .main_nav a:visited {
     color: var(--color-primary-text1);
     font-size: .99em;
     text-decoration: none;
     
 }
 
-.main_nav a:hover {
+.main_nav a:hover, .main_nav a:focus {
     color: var(--color-primary-text2);
     font-weight: bolder;
     text-decoration: none;
-
 }
 
 
@@ -142,6 +141,8 @@ content div.show {
       
 }
 
+
+
 .content_nav li {
     display: block;
     padding-left: 10px;
@@ -149,10 +150,17 @@ content div.show {
 }
 
 
-.content_nav a {
+.content_nav a, .content_nav a:visited {
     text-decoration: none;
     color: var(--color-primary-text1);
     font-size: .99em;
+}
+
+.content_nav a:hover,  .content_nav a:active , .content_nav a:focus {
+    color: var(--color-primary-text2);
+    font-weight: bolder;
+    text-decoration: none;
+
 }
 
 .content_nav a:hover {
