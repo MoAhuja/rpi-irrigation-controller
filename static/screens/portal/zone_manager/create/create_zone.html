@@ -11,65 +11,65 @@
             <link rel= "stylesheet" type= "text/css" href= "/static/js/timepicker/lib/bootstrap-datepicker.css">
             
             
-            <script>
+            <!-- <script>
                 $(document).ready(function(){
                     var scheduleCounter = 0;
 
                     // $('.time').timepicker();
 
-                   $('body').on('click', '.time', function() {
-                       $(this).timepicker({'step': 10, 'timeFormat': 'H:i'});
-                   });
+                //    $('body').on('click', '.time', function() {
+                //        $(this).timepicker({'step': 10, 'timeFormat': 'H:i'});
+                //    });
                     
 
                    
 
-                    $('body').on('click', '.delButton', function() {
-                        var id  = $(this).attr('id');
-                        console.log(id);
+                    // $('body').on('click', '.delButton', function() {
+                    //     var id  = $(this).attr('id');
+                    //     console.log(id);
 
-                        //If they hit delete on the schedule button, then we need to decrement the counter
-                        if(id == "scheduleDelButton")
-                        {
-                            scheduleCounter--;
-                            console.log("Schedule Counter == " + scheduleCounter);
-                        }
-                        $(this).parent().parent().remove();
+                    //     //If they hit delete on the schedule button, then we need to decrement the counter
+                    //     if(id == "scheduleDelButton")
+                    //     {
+                    //         scheduleCounter--;
+                    //         console.log("Schedule Counter == " + scheduleCounter);
+                    //     }
+                    //     $(this).parent().parent().remove();
 
 
-                    });
+                    // });
                     
 
-                    $('#btnAddSchedule').click(function(){
+                    // $('#btnAddSchedule').click(function(){
                         
-                        $('#ScheduleTable').append('<tr><td><span>Start Time:</span><span><input class ="time" type="text" name="schedule[' + scheduleCounter + '][startTime]" placeholder="6:00 am"/></span></td><td><span>End Time:</span><span><input class="time" type="text" name="schedule[' + scheduleCounter + '][endTime]" placeholder="7:00 am"/></span></td><td class="cellDynamicButton"><button id="scheduleDelButton" class="delButton">Delete</button></td></tr>');
-                        scheduleCounter++;
+                    //     $('#ScheduleTable').append('<tr><td><span>Start Time:</span><span><input class ="time" type="text" name="schedule[' + scheduleCounter + '][startTime]" placeholder="6:00 am"/></span></td><td><span>End Time:</span><span><input class="time" type="text" name="schedule[' + scheduleCounter + '][endTime]" placeholder="7:00 am"/></span></td><td class="cellDynamicButton"><button id="scheduleDelButton" class="delButton">Delete</button></td></tr>');
+                    //     scheduleCounter++;
 
-                    });
+                    // });
 
 
-                    $("form").submit(function(e){
+                    // $("form").submit(function(e){
                         
-                        e.preventDefault();
-                        var jsonData = $("form#formData").serializeJSON();
-                        console.log(jsonData);
+                    //     e.preventDefault();
+                    //     var jsonData = $("form#formData").serializeJSON();
+                    //     console.log(jsonData);
 
 
-                        $.ajax({
-                            url: 'http://127.0.0.1:5000/service_hub/zones/create_zone', // url where to submit the request
-                            type : "POST", // type of action POST || GET
-                            dataType : 'json', // data type
-                            data : jsonData, // post data || get data
-                            success : function(result) {
-                                // you can see the result from the console
-                                // tab of the developer tools
-                                console.log(result);
-                            },
-                            error: function(xhr, resp, text) {
-                                console.log(text);
-                            }
-                        });
-                    });
+                    //     $.ajax({
+                    //         url: 'http://127.0.0.1:5000/service_hub/zones/create_zone', // url where to submit the request
+                    //         type : "POST", // type of action POST || GET
+                    //         dataType : 'json', // data type
+                    //         data : jsonData, // post data || get data
+                    //         success : function(result) {
+                    //             // you can see the result from the console
+                    //             // tab of the developer tools
+                    //             console.log(result);
+                    //         },
+                    //         error: function(xhr, resp, text) {
+                    //             console.log(text);
+                    //         }
+                    //     });
+                    // });
                     
                    
 
@@ -84,7 +84,7 @@
                 
 
 
-            </script>
+            </script> -->
     </head>
 
     <body>
