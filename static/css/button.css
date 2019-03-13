@@ -22,15 +22,26 @@
 
 .btn.btn-blue:hover {
     background-color: #4F87A2;
-    border-color: rgba(0,0,0,0.5);
+	border-color: rgba(0,0,0,1);
+	color: #FFF;
 }
+
 
 .btn.btn-blue:active {
     background-color: #3C677B;
-    border-color: rgba(0,0,0,0.9);
+	border-color: rgba(0,0,0,0.9);
+	color: #FFF;
+}
+
+.btn.btn-blue:focus {
+    background-color: #4F87A2;
+	border-color: rgba(0,0,0,1);
+	color: #FFF;
 }
 
 .btn.btn-blue:disabled {
     background-color: slategrey;
     border-color: rgba(0,0,0,0.9);
 }
+
+
