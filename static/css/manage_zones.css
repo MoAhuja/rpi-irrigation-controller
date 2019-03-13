@@ -36,6 +36,7 @@ manage_zones zone row:last-child
 row.header {
     color: var(--color-primary); 
     background-color: var(--color-secondary);
+    padding-right: 10px;
 }
 
 manage_zones zone row name {
