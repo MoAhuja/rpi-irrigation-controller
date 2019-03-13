@@ -76,6 +76,9 @@ $(document).ready(function()
             }
         });
     });
+
+    // Start the page with load create zone content
+    loadCreateZoneScreen();
      
 
 

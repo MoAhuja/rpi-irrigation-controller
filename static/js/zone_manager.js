@@ -57,25 +57,31 @@ $(document).ready(function(){
         }
     });
 
+    
+
     $('body').on('click', '#nav_manage_zone', function() {
         loadManageZoneScreen();
     });
 
-    $('body').on('click', '#nav_create_zone', function() {
-        loadCreateZoneScreen();
+    $('body').on('click', '#nav_manage_zone', function() {
+        loadManageZoneScreen();
     });
 
-    function loadCreateZoneScreen()
+    
+
+    // Overload to support displaying of alert notification after zones are loaded
+    function loadManageZoneScreenWithAlert(alertType, alertContent)
     {
-        // Loads the create zone content
-        $("#content_manager content").load("/static/screens/portal/zone_manager/create/create_zone_include.html");
-        
-        // TODO: Disable the create zone link or something
-        // TODO: Enable the mnage zone link
+        console.log("Load manage zone screen with alert invoked")
+        loadManageZoneScreen();
+        displayAlert(alertType, alertContent);
+
     }
 
     function loadManageZoneScreen()
     {
+        console.log("Load manage zone screen invoked")
+        
         $("#content_manager content").html(manage_zone_page_template);
 
         
@@ -166,8 +172,7 @@ $(document).ready(function(){
         $(this).timepicker({'step': 10, 'timeFormat': 'H:i'});
     });
 
-    // Start the page with load create zone content
-    loadCreateZoneScreen();
+  
 
     // Handles the submission of the create zone
     $('body').on('click', '#btnCreateZone', function() {
@@ -177,7 +182,7 @@ $(document).ready(function(){
 
 
         $.ajax({
-            url: 'http://localhost:5000/service_hub/zone', // url where to submit the request
+            url: 'http://127.0.0.1:5000/service_hub/zone', // url where to submit the request
             type : "POST", // type of action POST || GET
             dataType : 'json', // data type
             data : jsonData, // post data || get data
@@ -217,22 +222,59 @@ $(document).ready(function(){
 
     });
 
-    // Handles the delete button click
-    $('body').on('click', '.delButton', function() {
-        var id  = $(this).attr('id');
-        console.log(id);
-
-        //If they hit delete on the schedule button, then we need to decrement the counter
-        if(id == "scheduleDelButton")
-        {
-            scheduleCounter--;
-            console.log("Schedule Counter == " + scheduleCounter);
-        }
-
-        $(this).parent().parent().remove();
-
-
+    // Catch the press of the delete button in the zone manager screen
+    $('body').on('click', '.delete_zone', function() {
+        id_string = ($(this).attr('id'))
+        index_of_underscore = id_string.indexOf("_")
+        id = id_string.substr(index_of_underscore+1)
+        
+        deleteZone(id)
     });
+
+    // Catch the press of the edit zone button in the zone manager screen
+    $('body').on('click', '.edit_zone', function() {
+        id_string = ($(this).attr('id'))
+        index_of_underscore = id_string.indexOf("_")
+        id = id_string.substr(index_of_underscore+1)
+
+        alert("Edit zone clicked. Id = " + id);
+    });
+
+
+    // Delete a zone by calling the REST APi
+    function deleteZone(id)
+    {
+        $.ajax({
+            url: 'http://127.0.0.1:5000/service_hub/zone/' + id,
+            type : "DELETE", // type of action POST || GET
+            async: true,
+            contentType: 'application/json',
+            success : function(data) {
+                loadManageZoneScreenWithAlert("success", "Zone deleted successfully. ");
+                
+            },
+            error: function(xhr, resp, text) {
+                // alert("Unable to delete zone -> " + id)
+                displayAlert("danger", "Failed to delete zone")
+            }
+        });
+    }
+
+
+    //Eligible types = success, info, warning, danger
+    function displayAlert( type, message)
+    {
+        console.log("Displaying alert - " + type);
+
+        var body = `<div class="alert alert-${type} alert-dismissible">
+            ${message}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>`
+
+        $("#alerts_container").append(body);
+    }
 
 
 });
