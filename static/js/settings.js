@@ -170,7 +170,7 @@ $(document).ready(function()
             console.log("Kill switch request  is " + ks_request);
 
             $.ajax({
-                url: 'http://localhost:5000/service_hub/settings/kill', // url where to submit the request
+                url: 'http://127.0.0.1:5000/service_hub/settings/kill', // url where to submit the request
                 type : "POST", // type of action POST || GET || DELETE
                 dataType : 'json', // data type
                 data : ks_request, // post data || get data
@@ -209,7 +209,7 @@ $(document).ready(function()
             
 
             $.ajax({
-                url: 'http://localhost:5000/service_hub/settings/raindelay', // url where to submit the request
+                url: 'http://127.0.0.1:5000/service_hub/settings/raindelay', // url where to submit the request
                 type : "POST", // type of action POST || GET || DELETE
                 dataType : 'json', // data type
                 data : rd_request, // post data || get data
@@ -275,8 +275,8 @@ $(document).ready(function()
         
         // $.when(loadConfigData(), loadPushBulletUsersData()).then(drawScreen(), drawErrorScreen())
         $.when(
-            $.ajax('http://localhost:5000/service_hub/settings/kill'), 
-            $.ajax('http://localhost:5000/service_hub/settings/raindelay'))
+            $.ajax('http://127.0.0.1:5000/service_hub/settings/kill'), 
+            $.ajax('http://127.0.0.1:5000/service_hub/settings/raindelay'))
             .done(function(kill_switch_data, rain_delay_data)
             {
                 kill_switch = kill_switch_data[0]["kill_switch"];
@@ -383,7 +383,7 @@ $(document).ready(function()
     {
         
         $.ajax({
-            url: 'http://localhost:5000/service_hub/settings/notification/pushbullet/user/' + name, // url where to submit the request
+            url: 'http://127.0.0.1:5000/service_hub/settings/notification/pushbullet/user/' + name, // url where to submit the request
             type : "DELETE", // type of action POST || GET || DELETE
             dataType : 'json', // data type
             // data : jsonData, // post data || get data
@@ -412,7 +412,7 @@ $(document).ready(function()
         jsonData = jsonData.replaceAll("\"True\"", "true");
         console.log(jsonData);
         $.ajax({
-            url: 'http://localhost:5000/service_hub/settings/notification/config', // url where to submit the request
+            url: 'http://127.0.0.1:5000/service_hub/settings/notification/config', // url where to submit the request
             type : "POST", // type of action POST || GET
             dataType : 'json', // data type
             data : jsonData, // post data || get data

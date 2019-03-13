@@ -313,7 +313,7 @@ $(document).ready(function()
 
         console.log(request);
         $.ajax({
-            url: 'http://localhost:5000/service_hub/zones/activate', 
+            url: 'http://127.0.0.1:5000/service_hub/zones/activate', 
             type : "POST", // type of action POST || GET
             dataType : 'json', // data type
             data: request,
@@ -338,7 +338,7 @@ $(document).ready(function()
 
         console.log(request);
         $.ajax({
-            url: 'http://localhost:5000/service_hub/zones/deactivate', 
+            url: 'http://127.0.0.1:5000/service_hub/zones/deactivate', 
             type : "POST", // type of action POST || GET
             dataType : 'json', // data type
             data: request,
