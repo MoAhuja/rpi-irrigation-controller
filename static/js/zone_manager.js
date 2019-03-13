@@ -174,28 +174,7 @@ $(document).ready(function(){
 
   
 
-    // Handles the submission of the create zone
-    $('body').on('click', '#btnCreateZone', function() {
-        // e.preventDefault();
-        var jsonData = $("#formData").serializeJSON();
-        console.log(jsonData);
-
-
-        $.ajax({
-            url: 'http://127.0.0.1:5000/service_hub/zone', // url where to submit the request
-            type : "POST", // type of action POST || GET
-            dataType : 'json', // data type
-            data : jsonData, // post data || get data
-            success : function(result) {
-                // you can see the result from the console
-                // tab of the developer tools
-                console.log(result);
-            },
-            error: function(xhr, resp, text) {
-                console.log(text);
-            }
-        });
-    });
+   
 
     // Handles the "Add Schedule" button
     // TODO: Prefetch this once and re-use.
@@ -262,19 +241,7 @@ $(document).ready(function(){
 
 
     //Eligible types = success, info, warning, danger
-    function displayAlert( type, message)
-    {
-        console.log("Displaying alert - " + type);
-
-        var body = `<div class="alert alert-${type} alert-dismissible">
-            ${message}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>`
-
-        $("#alerts_container").append(body);
-    }
+    
 
 
 });

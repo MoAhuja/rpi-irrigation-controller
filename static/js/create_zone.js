@@ -47,15 +47,45 @@ $(document).ready(function()
 
 
     // Form submission to create zone
-    $("form").submit(function(e){
+    // $("form").submit(function(e){
                         
-        e.preventDefault();
-        var jsonData = $("form#formData").serializeJSON();
+    //     e.preventDefault();
+    //     var jsonData = $("form#formData").serializeJSON();
+    //     console.log(jsonData);
+
+
+    //     $.ajax({
+    //         url: 'http://127.0.0.1:5000/service_hub/zones/create_zone', // url where to submit the request
+    //         type : "POST", // type of action POST || GET
+    //         dataType : 'json', // data type
+    //         data : jsonData, // post data || get data
+    //         success : function(result) {
+    //             // you can see the result from the console
+    //             // tab of the developer tools
+    //             console.log(result);
+                
+    //             alert(result)
+    //             // TODO: Change content to display successful creation?
+    //         },
+    //         error: function(xhr, resp, text) {
+    //             console.log(text);
+    //             alert("Zone creation failed")
+
+    //             // TODO: Change content to display successful creation?
+
+    //         }
+    //     });
+    // });
+
+     // Handles the submission of the create zone
+    $('body').on('click', '#btnCreateZone', function() {
+        // e.preventDefault();
+        var jsonData = $("#formData").serializeJSON();
         console.log(jsonData);
 
 
         $.ajax({
-            url: 'http://127.0.0.1:5000/service_hub/zones/create_zone', // url where to submit the request
+            url: 'http://127.0.0.1:5000/service_hub/zone', // url where to submit the request
             type : "POST", // type of action POST || GET
             dataType : 'json', // data type
             data : jsonData, // post data || get data
@@ -63,16 +93,15 @@ $(document).ready(function()
                 // you can see the result from the console
                 // tab of the developer tools
                 console.log(result);
-                
-                alert(result)
-                // TODO: Change content to display successful creation?
+                displayAlert("success", "Zone added successfully")
+
+                // Hide the form data
+                $("#formData").hide()
             },
             error: function(xhr, resp, text) {
                 console.log(text);
-                alert("Zone creation failed")
 
-                // TODO: Change content to display successful creation?
-
+                displayAlert("danger", "ERROR: To do - parse error message")
             }
         });
     });
