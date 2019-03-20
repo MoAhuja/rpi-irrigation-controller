@@ -16,6 +16,7 @@ from service.rest_mappers.dashboard_rest_mapper import DashboardRestMapper
 from service.rest_mappers.logs_rest_mapper import LogsRestMapper
 from service.rest_mappers.decision_history_rest_mapper import DecisionHistoryRestMapper
 from service.rest_mappers.notification_users_rest_mapper import NotificationUsersRestMapper
+from service.rest_mappers.relay_rest_mapper import RelayRestMapper
 import service.database.db_schema
 
 from service.zone.zone_controller import ZoneController
@@ -38,7 +39,7 @@ def landing():
 def create_zone():
 	# Check query string for the zone ID. If so, we'll retrieve that zone data first and then load the page
 	# return render_template('landing.html')
-	return app.send_static_file('screens/portal/create_zone.html')
+	return app.send_static_file('screens/portal/zone_manager/create_zone.html')
 
 @app.route('/portal/flexbox')
 def flexbox():
@@ -130,13 +131,17 @@ def service_settings_raindelay():
 def service_zone_delete_or_get(zone_id):
 	mapper = ZoneDataRestMapper()
 
+	print("Zone id for delete is: " + str(zone_id))
 	if request.method == 'DELETE':
 		result = mapper.deleteZone(zone_id)
+		result = Response(result)
 	else:
 		result = mapper.getZone(zone_id)
 		result = Response(result, mimetype='application/json')
 
 	result.headers['Access-Control-Allow-Origin'] = '*'
+	result.headers['Access-Control-Allow-Methods'] = 'GET, POST, PATCH, PUT, DELETE, OPTIONS'
+
 
 	return result
 
@@ -187,6 +192,9 @@ def service_get_all_logs():
 	level = request.args.get('level')
 	page = request.args.get('page')
 	page_size = request.args.get('page_size')
+
+	print(page)
+	print(page_size)
 
 	if page is None:
 		print("setting page to 0 from None")
@@ -270,8 +278,24 @@ def service_settings_pushbullet_user_delete(name):
 	# POst request, so we need to update the notification settings
 	resp = Response(rm.deletePushBulletNotificationUser(name), mimetype='application/json')
 	resp.headers['Access-Control-Allow-Origin'] = '*'
+	
 
 	return resp	
+
+@app.route('/service_hub/relay', methods=['POST'])
+def create_relay_to_pin_mapping():
+	mapper = RelayRestMapper()
+	# if request.method == 'GET':
+	# 	# resp = Response(srm.getNotificationSettings(), mimetype='application/json')
+	# 	# resp.headers['Access-Control-Allow-Origin'] = '*'
+	# 	return ""
+	# else:
+		# Post request, so we need to assign the relay
+	json_data = request.get_json(force=True)
+	resp = Response(mapper.createRelayToPinMapping(json_data), mimetype='application/json')
+	resp.headers['Access-Control-Allow-Origin'] = '*'
+
+	return resp
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
