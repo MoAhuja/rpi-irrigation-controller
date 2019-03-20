@@ -351,6 +351,10 @@ class DecisionHistory(Base):
     
 class RpiPinMapper(Base):
     __tablename__ = "pin_mapper"
+
+    FIELD_RELAY = "relay"
+    FIELD_PIN = "pin"
+    FIELD_ZONE = "zone"
     
     id = Column('id', Integer, primary_key=True)
     
@@ -363,6 +367,15 @@ class RpiPinMapper(Base):
 
     # Maps a relay pin to a raspberry pi pin
     rpi_pin = Column('rpi_pin', Integer, nullable=False, unique=True)
+
+    def toDictionary(self):
+        out={}
+
+        out[self.FIELD_PIN] = self.rpi_pin
+        out[self.FIELD_ZONE] = self.zone_id
+        out[self.FIELD_RELAY] = self.relay_id
+
+        return out
 
 class PushBulletUsers(Base):
     __tablename__ = "pushbullet_users"
@@ -417,10 +430,14 @@ class Logs(Base):
 # ##########################
 @event.listens_for(RpiPinMapper.__table__, 'after_create')
 def RPIPIN_after_create(target, connection, **kw):
-    # TODO: Add all the relays 
-    # connection.session.add(RpiPinMapper(relay_id=1, rpi_pin=2))
     connection.execute("Insert into pin_mapper (relay_id, rpi_pin) VALUES (1,20)")
     connection.execute("Insert into pin_mapper (relay_id, rpi_pin) VALUES (2,14)")
+    connection.execute("Insert into pin_mapper (relay_id, rpi_pin) VALUES (3,15)")
+    connection.execute("Insert into pin_mapper (relay_id, rpi_pin) VALUES (4,16)")
+    connection.execute("Insert into pin_mapper (relay_id, rpi_pin) VALUES (5,17)")
+    connection.execute("Insert into pin_mapper (relay_id, rpi_pin) VALUES (6,18)")
+    connection.execute("Insert into pin_mapper (relay_id, rpi_pin) VALUES (7,19)")
+    connection.execute("Insert into pin_mapper (relay_id, rpi_pin) VALUES (8,21)")
     # connection.close()
     # connection.session.commit()
 
@@ -430,9 +447,11 @@ def createDatabase():
     #      enabled = Column(Boolean)
     # Create an engine that stores data in the local directory's
     # sqlalchemy_example.db file.
-    engine = create_engine('sqlite:///sqlalchemy_example.db?check_same_thread=False')
+    engine = create_engine('sqlite:///lawnwatcher.db?check_same_thread=False')
 
 
     # # Create all tables in the engine. This is equivalent to "Create Table"
     # # statements in raw SQL.
     Base.metadata.create_all(engine)
+
+    pprint("Created database")

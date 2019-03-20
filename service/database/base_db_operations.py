@@ -13,7 +13,7 @@ class BaseDBOperations():
         
         if self.session is None:
 
-            engine = create_engine('sqlite:///sqlalchemy_example.db?check_same_thread=False')
+            engine = create_engine('sqlite:///lawnwatcher.db?check_same_thread=False')
             event.listen(engine, 'connect', self._fk_pragma_on_connect2)
 
             # Bind the engine to the metadata of the Base class so that the
