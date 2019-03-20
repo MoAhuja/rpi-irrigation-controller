@@ -1,7 +1,29 @@
 $(document).ready(function()
 {
     var scheduleCounter = 0;
+    create_zone_template = ""
 
+
+    $.ajax({
+        url: '/static/screens/portal/zone_manager/create/create_zone_include.html', // url where to submit the request
+        type : "GET", // type of action POST || GET
+        dataType : 'html', // data type
+        async: true,
+        success : function(data) {
+            create_zone_template = data
+            
+        },
+        error: function(xhr, resp, text) {
+            console.log(text);
+        }
+    });
+
+    $("#btn_manager").click(function(){
+        
+
+        loadCreateZoneScreen();
+
+    });
 
     // Load the create zone screen when it's clicked in the navigation menu
     $('body').on('click', '#nav_create_zone', function() {
@@ -11,8 +33,32 @@ $(document).ready(function()
     // Load the static create zone screen
     function loadCreateZoneScreen()
     {
+        scheduleCounter = 0;
+        
+        console.log("Load create zone called. Template = " + create_zone_template)
+        modifiedTemplate = create_zone_template
+
+        // Replace all the placeholder values with defaults
+        modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_NAME#", "");
+        modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_DESCRIPTION#", "");
+        modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_ENABLED#", "UNCHECKED");
+        modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_ID#", "");
+        modifiedTemplate = modifiedTemplate.replaceAll("#RELAY#", "");
+        modifiedTemplate = modifiedTemplate.replaceAll("#RAIN_SHORT#", "");
+        modifiedTemplate = modifiedTemplate.replaceAll("#RAIN_DAILY#", "");
+        modifiedTemplate = modifiedTemplate.replaceAll("#RAIN_ENABLED#", "UNCHECKED");
+        modifiedTemplate = modifiedTemplate.replaceAll("#TEMP_ENABLED#", "UNCHECKED");
+        modifiedTemplate = modifiedTemplate.replaceAll("#TEMP_MIN#", "");
+        modifiedTemplate = modifiedTemplate.replaceAll("#TEMP_MAX#", "");
+        modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_ID#", "");
+
+        // Make teh button a create button
+        modifiedTemplate = modifiedTemplate.replaceAll("#OPERATION_TYPE#", "Create");
+        
+
+
         // Loads the create zone content
-        $("#content_manager content").load("/static/screens/portal/zone_manager/create/create_zone_include.html");
+        $("#content_manager content").html(modifiedTemplate);
         
         // TODO: Disable the create zone link or something
         // TODO: Enable the mnage zone link
@@ -46,36 +92,6 @@ $(document).ready(function()
     });
 
 
-    // Form submission to create zone
-    // $("form").submit(function(e){
-                        
-    //     e.preventDefault();
-    //     var jsonData = $("form#formData").serializeJSON();
-    //     console.log(jsonData);
-
-
-    //     $.ajax({
-    //         url: 'http://127.0.0.1:5000/service_hub/zones/create_zone', // url where to submit the request
-    //         type : "POST", // type of action POST || GET
-    //         dataType : 'json', // data type
-    //         data : jsonData, // post data || get data
-    //         success : function(result) {
-    //             // you can see the result from the console
-    //             // tab of the developer tools
-    //             console.log(result);
-                
-    //             alert(result)
-    //             // TODO: Change content to display successful creation?
-    //         },
-    //         error: function(xhr, resp, text) {
-    //             console.log(text);
-    //             alert("Zone creation failed")
-
-    //             // TODO: Change content to display successful creation?
-
-    //         }
-    //     });
-    // });
 
      // Handles the submission of the create zone
     $('body').on('click', '#btnCreateZone', function() {

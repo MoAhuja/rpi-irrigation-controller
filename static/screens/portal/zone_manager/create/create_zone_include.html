@@ -5,51 +5,52 @@
 <form id="formData">
 
 <ul class="create_zone_fields">
+    <input type="hidden" name="zone_id" value="#ZONE_ID#"/>
     <li><h2>Zones</h2></li>
     <li>
         <label for="zone_name">Zone Name</label>
-        <input type="text" name="zone_name" id="zone_name" placeholder="Enter the zone name here">
+        <input type="text" name="zone_name" id="zone_name" placeholder="Enter the zone name here" value="#ZONE_NAME#">
     </li>
     <li>
         <label for="zone_description">Zone Description</label>
-        <input type="text" name="zone_description" id="zone_description" placeholder="Enter a description of this zone">
+        <input type="text" name="zone_description" id="zone_description" placeholder="Enter a description of this zone" value="#ZONE_DESCRIPTION#">
     </li>
     <li>
         <label for="zone_enabled">Zone Enabled</label>
-        <input type="checkbox" name="enabled" id="zone_enabled">
+        <input type="checkbox" name="enabled" id="zone_enabled" #ZONE_ENABLED#>
     </li>
     <li>
         <label for="relay">Relay #</label>
-        <input type="number" name="relay" id="relay">
+        <input type="number" name="relay" id="relay" value="#RELAY#">
     </li>
     <hr />
     <li><h2>Rain</h2></li>
     <li>
         <label for="rain_rules_enabled">Enable Rain Rules</label>
-        <input type="checkbox" id="rain_rules_enabled" name="rain[enabled]" >
+        <input type="checkbox" id="rain_rules_enabled" name="rain[enabled]" #RAIN_ENABLED# >
     </li>
     <li>
         <label for="short_term_rain">Short Term Rain Limit</label>
-        <input type="number" id="short_term_rain" name="rain[shortTermExpectedRainAmount]" placeholder="Enter the amount of rain in millimeters that would prevent watering (short term)">
+        <input type="number" id="short_term_rain" value="#RAIN_SHORT#" name="rain[shortTermExpectedRainAmount]" placeholder="Enter the amount of rain in millimeters that would prevent watering (short term)">
     </li>
     <li>
         <label for="daily_rain">Daily Rain Limit</label>
-        <input type="number" id="daily_rain" name="rain[dailyExpectedRainAmount]" placeholder="Enter the amount of rain in millimeters that would prevent watering (daily)">
+        <input type="number" id="daily_rain" value="#RAIN_DAILY#" name="rain[dailyExpectedRainAmount]" placeholder="Enter the amount of rain in millimeters that would prevent watering (daily)">
     </li>
 
     <hr />
     <li><h2>Temperature</h2></li>
     <li>
         <label for="temperature_rules_enabled">Enable Temperature Rules</label>
-        <input type="checkbox" id="temperature_rules_enabled" name="temperature[enabled]" >
+        <input type="checkbox" id="temperature_rules_enabled" name="temperature[enabled]" #TEMP_ENABLED#>
     </li>
     <li>
         <label for="temp_min">Minimum Temperature</label>
-        <input type="number"  id="temp_min" name="temperature[min]" placeholder="Enter the minimum environmental temperature for the sprinkler to activate">
+        <input type="number"  id="temp_min" name="temperature[min]" value="#TEMP_MIN#" placeholder="Enter the minimum environmental temperature for the sprinkler to activate">
     </li>
     <li>
         <label for="temp_max">Maximum Temperature</label>
-        <input type="number" id="temp_max" name="temperature[max]" placeholder="Enter the maximum environmental temperature for the sprinkler to activate">
+        <input type="number" id="temp_max" name="temperature[max]" value="#TEMP_MAX#" placeholder="Enter the maximum environmental temperature for the sprinkler to activate">
     </li>
 
     <li>
@@ -62,7 +63,7 @@
     </ul>
     
     <li>
-        <button class="btn btn-blue" id="btnCreateZone">Submit</button>
+        <button class="btn btn-blue" id="btn#OPERATION_TYPE#Zone">Submit</button>
     </li>
               
 </ul>

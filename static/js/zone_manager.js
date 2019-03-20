@@ -9,8 +9,24 @@ $(document).ready(function(){
     manage_zone_row_template = ""
     manage_zone_page_template = ""
     manage_zone_schedule_template = ""
+    allZones = ""
+    edit_zone_template = ""
     
     // Prefetch content
+
+    $.ajax({
+        url: '/static/screens/portal/zone_manager/create/create_zone_include.html', // url where to submit the request
+        type : "GET", // type of action POST || GET
+        dataType : 'html', // data type
+        async: true,
+        success : function(data) {
+            edit_zone_template = data
+            
+        },
+        error: function(xhr, resp, text) {
+            console.log(text);
+        }
+    });
 
     $.ajax({
         url: '/static/screens/portal/zone_manager/manage/manage_zone_row_template.html', // url where to submit the request
@@ -92,6 +108,7 @@ $(document).ready(function(){
             async: true,
             success : function(result) {
                 console.log(result)
+                allZones = result
                 result.forEach(addZoneToManageZoneScreen)
 
             },
@@ -167,6 +184,91 @@ $(document).ready(function(){
         $("manage_zones").append(zone_dom)
     }
 
+    // Load the static create zone screen
+    function loadEditZoneScreen(zone_id)
+    {
+        zone = findZoneById(zone_id)
+        console.log("Editing zone: " + zone)
+
+        console.log("Load create zone called. Template = " + edit_zone_template)
+        modifiedTemplate = edit_zone_template
+
+        // Replace all the placeholder values with defaults
+        modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_NAME#", zone.zone_name);
+        modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_DESCRIPTION#", zone.zone_description);
+        modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_ENABLED#", zone.enabled);
+        modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_ID#", zone.id);
+        modifiedTemplate = modifiedTemplate.replaceAll("#RELAY#", zone.relay);
+        modifiedTemplate = modifiedTemplate.replaceAll("#RAIN_SHORT#", zone.rain.shortTermExpectedRainAmount);
+        modifiedTemplate = modifiedTemplate.replaceAll("#RAIN_DAILY#", zone.rain.dailyExpectedRainAmount);
+        modifiedTemplate = modifiedTemplate.replaceAll("#RAIN_ENABLED#", zone.rain.enabled);
+        modifiedTemplate = modifiedTemplate.replaceAll("#TEMP_ENABLED#", zone.temperature.enabled);
+        modifiedTemplate = modifiedTemplate.replaceAll("#TEMP_MIN#", zone.temperature.min);
+        modifiedTemplate = modifiedTemplate.replaceAll("#TEMP_MAX#", zone.temperature.max);
+        
+
+        modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_ID#", zone.id);
+
+        // Make teh button a create button
+        modifiedTemplate = modifiedTemplate.replaceAll("#OPERATION_TYPE#", "Edit");
+        
+
+
+        // Loads the create zone content
+        $("#content_manager content").html(modifiedTemplate);
+        
+        // TODO: Disable the create zone link or something
+        // TODO: Enable the mnage zone link
+    }
+
+
+    function findZoneById(id)
+    {
+        zoneToReturn = null
+
+        allZones.some(function(zone)
+        {
+            // Check if the zone has the id we're looking for
+            if(zone.id == id)
+            {
+                zoneToReturn = zone;
+                return true;
+            }
+        })
+
+        return zoneToReturn;
+    }
+
+     // Handles the submission of the create zone
+     $('body').on('click', '#btnEditZone', function() {
+        // e.preventDefault();
+        var jsonData = $("#formData").serializeJSON();
+        console.log(jsonData);
+
+
+        $.ajax({
+            url: 'http://127.0.0.1:5000/service_hub/zone/edit', // url where to submit the request
+            type : "POST", // type of action POST || GET
+            dataType : 'json', // data type
+            data : jsonData, // post data || get data
+            success : function(result) {
+                // you can see the result from the console
+                // tab of the developer tools
+                console.log(result);
+                displayAlert("success", "Zone edited successfully")
+
+                // Hide the form data
+                $("#formData").hide()
+            },
+            error: function(xhr, resp, text) {
+                console.log(text);
+
+                displayAlert("danger", "ERROR: To do - parse error message")
+            }
+        });
+    });
+
+
     // Time picker hook
     $('body').on('click', '.time', function() {
         $(this).timepicker({'step': 10, 'timeFormat': 'H:i'});
@@ -215,8 +317,7 @@ $(document).ready(function(){
         id_string = ($(this).attr('id'))
         index_of_underscore = id_string.indexOf("_")
         id = id_string.substr(index_of_underscore+1)
-
-        alert("Edit zone clicked. Id = " + id);
+        loadEditZoneScreen(id)
     });
 
 
