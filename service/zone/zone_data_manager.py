@@ -4,6 +4,7 @@ from service.utilities.conversion import Conversions
 from pprint import pprint
 from service.utilities.logger import Logger
 from service.database.db_schema import Zone
+from service.core import shared
 # from service.core import shared
 import sys
 
@@ -22,10 +23,11 @@ class ZoneDataManager():
         self.ops = ZoneDBO()
         
         # TODO: Remove this later
-        self.ops.insertRPItoPINConfig( 1,10)
+        # self.ops.insertRPItoPINConfig( 1,10)
 
     
     def createZone(self, zone, relay_id=None):
+        shared.logger.debug(self, "Relay id = " + str(relay_id))
         self.ops.createZone(zone, relay_id)
         return self.ops.saveAndClose()
     
