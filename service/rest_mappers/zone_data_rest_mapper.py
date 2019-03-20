@@ -58,8 +58,9 @@ class ZoneDataRestMapper(BaseRestMapper):
 
          # Get the relay ID if it's provided
         relay_id = self.getKeyOrSetAsNone(json_data, Zone.FIELD_RELAY)
-
-
+        relay_id = self.validateIsInt(relay_id, Zone.FIELD_RELAY, json_data)
+        
+        shared.logger.debug(self, "Relay = " + str(relay_id))
         # Edit the zone
         result = self.zdm.editZone(zone_id, newZone, relay_id=relay_id)
 
@@ -73,10 +74,14 @@ class ZoneDataRestMapper(BaseRestMapper):
     def createZone(self, json_data):
         shared.logger.debug(self, "ZoneManager - create zone")
 
+
         zone = self.validateDataAndCreateZoneObject(json_data)
         # Get the relay ID if it's provided
         relay_id = self.getKeyOrSetAsNone(json_data, Zone.FIELD_RELAY)
-
+        shared.logger.debug(self, "Relay id = " + str(relay_id))
+        relay_id = self.validateIsInt(relay_id, Zone.FIELD_RELAY, json_data)
+        
+        shared.logger.debug(self, "Relay = " + str(relay_id))
 
         result = self.zdm.createZone(zone, relay_id)
 

@@ -76,6 +76,27 @@ class BaseRestMapper():
 
         else:
             return dataToValidate
+    
+    def validateIsInt(self, dataToValidate, field_name, json_data=None):
+        if dataToValidate is not None:
+            if type(dataToValidate) is not int:
+                shared.logger.debug(self, "validateIsInt: It is not an int. Going to cast.")
+                # Try to parse it to an int
+                try:
+                    parsedInt = int(dataToValidate)
+                    shared.logger.debug(self, "Parsed the int")
+                
+                    return parsedInt
+                except:
+                    self.raiseBadRequestException(field_name, BaseRestMapper.ERROR_TYPE_INVALID_TYPE_MUST_BE_INT, json_data, dataToValidate)
+
+            else:
+                shared.logger.debug(self, "Already an int")
+                
+                return dataToValidate
+        else:
+            return dataToValidate
+        
     # Throws an exception if the data type is not a string
     def validateIsProvidedAndString(self, dataToValidate, field_name, json_data=None):
         self.validateMandatory(dataToValidate, field_name, json_data)
