@@ -38,6 +38,21 @@ class RelayDBO(BaseDBOperations):
         else:
             return None
     
+    def retrieveRelays(self, asJSON):
+        self.initialize()
+        relays = self.session.query(RpiPinMapper).all()
+        self.session.flush()
+
+        if asJSON is True:
+            jsonDict =  []
+            for relay in relays:
+                jsonDict.append(relay.toDictionary())
+            return jsonDict   
+        else:         
+            return relays
+
+        
+
     def retrieveByRelay(self, relay, asJSON=False):
 
        

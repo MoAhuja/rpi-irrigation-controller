@@ -297,6 +297,14 @@ def create_relay_to_pin_mapping():
 
 	return resp
 
+@app.route('/service_hub/relays', methods=['GET'])
+def get_relay_mappings():
+	mapper = RelayRestMapper()
+	resp = Response(mapper.getRelays(), mimetype='application/json')
+	resp.headers['Access-Control-Allow-Origin'] = '*'
+	
+	return resp
+
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
     response = jsonify(error.to_dict())

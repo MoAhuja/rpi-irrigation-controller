@@ -50,5 +50,11 @@ class RelayRestMapper(BaseRestMapper):
         response = self.rm.assignRelayToPin(relay, pin)
 
         return self.returnSuccessfulResponse()
-        
+    
+    def getRelays(self):
+
+        response = {}
+        response["relays"] = self.rm.retrieveRelays(True)
+        return self.returnSuccessfulResponse(response)
+
     
