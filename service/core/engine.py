@@ -20,7 +20,7 @@ class Engine():
 
     decisionHistoryDBO = None
     weather_centre = None
-    weather_profile = None
+    weather_snapshot = None
     evaluatingZones = False
     activeZones = []
     
@@ -230,38 +230,37 @@ class Engine():
         # Daily = 24 hours
         return True
 
-    def getWeatherProfile(self):
+    def getWeatherSnapshot(self):
 
-        if self.weather_profile is None or self.weather_profile_is_old:
+        if self.weather_snapshot is None or self.weather_snapshot_is_old:
             
             # Create a settings retriever
             city = self.settingsManager.getCity()
             country = self.settingsManager.getCountry()
 
-            shared.logger.debug(self,"need to retrieve new weather profile")
-            self.weather_profile = self.weather_centre.createWeatherProfile(city, country)
+            shared.logger.debug(self,"need to retrieve new weather snapshot")
+            self.weather_snapshot = self.weather_centre.createWeatherSnapshot(city, country)
 
-            # shared.logger.debug(self,vars(self.weather_profile))
-            # We got a new profile, so reset the "old" flag
-            self.weather_profile_is_old = False
+            # shared.logger.debug(self,vars(self.weather_snapshot))
+            # We got a new snapshot, so reset the "old" flag
+            self.weather_snapshot_is_old = False
             
-            
-            # After 10 minutes, the weather profile will be invalidated.
+            # After 10 minutes, the weather snapshot will be invalidated.
             threading.Timer(60*10, self.markWeatherProfileAsDirty).start()
         
-        return self.weather_profile
+        return self.weather_snapshot
 
     def markWeatherProfileAsDirty(self):
-        self.weather_profile_is_old = True
+        self.weather_snapshot_is_old = True
 
     def getCurrentTemp(self):
-        return self.getWeatherProfile().currentProfile.temperature.current
+        return self.getWeatherSnapshot().currentForecast.temperature.current
     
     def getShortTermRain(self):
-        return self.getWeatherProfile().currentProfile.rainAmount
+        return self.getWeatherSnapshot().currentForecast.rainAmount
     
     def getDailyRain(self):
-        return self.getWeatherProfile().twentyfourhourProfile.rainAmount
+        return self.getWeatherSnapshot().twentyfourhourForecast.rainAmount
     
     
     

@@ -17,6 +17,7 @@ from service.rest_mappers.logs_rest_mapper import LogsRestMapper
 from service.rest_mappers.decision_history_rest_mapper import DecisionHistoryRestMapper
 from service.rest_mappers.notification_users_rest_mapper import NotificationUsersRestMapper
 from service.rest_mappers.relay_rest_mapper import RelayRestMapper
+from service.rest_mappers.weather_rest_mapper import WeatherRestMapper
 import service.database.db_schema
 
 from service.zone.zone_controller import ZoneController
@@ -301,6 +302,16 @@ def create_relay_to_pin_mapping():
 def get_relay_mappings():
 	mapper = RelayRestMapper()
 	resp = Response(mapper.getRelays(), mimetype='application/json')
+	resp.headers['Access-Control-Allow-Origin'] = '*'
+	
+	return resp
+
+@app.route('/service_hub/weather/<string:country>/<string:city>', methods=['GET'])
+def get_weather_forecast(country, city):
+	print(country)
+	print(city)
+	mapper = WeatherRestMapper()
+	resp = Response(mapper.getForecast(country, city), mimetype='application/json')
 	resp.headers['Access-Control-Allow-Origin'] = '*'
 	
 	return resp

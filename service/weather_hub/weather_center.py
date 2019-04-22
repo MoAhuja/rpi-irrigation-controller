@@ -1,6 +1,7 @@
 import pyowm
-from service.weather_hub.weather_profile import WeatherProfile
+from service.weather_hub.weather_snapshot import WeatherSnapshot
 from service.weather_hub.weather_forecast import WeatherForecast
+from service.core import shared
 from pprint import pprint
 
 class WeatherCenter():
@@ -11,16 +12,29 @@ class WeatherCenter():
         if self.owm is None:
             self.owm = pyowm.OWM('46994039d0ee54eb08eeb19503e37a9c')
 
-    def createWeatherProfile(self, city, country):
+    # Create a weather snapshot of a 3 hour and daily forecast
+    def createWeatherSnapshot(self, city, country, asJSON=False):
+
+        shared.logger.debug(self, "Creating weather snapshot for [" + country + "]")
+        # Create the objec to hold the short and long term forecast
+        snapshot = WeatherSnapshot()
+        
+        # Create a forecaster object for the city and country provided
         forecasterObj = self.owm.three_hours_forecast(city + "," + country).get_forecast()
-        profile = WeatherProfile()
+        
+        # Get the daily forecast
         dailyForecast = self.getDailyForecast(forecasterObj)
-        profile.set24HourForecast(dailyForecast)
+        snapshot.set24HourForecast(dailyForecast)
         
+        # Get the short term forecast
         currentForecast = self.getCurrentForecast(forecasterObj)
-        profile.setCurrentForecast(currentForecast)
-        
-        return profile
+        snapshot.setCurrentForecast(currentForecast)
+
+        if(asJSON):
+            # Convert the snapshot to a dictrionary
+            return snapshot.toDictionary()
+        else:
+            return snapshot
 
     # Daily Forecast = 24 hours
     def getDailyForecast(self, forecastObj):
