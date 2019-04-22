@@ -11,6 +11,7 @@ $(document).ready(function(){
     manage_zone_schedule_template = ""
     allZones = ""
     edit_zone_template = ""
+    edit_schedule_template = ""
     
     // Prefetch content
 
@@ -21,6 +22,20 @@ $(document).ready(function(){
         async: true,
         success : function(data) {
             edit_zone_template = data
+            
+        },
+        error: function(xhr, resp, text) {
+            console.log(text);
+        }
+    });
+
+    $.ajax({
+        url: '/static/screens/portal/zone_manager/create/schedule_template_include.html', // url where to submit the request
+        type : "GET", // type of action POST || GET
+        dataType : 'html', // data type
+        async: true,
+        success : function(data) {
+            edit_schedule_template = data
             
         },
         error: function(xhr, resp, text) {
@@ -148,6 +163,7 @@ $(document).ready(function(){
 
         // TODO: Add schedule
         // Find the schedule section in teh template
+        
         zone.schedule.forEach(function(curSchedule)
         {
             
@@ -196,29 +212,81 @@ $(document).ready(function(){
         // Replace all the placeholder values with defaults
         modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_NAME#", zone.zone_name);
         modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_DESCRIPTION#", zone.zone_description);
-        modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_ENABLED#", zone.enabled);
+        // TODO: SHoudl this put "checked" instead of "True"?
+        modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_ENABLED#", (zone.enabled? "CHECKED": ""));
         modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_ID#", zone.id);
         modifiedTemplate = modifiedTemplate.replaceAll("#RELAY#", zone.relay);
         modifiedTemplate = modifiedTemplate.replaceAll("#RAIN_SHORT#", zone.rain.shortTermExpectedRainAmount);
         modifiedTemplate = modifiedTemplate.replaceAll("#RAIN_DAILY#", zone.rain.dailyExpectedRainAmount);
-        modifiedTemplate = modifiedTemplate.replaceAll("#RAIN_ENABLED#", zone.rain.enabled);
-        modifiedTemplate = modifiedTemplate.replaceAll("#TEMP_ENABLED#", zone.temperature.enabled);
+        modifiedTemplate = modifiedTemplate.replaceAll("#RAIN_ENABLED#", (zone.rain.enabled? "CHECKED": ""));
+        modifiedTemplate = modifiedTemplate.replaceAll("#TEMP_ENABLED#", (zone.temperature.enabled? "CHECKED": ""));
         modifiedTemplate = modifiedTemplate.replaceAll("#TEMP_MIN#", zone.temperature.min);
         modifiedTemplate = modifiedTemplate.replaceAll("#TEMP_MAX#", zone.temperature.max);
-        
-
         modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_ID#", zone.id);
-
-        // Make teh button a create button
         modifiedTemplate = modifiedTemplate.replaceAll("#OPERATION_TYPE#", "Edit");
         
+        // Create a dom from the zone object
+        var zone_dom = $($.parseHTML(modifiedTemplate));
+
+        // Load up the schedule template
+        scheduleCounter = 0
+        zone.schedule.forEach(function(curSchedule)
+        {
+            // Load the template
+            scheduleTemplate = edit_schedule_template
+
+            scheduleTemplate = scheduleTemplate.replaceAll("NUMBER_HOLDER", scheduleCounter)
+            scheduleTemplate = scheduleTemplate.replaceAll("#SCHEDULE_ENABLED#", (curSchedule.enabled? "CHECKED": ""))
+            scheduleTemplate = scheduleTemplate.replaceAll("#START_TIME#", curSchedule.startTime)
+            scheduleTemplate = scheduleTemplate.replaceAll("#END_TIME#", curSchedule.endTime)
+            scheduleTemplate = scheduleTemplate.replaceAll("#SCHEDULE_TYPE#", curSchedule.schedule_type)
+            
+            
+            // Indicate which days were selected
+            curSchedule.days.forEach(function(day)
+            {
+                value = ""
+
+                switch(day) {
+                    case 0: value = "#MONDAY#"; break;
+                    case 1: value = "#TUESDAY#"; break;
+                    case 2: value = "#WEDNESDAY#"; break;
+                    case 3: value = "#THURSDAY#"; break;
+                    case 4: value = "#FRIDAY#"; break;
+                    case 5: value = "#SATURDAY#"; break;
+                    case 6: value = "#SUNDAY#"; break;
+                }
+
+                // Replace teh value with "CHECKED"
+                scheduleTemplate = scheduleTemplate.replaceAll(value, "CHECKED");
+
+            });
+
+            // Replace the remaining un-checked days with empty strings
+            scheduleTemplate = scheduleTemplate.replaceAll("#MONDAY#", "")
+            scheduleTemplate = scheduleTemplate.replaceAll("#TUESDAY#", "")
+            scheduleTemplate = scheduleTemplate.replaceAll("#WEDNESDAY#", "")
+            scheduleTemplate = scheduleTemplate.replaceAll("#THURSDAY#", "")
+            scheduleTemplate = scheduleTemplate.replaceAll("#FRIDAY#", "")
+            scheduleTemplate = scheduleTemplate.replaceAll("#SATURDAY#", "")
+            scheduleTemplate = scheduleTemplate.replaceAll("#SUNDAY#", "")
+           
+            // Convert to DOM
+            // var schedule_dom = $($.parseHTML(scheduleTemplate));
+
+
+            // Add schedule to the zone data
+            zone_dom.find('#schedule_area').append(scheduleTemplate)
+
+            scheduleCounter++;
+
+           
+        });
 
 
         // Loads the create zone content
-        $("#content_manager content").html(modifiedTemplate);
-        
-        // TODO: Disable the create zone link or something
-        // TODO: Enable the mnage zone link
+        $("#content_manager content").html(zone_dom);
+  
     }
 
 
@@ -241,6 +309,8 @@ $(document).ready(function(){
 
      // Handles the submission of the create zone
      $('body').on('click', '#btnEditZone', function() {
+
+        alert("edit zone clicked")
         // e.preventDefault();
         var jsonData = $("#formData").serializeJSON();
         console.log(jsonData);
@@ -261,9 +331,9 @@ $(document).ready(function(){
                 $("#formData").hide()
             },
             error: function(xhr, resp, text) {
-                console.log(text);
+                console.log(resp);
 
-                displayAlert("danger", "ERROR: To do - parse error message")
+                displayAlertFromXHR("danger", xhr)
             }
         });
     });
@@ -272,20 +342,6 @@ $(document).ready(function(){
     // Time picker hook
     $('body').on('click', '.time', function() {
         $(this).timepicker({'step': 10, 'timeFormat': 'H:i'});
-    });
-
-  
-
-   
-
-    // Handles the "Add Schedule" button
-    // TODO: Prefetch this once and re-use.
-    $('body').on('click', '#btnAddSchedule', function() {
-        $.get("/static/screens/portal/zone_manager/create/schedule_template_include.html", function(data){
-            var data2 = data.replaceAll("NUMBER_HOLDER", scheduleCounter)
-            $("#schedule_area").append(data2);
-            scheduleCounter++
-        });
     });
 
     // Side menu navigation - hides zone cards, shows create zone

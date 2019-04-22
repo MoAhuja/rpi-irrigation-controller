@@ -19,10 +19,7 @@ $(document).ready(function()
     });
 
     $("#btn_manager").click(function(){
-        
-
         loadCreateZoneScreen();
-
     });
 
     // Load the create zone screen when it's clicked in the navigation menu
@@ -34,7 +31,7 @@ $(document).ready(function()
     function loadCreateZoneScreen()
     {
         scheduleCounter = 0;
-        
+
         console.log("Load create zone called. Template = " + create_zone_template)
         modifiedTemplate = create_zone_template
 
@@ -63,6 +60,14 @@ $(document).ready(function()
         // TODO: Disable the create zone link or something
         // TODO: Enable the mnage zone link
     }
+
+    $('body').on('click', '#btnAddSchedule', function() {
+        $.get("/static/screens/portal/zone_manager/create/schedule_template_include.html", function(data){
+            var data2 = data.replaceAll("NUMBER_HOLDER", scheduleCounter)
+            $("#schedule_area").append(data2);
+            scheduleCounter++
+        });
+    });
 
     // When the time is selected in the create zone screen, load the time picker module
     $('body').on('click', '.time', function() {
@@ -117,7 +122,7 @@ $(document).ready(function()
             error: function(xhr, resp, text) {
                 console.log(text);
 
-                displayAlert("danger", "ERROR: To do - parse error message")
+                displayAlert("danger", "ERROR: To do - parse error message 22")
             }
         });
     });
