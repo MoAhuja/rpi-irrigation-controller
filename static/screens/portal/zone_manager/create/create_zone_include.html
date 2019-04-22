@@ -24,17 +24,17 @@
         <input type="number" name="relay" id="relay" value="#RELAY#">
     </li>
     <hr />
-    <li><h2>Rain</h2></li>
+    <li><h2>Forecasted Rain</h2></li>
     <li>
         <label for="rain_rules_enabled">Enable Rain Rules</label>
         <input type="checkbox" id="rain_rules_enabled" name="rain[enabled]" #RAIN_ENABLED# >
     </li>
     <li>
-        <label for="short_term_rain">Short Term Rain Limit</label>
+        <label for="short_term_rain">Short Term Rain Limit (mm)</label>
         <input type="number" id="short_term_rain" value="#RAIN_SHORT#" name="rain[shortTermExpectedRainAmount]" placeholder="Enter the amount of rain in millimeters that would prevent watering (short term)">
     </li>
     <li>
-        <label for="daily_rain">Daily Rain Limit</label>
+        <label for="daily_rain">Daily Rain Limit (mm)</label>
         <input type="number" id="daily_rain" value="#RAIN_DAILY#" name="rain[dailyExpectedRainAmount]" placeholder="Enter the amount of rain in millimeters that would prevent watering (daily)">
     </li>
 
@@ -45,11 +45,11 @@
         <input type="checkbox" id="temperature_rules_enabled" name="temperature[enabled]" #TEMP_ENABLED#>
     </li>
     <li>
-        <label for="temp_min">Minimum Temperature</label>
+        <label for="temp_min">Minimum Temperature (c)</label>
         <input type="number"  id="temp_min" name="temperature[min]" value="#TEMP_MIN#" placeholder="Enter the minimum environmental temperature for the sprinkler to activate">
     </li>
     <li>
-        <label for="temp_max">Maximum Temperature</label>
+        <label for="temp_max">Maximum Temperature (c)</label>
         <input type="number" id="temp_max" name="temperature[max]" value="#TEMP_MAX#" placeholder="Enter the maximum environmental temperature for the sprinkler to activate">
     </li>
 
