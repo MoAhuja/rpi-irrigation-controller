@@ -94,12 +94,6 @@ $(document).ready(function(){
         loadManageZoneScreen();
     });
 
-    $('body').on('click', '#nav_manage_zone', function() {
-        loadManageZoneScreen();
-    });
-
-    
-
     // Overload to support displaying of alert notification after zones are loaded
     function loadManageZoneScreenWithAlert(alertType, alertContent)
     {
