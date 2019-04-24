@@ -17,7 +17,11 @@ class NotifierEngine():
         # load notification preferences
         self.loadNotificationPreferences()
 
-        # register all the notifiers
+       
+    def loadRegisteredNotifiers():
+        # self.registeredNotifiers.clear()
+
+         # register all the notifiers
         self.registeredNotifiers.add(PushBulletNotifier())
     
     def eventNotificationConfigUpdated(self):
