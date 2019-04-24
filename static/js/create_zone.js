@@ -63,8 +63,10 @@ $(document).ready(function()
 
     $('body').on('click', '#btnAddSchedule', function() {
         $.get("/static/screens/portal/zone_manager/create/schedule_template_include.html", function(data){
-            var data2 = data.replaceAll("NUMBER_HOLDER", scheduleCounter)
-            $("#schedule_area").append(data2);
+            var templateWithRealData = data.replaceAll("NUMBER_HOLDER", scheduleCounter)
+            templateWithRealData = templateWithRealData.replaceAll("#START_TIME#", "");
+            templateWithRealData = templateWithRealData.replaceAll("#END_TIME#", "");
+            $("#schedule_area").append(templateWithRealData);
             scheduleCounter++
         });
     });
@@ -87,13 +89,6 @@ $(document).ready(function()
         }
         $(this).parent().parent().remove();
 
-    });
-
-    // add a schedule
-    $('#btnAddSchedule').click(function(){
-                        
-        $('#ScheduleTable').append('<tr><td><span>Start Time:</span><span><input class ="time" type="text" name="schedule[' + scheduleCounter + '][startTime]" placeholder="6:00 am"/></span></td><td><span>End Time:</span><span><input class="time" type="text" name="schedule[' + scheduleCounter + '][endTime]" placeholder="7:00 am"/></span></td><td class="cellDynamicButton"><button id="scheduleDelButton" class="delButton">Delete</button></td></tr>');
-        scheduleCounter++;
     });
 
 
