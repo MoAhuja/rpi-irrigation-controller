@@ -2,6 +2,7 @@ $(document).ready(function()
 {
     var scheduleCounter = 0;
     create_zone_template = ""
+    
 
 
     $.ajax({
@@ -17,6 +18,7 @@ $(document).ready(function()
             console.log(text);
         }
     });
+    
 
     $("#btn_manager").click(function(){
         loadCreateZoneScreen();
@@ -30,6 +32,13 @@ $(document).ready(function()
     // Load the static create zone screen
     function loadCreateZoneScreen()
     {
+        // loadRelayMappings();
+
+        // $.when($.ajax('http://127.0.0.1:5000/service_hub/relays'))
+        //     .done(function(relay_data)
+        //     {
+                //relay_mappings = relay_data;
+                
         scheduleCounter = 0;
 
         console.log("Load create zone called. Template = " + create_zone_template)
@@ -40,7 +49,7 @@ $(document).ready(function()
         modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_DESCRIPTION#", "");
         modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_ENABLED#", "UNCHECKED");
         modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_ID#", "");
-        modifiedTemplate = modifiedTemplate.replaceAll("#RELAY#", "");
+        // modifiedTemplate = modifiedTemplate.replaceAll("#RELAY#", "");
         modifiedTemplate = modifiedTemplate.replaceAll("#RAIN_SHORT#", "");
         modifiedTemplate = modifiedTemplate.replaceAll("#RAIN_DAILY#", "");
         modifiedTemplate = modifiedTemplate.replaceAll("#RAIN_ENABLED#", "UNCHECKED");
@@ -48,18 +57,24 @@ $(document).ready(function()
         modifiedTemplate = modifiedTemplate.replaceAll("#TEMP_MIN#", "");
         modifiedTemplate = modifiedTemplate.replaceAll("#TEMP_MAX#", "");
         modifiedTemplate = modifiedTemplate.replaceAll("#ZONE_ID#", "");
-
-        // Make teh button a create button
         modifiedTemplate = modifiedTemplate.replaceAll("#OPERATION_TYPE#", "Create");
         
-
-
-        // Loads the create zone content
-        $("#content_manager content").html(modifiedTemplate);
+        //Convert template to DOM so we can use jQuery to edit it
+        
+        // Find the select tag
+        var templateAsDOM = $($.parseHTML(modifiedTemplate));
+        loadRelayDropdownIntoTemplate(templateAsDOM, null);
+        
+        $("#content_manager content").html(templateAsDOM);
         
         // TODO: Disable the create zone link or something
         // TODO: Enable the mnage zone link
+
+            // });
+        
     }
+
+    
 
     $('body').on('click', '#btnAddSchedule', function() {
         $.get("/static/screens/portal/zone_manager/create/schedule_template_include.html", function(data){

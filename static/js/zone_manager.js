@@ -223,6 +223,15 @@ $(document).ready(function(){
         var zone_dom = $($.parseHTML(modifiedTemplate));
 
         // Load up the schedule template
+        addScheduleDataToZoneDOM(zone_dom, zone);
+        loadRelayDropdownIntoTemplate(zone_dom, zone.id);
+        
+        // Loads the create zone content
+        $("#content_manager content").html(zone_dom);
+    }
+
+    function addScheduleDataToZoneDOM(zone_dom, zone)
+    {
         scheduleCounter = 0
         zone.schedule.forEach(function(curSchedule)
         {
@@ -276,14 +285,7 @@ $(document).ready(function(){
 
            
         });
-
-
-        // Loads the create zone content
-        $("#content_manager content").html(zone_dom);
-  
     }
-
-
     function findZoneById(id)
     {
         zoneToReturn = null
