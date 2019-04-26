@@ -1,6 +1,6 @@
 $(document).ready(function()
 {
-    var scheduleCounter = 0;
+    // var scheduleCounter = 0;
     create_zone_template = ""
     
 
@@ -76,15 +76,7 @@ $(document).ready(function()
 
     
 
-    $('body').on('click', '#btnAddSchedule', function() {
-        $.get("/static/screens/portal/zone_manager/create/schedule_template_include.html", function(data){
-            var templateWithRealData = data.replaceAll("NUMBER_HOLDER", scheduleCounter)
-            templateWithRealData = templateWithRealData.replaceAll("#START_TIME#", "");
-            templateWithRealData = templateWithRealData.replaceAll("#END_TIME#", "");
-            $("#schedule_area").append(templateWithRealData);
-            scheduleCounter++
-        });
-    });
+    
 
     // When the time is selected in the create zone screen, load the time picker module
     $('body').on('click', '.time', function() {
@@ -106,6 +98,17 @@ $(document).ready(function()
 
     });
 
+    
+
+    $('body').on('click', '#btnAddSchedule', function() {
+        $.get("/static/screens/portal/zone_manager/create/schedule_template_include.html", function(data){
+            var templateWithRealData = data.replaceAll("NUMBER_HOLDER", scheduleCounter)
+            templateWithRealData = templateWithRealData.replaceAll("#START_TIME#", "");
+            templateWithRealData = templateWithRealData.replaceAll("#END_TIME#", "");
+            $("#schedule_area").append(templateWithRealData);
+            scheduleCounter++
+        });
+    });
 
 
      // Handles the submission of the create zone

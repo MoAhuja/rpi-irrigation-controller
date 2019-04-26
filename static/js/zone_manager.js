@@ -5,7 +5,7 @@ String.prototype.replaceAll = function(search, replacement) {
 
 $(document).ready(function(){
            
-    var scheduleCounter = 0;
+    // var scheduleCounter = 0;
     manage_zone_row_template = ""
     manage_zone_page_template = ""
     manage_zone_schedule_template = ""
@@ -105,6 +105,9 @@ $(document).ready(function(){
 
     function loadManageZoneScreen()
     {
+        // Reset the schedule counter
+        scheduleCounter = 0;
+        
         console.log("Load manage zone screen invoked")
         
         $("#content_manager content").html(manage_zone_page_template);
@@ -232,7 +235,7 @@ $(document).ready(function(){
 
     function addScheduleDataToZoneDOM(zone_dom, zone)
     {
-        scheduleCounter = 0
+        // scheduleCounter = 0
         zone.schedule.forEach(function(curSchedule)
         {
             // Load the template

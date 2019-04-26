@@ -1,3 +1,5 @@
+var scheduleCounter = 0;
+
 function loadRelayDropdownIntoTemplate(templateAsDOM, currentZone)
 {
     
@@ -45,3 +47,5 @@ function loadRelayDropdownIntoTemplate(templateAsDOM, currentZone)
         });
 
 }
+ 
+
