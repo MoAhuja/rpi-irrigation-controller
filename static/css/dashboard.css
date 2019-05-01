@@ -13,7 +13,7 @@ zonecard {
     -moz-border-radius: 8px;
     border-radius: 8px;
     display: flex;
-    flex: 1;
+    flex: 0 1 auto;
     margin-top: 10px;
     overflow: scroll;
     min-height: 6em;
@@ -28,7 +28,7 @@ historycard {
     -moz-border-radius: 8px;
     border-radius: 8px; */
     display: flex; 
-    flex: 1;
+    flex: 0 1 auto;
     flex-direction: column;
     /* margin-top: 10px; */
     /* overflow: scroll; */
@@ -242,6 +242,7 @@ hidden {
     display: none;
 }
 
+/* TODO: Move this to a global css */
 #alerts_container {
     /* border: 1px solid red; */
     display: flex;
