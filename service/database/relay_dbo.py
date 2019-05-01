@@ -69,6 +69,13 @@ class RelayDBO(BaseDBOperations):
         else:
             return None
     
+    def deleteRelayMapping(self, relay):
+
+        self.initialize()
+
+        self.session.query(RpiPinMapper).filter(RpiPinMapper.relay_id == relay).delete()
+        self.session.commit()
+    
     def doesRelayMappingExist(self, relay):
 
         result = self.retrieveByRelay(relay, True)

@@ -51,6 +51,14 @@ class RelayRestMapper(BaseRestMapper):
 
         return self.returnSuccessfulResponse()
     
+    def deleteRelayMappingByRelay(self, relay_id):
+
+        # Validate it's numeric
+        relay = self.validateIsProvidedAndInt(relay_id, RpiPinMapper.FIELD_RELAY)
+        
+        response = self.rm.deleteRelayMapping(relay)
+
+        return self.returnSuccessfulResponse()
     def getRelays(self):
 
         response = {}

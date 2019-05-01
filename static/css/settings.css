@@ -101,12 +101,31 @@ row button,input {
     align-content: right;
 }
 
-row.input_users
+row.user_input
 {
     display: flex;
 }
 
-row.input_users input {
+row.subgroup_header
+{
+    font-style: italic;
+}
+
+row.user_input input {
     flex: 1;
     margin: 8px;
+}
+
+row.user_input label {
+    flex: 2;
+    margin: 8px;
+
+    /*     display: inline-block;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: 700; */
+}
+
+row.user_input label.actions {
+    flex:1;
 }

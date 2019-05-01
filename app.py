@@ -306,6 +306,14 @@ def get_relay_mappings():
 	
 	return resp
 
+@app.route('/service_hub/relays/<int:relay_id>', methods=['DELETE'])
+def delete_relay_mapping(relay_id):
+	mapper = RelayRestMapper()
+	resp = Response(mapper.deleteRelayMappingByRelay(relay_id), mimetype='application/json')
+	resp.headers['Access-Control-Allow-Origin'] = '*'
+	
+	return resp
+
 @app.route('/service_hub/weather/<string:country>/<string:city>', methods=['GET'])
 def get_weather_forecast(country, city):
 	print(country)

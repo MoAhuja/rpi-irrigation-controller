@@ -7,6 +7,9 @@ $(document).ready(function()
     number_of_users = 0;
     notificationConfigData = ""
     pushBulletUsers = ""
+    pin_relay_mapping_input_row_template = "";
+    pin_relay_mapping_display_row_template = "";
+    pin_relay_mapping_page_template = "";
     kill_switch_modified = false
     rain_delay_modified = false
 
@@ -26,6 +29,49 @@ $(document).ready(function()
         success : function(data) {
             push_bullet_input_user_row_template = data
             console.log("Push Bullet Input user template")
+            
+        },
+        error: function(xhr, resp, text) {
+            console.log(text);
+        }
+    });
+
+    // Template for a pin / relay row
+    $.ajax({
+        url: '/static/screens/portal/settings/include_pin_relay_mapping_input_row_template.html', // url where to submit the request
+        type : "GET", // type of action POST || GET
+        dataType : 'html', // data type
+        async: true,
+        success : function(data) {
+            pin_relay_mapping_input_row_template = data;
+            
+        },
+        error: function(xhr, resp, text) {
+            console.log(text);
+        }
+    });
+
+    $.ajax({
+        url: '/static/screens/portal/settings/include_pin_relay_mapping_display_row_template.html', // url where to submit the request
+        type : "GET", // type of action POST || GET
+        dataType : 'html', // data type
+        async: true,
+        success : function(data) {
+            pin_relay_mapping_display_row_template = data;
+            
+        },
+        error: function(xhr, resp, text) {
+            console.log(text);
+        }
+    });
+
+    $.ajax({
+        url: '/static/screens/portal/settings/include_pin_relay_mapping_page_template.html', // url where to submit the request
+        type : "GET", // type of action POST || GET
+        dataType : 'html', // data type
+        async: true,
+        success : function(data) {
+            pin_relay_mapping_page_template = data;
             
         },
         error: function(xhr, resp, text) {
@@ -73,19 +119,34 @@ $(document).ready(function()
         loadSystemSettings();
     });
 
+    // Load push notification settings when side menu option is selected
     $('body').on('click', '#nav_push_notifications', function() {
         loadPushNotificationSettings();
     });
 
+    //Load pin relay mappings when side menu is selected
+    $('body').on('click', '#nav_relay_mappings', function() {
+        loadPinRelayMappings();
+    });
+
+    // Add push bullet user
     $('body').on('click', '#add_pb_user', function() {
         addPushBulletUserInputRow();
     });
 
-
+    // Save push bullet user
     $('body').on('click', '#save_pb', function() {
         savePushBulletSettings();
-    });    
+    });  
+    
+    // Add Relay Mapping
+    $('body').on('click', '#add_pin_mapping', function() {
+        addPinRelayInputRow();
+    });
+    
+    
 
+    // Save notification settings button click
     $('body').on('click', '#save_notification_settings', function() {
         saveNotificationSettings();
     });
@@ -99,6 +160,18 @@ $(document).ready(function()
         deletePushBulletUser(name);
        
     });
+
+    $('body').on('click', '#del_pin_mapping', function() {
+        // Get the relay for this row
+        console.log($(this).parent());
+
+        relay = $(this).parent().find("#relay").text();
+
+        deleteRelayPinMapping(relay);
+
+        
+    });
+    
 
     $('body').on('click', '#save_pb_user', function() {
         // Get the name of the user
@@ -304,6 +377,30 @@ $(document).ready(function()
             })).then(drawNotificationSettingsScreen, drawErrorScreen);
     }
 
+    function loadPinRelayMappings()
+    {
+        
+        $.when($.ajax('http://127.0.0.1:5000/service_hub/relays'))
+        .done(function(relay_mappings)
+        {
+            
+            // Draw the screen
+            $("#content_settings content subcontent").html(pin_relay_mapping_page_template);
+
+            // TODO: For each for the relay mappings to the drawPinRelayMappingsRows functon
+            relay_mappings.relays.forEach(
+                function(item, index)
+                {
+                    curTemplate = pin_relay_mapping_display_row_template;
+                    curTemplate = curTemplate.replaceAll("NUMBER_HOLDER", number_of_users++);
+                    curTemplate = curTemplate.replaceAll("#RELAY#", item.relay);
+                    curTemplate = curTemplate.replaceAll("#PIN#", item.pin);
+                    // curTemplate = curTemplate.replaceAll("#PLACEHOLDER_FOR_BUTTON#", "<button id='del_pin_mapping'>Del</button>");
+                    $("#pin_mappings_section").append(curTemplate);
+                });
+        });
+    }
+
 
     function drawSystemSettingsScreen(kill_switch, rain_delay)
     {
@@ -346,6 +443,39 @@ $(document).ready(function()
     }
 
 
+    function addPinRelayInputRow()
+    {
+        curTemplate = pin_relay_mapping_input_row_template;
+        curTemplate = curTemplate.replaceAll("NUMBER_HOLDER", number_of_users++);
+        curTemplate = curTemplate.replaceAll("#RELAY#", "");
+        curTemplate = curTemplate.replaceAll("#PIN#", "");
+        curTemplate = curTemplate.replaceAll("#PLACEHOLDER_FOR_BUTTON#", "<button id='save_pin_mapping'>Save</button>");
+        $("#pin_mappings_section").append(curTemplate);
+    }
+
+    function deleteRelayPinMapping(relay)
+    {
+        
+        $.ajax({
+            url: 'http://127.0.0.1:5000/service_hub/relays/' + relay, // url where to submit the request
+            type : "DELETE", // type of action POST || GET || DELETE
+            dataType : 'json', // data type
+            // data : jsonData, // post data || get data
+            success : function(result) {
+                // you can see the result from the console
+                // tab of the developer tools
+                console.log(result);
+                loadPinRelayMappings();
+                displayAlert("success", "Relay Mapping successfully deleted!");
+                
+            },
+            error: function(xhr, resp, text) {
+                console.log(text);
+                displayAlert("danger", "Failed to delete user. Please try again.");
+            }
+        });
+    }
+
     function addPushBulletUserInputRow()
     {
         curTemplate = push_bullet_input_user_row_template;
@@ -376,7 +506,8 @@ $(document).ready(function()
         jsonData = `{"name": "${name}", "api_key": "${key}"}`
 
         $.post("/service_hub/settings/notification/pushbullet/user", jsonData, 
-        function(data){displayAlert("success", "User successfully added!"); loadPushNotificationSettings();});
+        function(data){displayAlert("success", "User successfully added!"); 
+        loadPushNotificationSettings();});
         
     }
     function deletePushBulletUser(name)
@@ -431,19 +562,5 @@ $(document).ready(function()
         });
     }
 
-    //Eligible types = success, info, warning, danger
-    // function displayAlert( type, message)
-    // {
-    //     console.log("Displaying alert - " + type);
-
-    //     var body = `<div class="alert alert-${type} alert-dismissible">
-    //         ${message}
-    //         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    //             <span aria-hidden="true">&times;</span>
-    //         </button>
-    //     </div>`
-
-    //     $("#alerts_container").append(body);
-    // }
 
 });
