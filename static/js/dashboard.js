@@ -160,13 +160,6 @@ $(document).ready(function()
             startDate = Date.parse(start);
             startDateString = toDateString(startDate);
             
-            // end = item["next_run"]["end"]
-            // endDate = Date.parse(end)
-            // endDateString = toDateString(endDate);
-            
-            // duration = calculateDuration(startDate, endDate);
-
-            // console.log(lr_endDate);
             nextRunString = startDateString;
         }
         else
@@ -179,14 +172,6 @@ $(document).ready(function()
             start = item["last_run"]["start"]
             startDate = Date.parse(start);
             startDateString = toDateString(startDate);
-            
-            // end = item["last_run"]["end"]
-            // endDate = Date.parse(end)
-            // endDateString = toDateString(endDate);
-            
-            // duration = calculateDuration(startDate, endDate);
-
-            // console.log(lr_endDate);
             lastRunString = startDateString;
         }
         else
@@ -196,13 +181,21 @@ $(document).ready(function()
 
         if(dashboard_template != "")
         {
+            
+            // Set checkmark or x image depending on value
+            (enabled ? enabledImage = "check": enabledImage = "x");
+            (is_running ? isRunningImage = "check": isRunningImage = "x");
+
+            enabledImageTag = `<img class="status_icon" src="/static/images/${enabledImage}.png" />`;
+            isRunningImageTag = `<img class="status_icon" src="/static/images/${isRunningImage}.png" />`;
+
             var data2 = dashboard_template
             data2 = data2.replaceAll("#NAME#", name)
             data2 = data2.replaceAll("#DESCRIPTION#", description)
-            data2 = data2.replaceAll("#ENABLED#", enabled)
+            data2 = data2.replaceAll("#ENABLED#", enabledImageTag)
             data2 = data2.replaceAll("#NEXT_RUN#", nextRunString )
             data2 = data2.replaceAll("#LAST_RUN#", lastRunString)
-            data2 = data2.replaceAll("#CURRENT_STATUS#", is_running)
+            data2 = data2.replaceAll("#CURRENT_STATUS#", isRunningImageTag)
             data2 = data2.replaceAll("#ID#", id);
 
 
@@ -404,14 +397,21 @@ $(document).ready(function()
 
     function toDateString(timeAsMilliseconds)
     {
+        mlist = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+        dow = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
+
+
         dateObject = new Date(timeAsMilliseconds);
         // alert(dateObject);
         var dateYear = dateObject.getFullYear();
         var hour = dateObject.getHours();
         var minute = dateObject.getMinutes();
-        var dateMonth = dateObject.getMonth() + 1;
+
+        var dow = dow[dateObject.getDay()];
+        var dateMonth = mlist[dateObject.getMonth()];
         var day = dateObject.getDate();
-        var dateString = `${dateMonth}\\${day}`
+        var dateString = `${dow} ${dateMonth} ${day}`;
+
 
         return dateString;
 

@@ -1,18 +1,27 @@
 <zonecard>
 
     <hidden id="zone_id">#ID#</hidden>
-    <zonesegment class="left">#NAME#</zonesegment>
+    <zonesegment class="left">
+            
+        <zone_title>
+            #NAME#
+        </zone_title>
+        <zone_description>
+            #DESCRIPTION#
+        </zone_description>
+    
+    </zonesegment>
     <zonesegment class="middle">
         <!-- <statussegment> -->
         
-            <segment><segmenttop>Description</segmenttop> <segmentbottom>#DESCRIPTION#</segmentbottom></segment>
+            <!-- <segment><segmenttop>Description</segmenttop> <segmentbottom>#DESCRIPTION#</segmentbottom></segment> -->
             <segment><segmenttop>Next Run:</segmenttop> <segmentbottom>#NEXT_RUN#</segmentbottom></segment>
             <segment><segmenttop>Last Ran:</segmenttop> <segmentbottom>#LAST_RUN#</segmentbottom></segment>
             <segment><segmenttop>Enabled:</segmenttop> <segmentbottom>#ENABLED#</segmentbottom></segment>
             <segment><segmenttop>Is Running:</segmenttop> <segmentbottom>#CURRENT_STATUS#</segmentbottom></segment>
         <!-- </statussegment> -->
     </zonesegment>
-    <zonesegment class="end">
+    <zonesegment class="right">
         <ul class="action">
             <li><a href="#" id="controller" class="#STATUS_CLASS#">#STATUS#</a></li>
             <li><a href="#" id="edit">Edit</a></li>

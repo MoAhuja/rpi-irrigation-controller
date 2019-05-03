@@ -93,7 +93,7 @@ decisionheader {
     color: var(--color-tertiary-text1);
 }
 
-time, starttime, endtime {
+time, starttime, righttime {
     min-width: 7em;
     max-width: 7em;
 }
@@ -107,8 +107,10 @@ reason, decision {
 }
 
 
+/* Applies to all zone segments */
 zonesegment {
     display: flex;
+    flex-direction: row;
     align-items: center; /* Aligns items vertically in the segment */
     justify-content: center; /* ALigns items horizontally in the segment */
     padding: 10px;
@@ -116,22 +118,17 @@ zonesegment {
 }
 
 zonesegment.middle {
-    display: flex;
     flex-direction: row;
-    background: var(--color-secondary);
-    color: var(--color-secondary-text1);
-    flex: 1;
+    /* background: var(--color-secondary);
+    color: var(--color-secondary-text1); */
     border-left: 1px solid grey;
     border-right: 1px solid grey;
     align-items: stretch;
     padding:0px;
+    justify-content: left;
+    flex: 2;
 }
 
-/* statussegment {
-    flex: 1;
-    display: flex;
-    border: 1px solid red;
-} */
 
 segment {
     flex: 1;
@@ -153,27 +150,27 @@ segmentbottom {
 segmenttop {
     margin-bottom: 10px;
     font-weight: 800;
-    background: lightslategray;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    border: 1px solid lightslategray;
-    color:white;
-    margin-left:2px;
-    margin-right: 2px;
+    background: var(--color-secondary);
+    color: var(--color-secondary-text1);
+    /* -webkit-border-radius: 5px; */
+    /* -moz-border-radius: 5px; */
+    /* border-radius: 5px; */
+    /* border: 1px solid var(--color-secondary); */
+    /* margin-left:2px;
+    margin-right: 2px; */
 
 }
 
 
 
-zonesegment.end {
+zonesegment.right {
     padding: 0px;
     display: flex;
     flex-direction: column;
     /* justify-content: flex-start; */
 }
 
-zonesegment.end ul.action {
+zonesegment.right ul.action {
     display: flex;
     flex: 1;
     margin: 0px;
@@ -218,20 +215,34 @@ zonesegment ul.action li:hover {
     background: var(--color-secondary-text1);
 }
 
-zonesegment.middle {
-    justify-content: left;
-    flex: 2;
-}
-zonesegment.middle ul.content  {
+
+/* zonesegment.middle ul.content  {
     list-style-type: none;  
     padding-left:5px;
     margin: 0px;
-}
+} */
 
 zonesegment.left {
-    min-width: 8em;
-    max-width: 8em;; 
+    flex: 1 1 auto;
+    min-width: 10em;
+    max-width: 10em;
+    display: block;
+    background: var(--color-tertiary);
+    color: white;
 }
+
+zonesegment.left > zone_description {
+    display: inline-block;
+    font-size: 1em;
+    font-style: italic;
+}
+
+zonesegment.left > zone_title {
+    display: inline-block;
+    font-size: 1.5em;
+
+}
+
 
 
 hidden {
@@ -240,6 +251,11 @@ hidden {
 
 .hide {
     display: none;
+}
+
+img.status_icon {
+    width: auto;
+    height: 20px;
 }
 
 /* TODO: Move this to a global css */
