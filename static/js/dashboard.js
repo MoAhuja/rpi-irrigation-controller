@@ -72,10 +72,11 @@ $(document).ready(function()
         }
     });
 
+    // Default view
+    loadDashboardContent();
+
     // $("#content_dashboard").load("/static/screens/portal/dashboard_include.html");
     $("#btn_dashboard").click(function(){
-        
-
         loadDashboardContent();
 
     });
@@ -252,6 +253,30 @@ $(document).ready(function()
             }
         });
     });
+
+    $('body').on('click', 'a#edit', function() {
+        
+        // Get the hidden ID field to find the ID of this zone
+        var zone_id = $(this).parent().parent().parent().parent().find("#zone_id").text();
+        
+        // alert(zone_id);
+        
+        // First we need to load the zone manager tab then the edit zone sreen
+        
+        loadEditZoneScreen(zone_id);
+
+        // Hide the dashboard and load the zone manager screen
+        currentlyShowingPanel = $("#content_manager");
+        $("#content_dashboard").hide();
+
+        // Hide these ones to start
+        $("#content_manager").show()
+        
+
+        
+        
+    });
+
 
     // Activation/Deactivation of zone on click
     $('body').on('click', 'a#controller', function() {
