@@ -1,39 +1,24 @@
-<zonecard>
 
+<zonecard>
     <hidden id="zone_id">#ID#</hidden>
-    <zonesegment class="left">
-            
-        <zone_title>
-            #NAME#
-        </zone_title>
-        <zone_description>
-            #DESCRIPTION#
-        </zone_description>
-    
-    </zonesegment>
-    <zonesegment class="middle">
-        <!-- <statussegment> -->
-        
-            <!-- <segment><segmenttop>Description</segmenttop> <segmentbottom>#DESCRIPTION#</segmentbottom></segment> -->
-            <segment><segmenttop>Next Run:</segmenttop> <segmentbottom>#NEXT_RUN#</segmentbottom></segment>
-            <segment><segmenttop>Last Ran:</segmenttop> <segmentbottom>#LAST_RUN#</segmentbottom></segment>
-            <segment><segmenttop>Enabled:</segmenttop> <segmentbottom>#ENABLED#</segmentbottom></segment>
-            <segment><segmenttop>Is Running:</segmenttop> <segmentbottom>#CURRENT_STATUS#</segmentbottom></segment>
-        <!-- </statussegment> -->
-    </zonesegment>
-    <zonesegment class="right">
+    <div class="zone_card_title">#NAME#</div>
+    <div class="description">#DESCRIPTION#</div>
+    <div class="prop_title prop_title_1">Next Run</div>
+    <div class="prop_content prop_content_1">#NEXT_RUN#</div>
+    <div class="prop_title prop_title_2">Last Ran</div>
+    <div class="prop_content prop_content_2">#LAST_RUN#</div>
+    <div class="prop_title prop_title_3">Enabled</div>
+    <div class="prop_content prop_content_3">#ENABLED#</div>
+    <div class="prop_title prop_title_4">Is Running</div>
+    <div class="prop_content prop_content_4">#CURRENT_STATUS#</div>
+    <div class="prop_links">
         <ul class="action">
             <li><a href="#" id="controller" class="#STATUS_CLASS#">#STATUS#</a></li>
             <li><a href="#" id="edit">Edit</a></li>
-            <!-- <li><a href="#" id="details">Details</a></li> -->
-            <!-- <li><a href="#" id="refresh">Refresh</a></li> -->
             <li class="bottom_item"><a href="#" id="history">History</a></li>
         </ul>
-    </zonesegment>
+    </div>
 </zonecard>
-<historycard id=#ID#>
-    Something
-</historycard>
 
 
 
