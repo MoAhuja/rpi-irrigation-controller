@@ -135,11 +135,31 @@ Current App To Do:
       ✔ Create a view zones section to dump all the zone info and allow editing @done(19-03-07 08:21)
       ✔ Add confirmation screen after zone is created @done(19-03-20 08:34)
       ✔ Add the ability to create relay -> RPI pin mappings through service @done(19-03-20 08:34)
-      ☐ Add service tor return eligible relays
-      ☐ Enable dropdown selection for relay IDs in the create and edit dialogs
-      ☐ Create separate UI for mapping relays to zones
-      ☐ Expose weather as API
+      ✔ Add service tor return eligible relays @done(19-04-24 08:13)
+      ✔ Enable dropdown selection for relay IDs in the create and edit dialogs @done(19-04-25 08:22)
+      ✔ Create separate UI for mapping relays to zones @done(19-04-30 08:50)
+      ☐ Create one UI for all zones to relays mappings
+      ✔ Expose weather as API @done(19-04-24 08:13)
       ☐ Create settings for weather center short and long term durations
+      ☐ Merge create_zone and zone manager  inot one javascript since they have very common capabilities
+      ✔ Fix bug where the 2nd schedule added doesn't let you modify the schedule days (issue with label association?) @done(19-04-30 08:50)
+      ☐ Google Home iNtegration + Basic Digest
+      ☐ Implement HTTPS
+      ✔ Implement delete for pin relays @done(19-04-30 08:49)
+      ✔ Fix alignment on screen when displaying mapped pin relays @done(19-05-01 08:34)
+      ☐ Fix push bullet users screent to display user rows as labels instead of input boxes
+      ✔ Fix dashboard rows so they don't grow so fat when there are only 1 or 2 @done(19-05-01 08:52)
+      ✔ Clean dashboard to display zone settings a bit more asthetically @done(19-05-07 18:21)
+      ☐ Fix rain elay display on UI to be more human readable
+      ☐ Fix dashboard.css and collapse allt he zone segments that relate tot he same class into one block
+      ✔ Make edit button on dashboard actually go to the edit zone screen @started(19-05-07 17:45) @done(19-05-07 18:21) @lasted(36m17s)
+      ✔ Checkmark and X for dashboard enabled/disabled indicators @done(19-05-03 09:14)
+      ☐ Update all colors to use the centralized color variables. This will make theming much easier.
+      ☐ Make themes dynamically selectable
+      ✔ Make dashboard colmn header use ellipses for overflow instead of growing vertically @done(19-05-09 22:17)
+      ✔ Convert dashboard to grids instead of flexbox @started(19-05-08 08:35) @done(19-05-09 22:17) @lasted(1d13h42m19s)
+      ☐ Convert decision history in dashboard to use grids
+      
 
 
 
