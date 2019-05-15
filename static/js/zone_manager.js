@@ -402,7 +402,7 @@ $(document).ready(function(){
         id_string = ($(this).attr('id'))
         index_of_underscore = id_string.indexOf("_")
         id = id_string.substr(index_of_underscore+1)
-        loadEditZoneScreen(id)
+        loadEditZoneScreen(id);
     });
 
 

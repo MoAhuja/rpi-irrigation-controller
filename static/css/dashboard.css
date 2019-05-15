@@ -89,7 +89,6 @@ zonecard {
 .prop_title {
     border-right: 1px solid grey;
     text-align: center;
-
     background-color: var(--color-tertiary); 
     color: var(--color-tertiary-text1);
     font-weight: 500;
@@ -174,23 +173,6 @@ historycard {
     /* overflow: scroll; */
     min-height: max-content;
 }
-
-
-
-/* settingscard column {
-    display: flex;
-    flex: 1;
-    border-right: 1px solid green;
-    flex-direction: column; 
-    justify-content: center;
-}
-
-settingscard column.right {
-    border: none;
-} */
-
-
-
 
 
 decisionitem, decisionheader {

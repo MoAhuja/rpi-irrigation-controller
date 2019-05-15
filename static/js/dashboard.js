@@ -271,10 +271,6 @@ $(document).ready(function()
 
         // Hide these ones to start
         $("#content_manager").show()
-        
-
-        
-        
     });
 
 

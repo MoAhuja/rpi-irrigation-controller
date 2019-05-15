@@ -20,9 +20,7 @@ $(document).ready(function()
     });
     
 
-    $("#btn_manager").click(function(){
-        loadCreateZoneScreen();
-    });
+    
 
     // Load the create zone screen when it's clicked in the navigation menu
     $('body').on('click', '#nav_create_zone', function() {
