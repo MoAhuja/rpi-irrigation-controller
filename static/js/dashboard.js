@@ -127,6 +127,10 @@ $(document).ready(function()
         {
             rain_delay = "OFF";
         }
+        else
+        {
+            rain_delay = serverTimestamptoHumanReadableDate(rain_delay)
+        }
 
         if(kill_switch == false)
         {
@@ -158,8 +162,8 @@ $(document).ready(function()
         if (item["next_run"] != null)
         {
             start = item["next_run"]["start"]
-            startDate = Date.parse(start);
-            startDateString = toDateString(startDate);
+            
+            startDateString = serverTimestamptoHumanReadableDate(start);
             
             nextRunString = startDateString;
         }
@@ -171,8 +175,7 @@ $(document).ready(function()
         if(item["last_run"] != null)
         {
             start = item["last_run"]["start"]
-            startDate = Date.parse(start);
-            startDateString = toDateString(startDate);
+            startDateString = serverTimestamptoHumanReadableDate(start);
             lastRunString = startDateString;
         }
         else
@@ -228,6 +231,7 @@ $(document).ready(function()
         
         // Get the hidden ID field to find the ID of this zone
         var zone_id = $(this).parent().parent().parent().parent().find("#zone_id").text();
+                     
         
         // alert(zone_id);
         current_history_selector = "historycard#" + zone_id;
@@ -373,9 +377,9 @@ $(document).ready(function()
         console.log(item);
         template = history_template;
         template = template.replaceAll("#DECISION#", SplitByUppercase(item["decision"]));
-        template = template.replaceAll("#TIME#", item["event_time"].replaceAll("T", " "));
-        template = template.replaceAll("#START_TIME#", item["start_time"].replaceAll("T", " "));
-        template = template.replaceAll("#END_TIME#", item["end_time"].replaceAll("T", " "));
+        template = template.replaceAll("#TIME#", serverTimeToCommonDateTime(item["event_time"].replaceAll("T", " ")));
+        template = template.replaceAll("#START_TIME#", serverTimeToCommonDateTime(item["start_time"].replaceAll("T", " ")));
+        template = template.replaceAll("#END_TIME#", serverTimeToCommonDateTime(item["end_time"].replaceAll("T", " ")));
         template = template.replaceAll("#REASON#", SplitByUppercase(item["reason"]));
         
 
@@ -416,26 +420,7 @@ $(document).ready(function()
         return msToTime(diff);
     }
 
-    function toDateString(timeAsMilliseconds)
-    {
-        mlist = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
-        dow = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
-
-
-        dateObject = new Date(timeAsMilliseconds);
-        // alert(dateObject);
-        var dateYear = dateObject.getFullYear();
-        var hour = dateObject.getHours();
-        var minute = dateObject.getMinutes();
-
-        var dow = dow[dateObject.getDay()];
-        var dateMonth = mlist[dateObject.getMonth()];
-        var day = dateObject.getDate();
-        var dateString = `${dow} ${dateMonth} ${day}`;
-
-
-        return dateString;
-
-    }
+    
+    
 
 });

@@ -36,9 +36,47 @@ $(document).ready(function()
 
 });
 
+function serverTimeToCommonDateTime(serverDateString)
+{
+    console.log("parsing: " + serverDateString)
+    
+    dateAsMilliseconds = Date.parse(serverDateString);
+
+    console.log("Result: " + dateAsMilliseconds);
+    dateObject = new Date(dateAsMilliseconds);
+    var options = { year: '2-digit', month: 'numeric', day: 'numeric', hour12: 'true' };
+    var dateString = dateObject.toLocaleDateString('en-US', options);
+    var timeString = dateObject.toLocaleTimeString('en-US')
+
+    return `${dateString} ${timeString}`
+}
+
+function serverTimestamptoHumanReadableDate(serverDateString)
+{
+    
+    mlist = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+    dow = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
 
 
+    dateAsMilliseconds = Date.parse(serverDateString);
 
+    dateObject = new Date(dateAsMilliseconds);
+    // // alert(dateObject);
+    // var dateYear = dateObject.getFullYear();
+    // var hour = dateObject.getHours();
+    // var minute = dateObject.getMinutes();
+
+    // var dow = dow[dateObject.getDay()];
+    // var dateMonth = mlist[dateObject.getMonth()];
+    // var day = dateObject.getDate();
+    // var dateString = `${dow} ${dateMonth} ${day}`;
+
+    var options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour12: 'true' };
+
+    return dateObject.toLocaleDateString('default', options);
+
+    // return dateString;
+}
 
 function displayAlert( type, message)
 {

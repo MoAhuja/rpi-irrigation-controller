@@ -231,7 +231,7 @@ $(document).ready(function()
     {  
         
         timestamp = item["timestamp"]
-        timestamp = timestamp.replaceAll("T", " ");
+        timestamp = serverTimeToCommonDateTime(timestamp.replaceAll("T", " "));
         
         component = item["component"]
         message = item["message"]
