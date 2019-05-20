@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+from service.core import shared
 
 # This class manipulates the PINS on the raspberry pi
 class PIController():
@@ -12,7 +13,7 @@ class PIController():
 
 
         
-        chan_list = [23,4]    # add as many channels as you want!
+        chan_list = [19, 20]    # add as many channels as you want!
                        # you can tuples instead i.e.:
                        #   chan_list = (11,12)
         GPIO.setup(chan_list, GPIO.OUT, initial=GPIO.HIGH)
@@ -27,6 +28,7 @@ class PIController():
     
     def activatePIN(self, pin):
         #Add check to make sure PIN is numeric and one of the initialized pins
+
         GPIO.output(pin, GPIO.LOW)
         return True
 
