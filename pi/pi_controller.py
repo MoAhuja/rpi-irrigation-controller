@@ -3,21 +3,30 @@ from service.core import shared
 
 # This class manipulates the PINS on the raspberry pi
 class PIController():
-
+    isInitialized = False;
     def initializePINS(self):
         # Fetch all the required pins from the DB
         # TODO: Initialize all pin to BCD & Pull them down or whatever
         
         # Initialize all the pins to BCD
-        shared.logger.debug(self,"Initializing Pins");
-        GPIO.setmode(GPIO.BCM);
+
+
+        if PIController.isInitialized is False:
+            shared.logger.debug(self, "Initializing Pins");
+            GPIO.setmode(GPIO.BCM);
 
 
         
-        chan_list = [19, 20]    # add as many channels as you want!
-                       # you can tuples instead i.e.:
-                       #   chan_list = (11,12)
-        GPIO.setup(chan_list, GPIO.OUT, initial=GPIO.HIGH)
+            chan_list = [19, 20]    # add as many channels as you want!
+                           # you can tuples instead i.e.:
+                           #   chan_list = (11,12)
+            GPIO.setup(chan_list, GPIO.OUT, initial=GPIO.HIGH)
+
+            PIController.isInitialized = True
+        else:
+            shared.logger.debug(self, "Already initialized pins, no need to re-init")
+
+        #TODO: Add logic to support re-initialization of pins change
         
         # Set all the pins to their closed state/no electricity flowing (valve = off)
         # Loop through all the pins and set them as output pins
