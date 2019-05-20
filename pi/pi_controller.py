@@ -28,12 +28,12 @@ class PIController():
     
     def activatePIN(self, pin):
         #Add check to make sure PIN is numeric and one of the initialized pins
-        shared.logger.debug("Activating PIN:" + str(pin))
+        shared.logger.debug(self,"Activating PIN:" + str(pin))
 
         GPIO.output(pin, GPIO.LOW)
         return True
 
     def deactivatePIN(self, pin):
-        shared.logger.debug("Deactivating PIN:" + str(pin))
+        shared.logger.debug(self, "Deactivating PIN:" + str(pin))
         GPIO.output(pin, GPIO.HIGH)
         return True
