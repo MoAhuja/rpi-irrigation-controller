@@ -9,6 +9,7 @@ class PIController():
         # TODO: Initialize all pin to BCD & Pull them down or whatever
         
         # Initialize all the pins to BCD
+        shared.logger.self("Initializing Pins");
         GPIO.setmode(GPIO.BCM);
 
 
