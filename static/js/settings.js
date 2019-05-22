@@ -137,6 +137,7 @@ $(document).ready(function()
     // Save push bullet user
     $('body').on('click', '#save_pb', function() {
         savePushBulletSettings();
+        // TODO: WHy is there no function for this????
     });  
     
     // Add Relay Mapping
@@ -161,16 +162,41 @@ $(document).ready(function()
        
     });
 
-    $('body').on('click', '#del_pin_mapping', function() {
+    $('body').on('click', '.del_pin_mapping_button', function() {
         // Get the relay for this row
-        console.log($(this).parent());
+        //console.log($(this).parent());
 
-        relay = $(this).parent().find("#relay").text();
+        // relay = $(this).parent().parent().find("#relay").text();
+        id = $(this).attr('id');
+        relay = id.substring(id.lastIndexOf("_") + 1);
 
         deleteRelayPinMapping(relay);
 
         
     });
+
+    // Save pin mapping
+    $('body').on('click', '#save_pin_mapping', function() {
+        // Get the relay for this row
+        //console.log($(this).parent());
+
+        relay = $(this).parent().prev().prev().val();
+        pin = $(this).parent().prev().val();
+
+        // Add the pin mapping
+        addPinMapping(pin, relay);
+    });
+
+    function addPinMapping(pin, relay)
+    {
+        jsonData = `{"pin": ${pin}, "relay": ${relay}}`
+
+        $.post("/service_hub/relay", jsonData, 
+        function(data){
+            loadPinRelayMappingsWithAlert("success", "Relay mapping added successfully"); 
+        });
+        
+    }
     
 
     $('body').on('click', '#save_pb_user', function() {
@@ -377,7 +403,14 @@ $(document).ready(function()
             })).then(drawNotificationSettingsScreen, drawErrorScreen);
     }
 
+
+
     function loadPinRelayMappings()
+    {
+        loadPinRelayMappingsWithAlert(null, null)
+    }
+
+    function loadPinRelayMappingsWithAlert(alertType, alertContent)
     {
         
         $.when($.ajax('http://127.0.0.1:5000/service_hub/relays'))
@@ -395,9 +428,14 @@ $(document).ready(function()
                     curTemplate = curTemplate.replaceAll("NUMBER_HOLDER", number_of_users++);
                     curTemplate = curTemplate.replaceAll("#RELAY#", item.relay);
                     curTemplate = curTemplate.replaceAll("#PIN#", item.pin);
-                    // curTemplate = curTemplate.replaceAll("#PLACEHOLDER_FOR_BUTTON#", "<button id='del_pin_mapping'>Del</button>");
                     $("#pin_mappings_section").append(curTemplate);
                 });
+
+            if((alertType != null) & (alertContent != null))
+            {
+                displayAlertInContainer($("alerts#settings"), alertType, alertContent);
+            }
+            
         });
     }
 
@@ -445,6 +483,7 @@ $(document).ready(function()
 
     function addPinRelayInputRow()
     {
+
         curTemplate = pin_relay_mapping_input_row_template;
         curTemplate = curTemplate.replaceAll("NUMBER_HOLDER", number_of_users++);
         curTemplate = curTemplate.replaceAll("#RELAY#", "");
@@ -465,8 +504,8 @@ $(document).ready(function()
                 // you can see the result from the console
                 // tab of the developer tools
                 console.log(result);
-                loadPinRelayMappings();
-                displayAlert("success", "Relay Mapping successfully deleted!");
+                loadPinRelayMappingsWithAlert("success", "Relay Mapping successfully deleted!");
+                
                 
             },
             error: function(xhr, resp, text) {
@@ -506,7 +545,8 @@ $(document).ready(function()
         jsonData = `{"name": "${name}", "api_key": "${key}"}`
 
         $.post("/service_hub/settings/notification/pushbullet/user", jsonData, 
-        function(data){displayAlert("success", "User successfully added!"); 
+        function(data){
+            displayAlert("success", "User successfully added!"); 
         loadPushNotificationSettings();});
         
     }

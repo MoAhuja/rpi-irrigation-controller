@@ -4,18 +4,13 @@
             <row class="title">
                 <h3>Relay to RPI Pin Mappings</h3>
                 <button  class="btn btn-blue"  id="add_pin_mapping">Add</button>
-                <!-- <button  class="btn btn-blue"  id="save_pin_mapping">Save</button> -->
             </row>
             
-            <subgroup id="pin_mappings_section">
-                 <!-- Create a mini table -->
-                <row class="user_input subgroup_header">
-                    <label>Relay</label>
-                    <label>PIN</label>
-                    <label class="actions">Action</label>
-                </row>
-                
-            </subgroup> 
+            <pin_mapping id="pin_mappings_section">
+                <label class="header">Relay</label>
+                <label class="header">PIN</label>
+                <label class="header">Action</label>
+            </pin_mapping> 
         </form>
     </group>
 </mappings>

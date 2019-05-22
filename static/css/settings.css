@@ -111,21 +111,34 @@ row.subgroup_header
     font-style: italic;
 }
 
-row.user_input input {
+/* input {
     flex: 1;
     margin: 8px;
+} */
+
+label.header {
+    text-align: center;
 }
 
-row.user_input label {
-    flex: 2;
-    margin: 8px;
 
-    /*     display: inline-block;
-    max-width: 100%;
-    margin-bottom: 5px;
-    font-weight: 700; */
+/* PIN MAPPING */
+pin_mapping {
+    min-height: max-content;
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
 }
 
-row.user_input label.actions {
-    flex:1;
+pin_mapping > label.actions {
+    margin-left: 5px;
+    margin-right: 5px;
+    
+}
+
+pin_mapping > label {
+    text-align: center;
+}
+
+pin_mapping > input {
+    margin-left: 5px;
+    margin-right: 5px;
 }

@@ -78,7 +78,21 @@ function serverTimestamptoHumanReadableDate(serverDateString)
     // return dateString;
 }
 
-function displayAlert( type, message)
+function displayAlert(type, message)
+{
+    console.log("Displaying alert - " + type);
+
+    // var body = `<div class="alert alert-${type} alert-dismissible">
+    //     ${message}
+    //     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    //         <span aria-hidden="true">&times;</span>
+    //     </button>
+    // </div>`
+
+    displayAlertInContainer($("#alerts_container"), type, message);
+}
+
+function displayAlertInContainer(container, type, message)
 {
     console.log("Displaying alert - " + type);
 
@@ -89,7 +103,7 @@ function displayAlert( type, message)
         </button>
     </div>`
 
-    $("#alerts_container").append(body);
+    container.append(body);
 }
 
 function displayAlertFromXHR( type, xhr)
