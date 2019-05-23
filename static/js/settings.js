@@ -3,7 +3,8 @@ $(document).ready(function()
     page_template = "";
     system_settings_template = ""
     notification_template = "";
-    push_bullet_input_user_row_template = ""
+    push_bullet_input_user_row_template = "";
+    push_bullet_input_user_row_template = "";
     number_of_users = 0;
     notificationConfigData = ""
     pushBulletUsers = ""
@@ -12,8 +13,14 @@ $(document).ready(function()
     pin_relay_mapping_page_template = "";
     kill_switch_modified = false
     rain_delay_modified = false
+    
 
 
+    function getAlertContainer()
+    {
+        return $("alerts#settings");
+    }
+    
     $.get('/static/screens/portal/settings/include_system_settings_template.html', 
     function(data)
     {
@@ -29,6 +36,21 @@ $(document).ready(function()
         success : function(data) {
             push_bullet_input_user_row_template = data
             console.log("Push Bullet Input user template")
+            
+        },
+        error: function(xhr, resp, text) {
+            console.log(text);
+        }
+    });
+
+    $.ajax({
+        url: '/static/screens/portal/settings/include_pushbullet_display_user_row_template.html', // url where to submit the request
+        type : "GET", // type of action POST || GET
+        dataType : 'html', // data type
+        async: true,
+        success : function(data) {
+            push_bullet_display_user_row_template = data
+            console.log("Push Bullet Display user template")
             
         },
         error: function(xhr, resp, text) {
@@ -152,12 +174,14 @@ $(document).ready(function()
         saveNotificationSettings();
     });
 
-    $('body').on('click', '#del_pb_user', function() {
+    $('body').on('click', '.del_pb_user_button', function() {
         // Get the name of the user
-        console.log($(this).parent());
+        
+        // name = $(this).parent().find("#name").val();
+        id = $(this).attr('id');
+        name = id.substring(id.lastIndexOf("_") + 1);
 
-        name = $(this).parent().find("#name").val();
-
+        
         deletePushBulletUser(name);
        
     });
@@ -201,9 +225,8 @@ $(document).ready(function()
 
     $('body').on('click', '#save_pb_user', function() {
         // Get the name of the user
-        
-        name = $(this).parent().find("#name").val();
-        key = $(this).parent().find("#key").val();
+        name = $(this).parent().prev().prev().val();
+        key = $(this).parent().prev().val();
         
         addPushBulletUser(name, key);
        
@@ -386,10 +409,12 @@ $(document).ready(function()
             
     }
 
-    function loadPushNotificationSettings()
+    function loadPushNotificationSettings(alertType, alertContent)
     {
         notificationConfigData = ""
         step = 0
+        var alertTypeResolve = $.Deferred();
+        var alertContentResolve = $.Deferred();
 
         // $.when(loadConfigData(), loadPushBulletUsersData()).then(drawScreen(), drawErrorScreen())
         $.when(
@@ -400,7 +425,19 @@ $(document).ready(function()
             }), $.get('http://127.0.0.1:5000/service_hub/settings/notification/pushbullet/users', function(data){
                 console.log("Loaded user data: " + data);
                 pushBulletUsers = data;
-            })).then(drawNotificationSettingsScreen, drawErrorScreen);
+            }),
+            alertTypeResolve,
+            alertContentResolve)
+        .done(function(configData, pbUsers, alertType, alertContent)
+        {
+            drawNotificationSettingsScreen();
+            displayAlertInContainer(getAlertContainer(), alertType, alertContent);
+        });
+        
+        // drawErrorScreen
+        
+        alertTypeResolve.resolve(alertType);
+        alertContentResolve.resolve(alertContent);
     }
 
 
@@ -433,7 +470,9 @@ $(document).ready(function()
 
             if((alertType != null) & (alertContent != null))
             {
-                displayAlertInContainer($("alerts#settings"), alertType, alertContent);
+                var x = $("alerts#settings");
+
+                displayAlertInContainer(getAlertContainer(), alertType, alertContent);
             }
             
         });
@@ -471,7 +510,7 @@ $(document).ready(function()
         $("#content_settings content subcontent").html(temp);
 
         // Add the users
-        pushBulletUsers["users"].forEach(addPushBulletUserInputRowWithData);
+        pushBulletUsers["users"].forEach(addPushBulletDisplayRow);
         
     }
 
@@ -510,7 +549,7 @@ $(document).ready(function()
             },
             error: function(xhr, resp, text) {
                 console.log(text);
-                displayAlert("danger", "Failed to delete user. Please try again.");
+                displayAlertInContainer(getAlertContainer(), "danger", "Failed to delete user. Please try again.");
             }
         });
     }
@@ -518,25 +557,23 @@ $(document).ready(function()
     function addPushBulletUserInputRow()
     {
         curTemplate = push_bullet_input_user_row_template;
-        curTemplate = curTemplate.replaceAll("NUMBER_HOLDER", number_of_users++);
+        // curTemplate = curTemplate.replaceAll("NUMBER_HOLDER", number_of_users++);
         curTemplate = curTemplate.replaceAll("#NAME#", "");
         curTemplate = curTemplate.replaceAll("#API_KEY#", "");
-        curTemplate = curTemplate.replaceAll("#PLACEHOLDER_FOR_BUTTON#", "<button id='save_pb_user'>Save</button>");
+        // curTemplate = curTemplate.replaceAll("#PLACEHOLDER_FOR_BUTTON#", "<button id='save_pb_user'>Save</button>");
         $("#pushbullet_users").append(curTemplate);
     }
 
-    function addPushBulletUserInputRowWithData(item, index)
+    function addPushBulletDisplayRow(item, index)
     {
         name = item["name"];
         apikey = item["api_key"];
 
-        curTemplate = push_bullet_input_user_row_template;
+        curTemplate = push_bullet_display_user_row_template;
         curTemplate = curTemplate.replaceAll("NUMBER_HOLDER", number_of_users++);
         curTemplate = curTemplate.replaceAll("#NAME#", name);
         curTemplate = curTemplate.replaceAll("#API_KEY#", apikey);
-        curTemplate = curTemplate.replaceAll("#IS_DISABLED#", "disabled");
-        curTemplate = curTemplate.replaceAll("#PLACEHOLDER_FOR_BUTTON#", "<button id='del_pb_user'>Del</button>");
-        
+       
         $("#pushbullet_users").append(curTemplate);
     }
 
@@ -545,9 +582,12 @@ $(document).ready(function()
         jsonData = `{"name": "${name}", "api_key": "${key}"}`
 
         $.post("/service_hub/settings/notification/pushbullet/user", jsonData, 
-        function(data){
-            displayAlert("success", "User successfully added!"); 
-        loadPushNotificationSettings();});
+            function(data)
+            {
+                loadPushNotificationSettings("success", "User successfully added!");
+            }
+        );
+       
         
     }
     function deletePushBulletUser(name)
@@ -562,8 +602,7 @@ $(document).ready(function()
                 // you can see the result from the console
                 // tab of the developer tools
                 console.log(result);
-                loadPushNotificationSettings();
-                displayAlert("success", "User successfully deleted!");
+                loadPushNotificationSettings("success", "User successfully deleted!");
                 
             },
             error: function(xhr, resp, text) {
@@ -592,12 +631,12 @@ $(document).ready(function()
                 // tab of the developer tools
                 console.log(result);
                 
-                displayAlert("success", "Notification preferences saved!")
+                displayAlertInContainer(getAlertContainer(), "success", "Notification preferences saved!")
             },
             error: function(xhr, resp, text) {
                 console.log(text);
 
-                displayAlert("danger", "Failed to save notifications. Please try again.")
+                displayAlertInContainer(getAlertContainer(), "danger", "Failed to save notifications. Please try again.")
             }
         });
     }

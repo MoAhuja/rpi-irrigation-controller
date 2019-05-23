@@ -94,6 +94,11 @@ function displayAlert(type, message)
 
 function displayAlertInContainer(container, type, message)
 {
+    if((type == null) || (message == null))
+    {
+        return;
+    }
+
     console.log("Displaying alert - " + type);
 
     var body = `<div class="alert alert-${type} alert-dismissible">
