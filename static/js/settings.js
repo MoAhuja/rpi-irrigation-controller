@@ -20,7 +20,7 @@ $(document).ready(function()
     {
         return $("alerts#settings");
     }
-    
+
     $.get('/static/screens/portal/settings/include_system_settings_template.html', 
     function(data)
     {
@@ -134,6 +134,7 @@ $(document).ready(function()
     $("#btn_settings").click(function(){
 
         loadPageTemplate();
+        loadSystemSettings();
 
     });
 
