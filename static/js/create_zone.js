@@ -32,7 +32,7 @@ $(document).ready(function()
     {
         // loadRelayMappings();
 
-        // $.when($.ajax('http://127.0.0.1:5000/service_hub/relays'))
+        // $.when($.ajax(getHost() + '/service_hub/relays'))
         //     .done(function(relay_data)
         //     {
                 //relay_mappings = relay_data;
@@ -117,7 +117,7 @@ $(document).ready(function()
 
 
         $.ajax({
-            url: 'http://127.0.0.1:5000/service_hub/zone', // url where to submit the request
+            url: getHost() + '/service_hub/zone', // url where to submit the request
             type : "POST", // type of action POST || GET
             dataType : 'json', // data type
             data : jsonData, // post data || get data

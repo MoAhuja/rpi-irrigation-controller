@@ -293,7 +293,7 @@ $(document).ready(function()
             console.log("Kill switch request  is " + ks_request);
 
             $.ajax({
-                url: 'http://127.0.0.1:5000/service_hub/settings/kill', // url where to submit the request
+                url: getHost() + '/service_hub/settings/kill', // url where to submit the request
                 type : "POST", // type of action POST || GET || DELETE
                 dataType : 'json', // data type
                 data : ks_request, // post data || get data
@@ -332,7 +332,7 @@ $(document).ready(function()
             
 
             $.ajax({
-                url: 'http://127.0.0.1:5000/service_hub/settings/raindelay', // url where to submit the request
+                url: getHost() + '/service_hub/settings/raindelay', // url where to submit the request
                 type : "POST", // type of action POST || GET || DELETE
                 dataType : 'json', // data type
                 data : rd_request, // post data || get data
@@ -398,8 +398,8 @@ $(document).ready(function()
         
         // $.when(loadConfigData(), loadPushBulletUsersData()).then(drawScreen(), drawErrorScreen())
         $.when(
-            $.ajax('http://127.0.0.1:5000/service_hub/settings/kill'), 
-            $.ajax('http://127.0.0.1:5000/service_hub/settings/raindelay'))
+            $.ajax(getHost() + '/service_hub/settings/kill'), 
+            $.ajax(getHost() + '/service_hub/settings/raindelay'))
             .done(function(kill_switch_data, rain_delay_data)
             {
                 kill_switch = kill_switch_data[0]["kill_switch"];
@@ -419,11 +419,11 @@ $(document).ready(function()
 
         // $.when(loadConfigData(), loadPushBulletUsersData()).then(drawScreen(), drawErrorScreen())
         $.when(
-            $.get('http://127.0.0.1:5000/service_hub/settings/notification/config', function(data){
+            $.get(getHost() + '/service_hub/settings/notification/config', function(data){
                 console.log("Loaded config data: " + data);
                 notificationConfigData = data;
 
-            }), $.get('http://127.0.0.1:5000/service_hub/settings/notification/pushbullet/users', function(data){
+            }), $.get(getHost() + '/service_hub/settings/notification/pushbullet/users', function(data){
                 console.log("Loaded user data: " + data);
                 pushBulletUsers = data;
             }),
@@ -451,7 +451,7 @@ $(document).ready(function()
     function loadPinRelayMappingsWithAlert(alertType, alertContent)
     {
         
-        $.when($.ajax('http://127.0.0.1:5000/service_hub/relays'))
+        $.when($.ajax(getHost() + '/service_hub/relays'))
         .done(function(relay_mappings)
         {
             
@@ -536,7 +536,7 @@ $(document).ready(function()
     {
         
         $.ajax({
-            url: 'http://127.0.0.1:5000/service_hub/relays/' + relay, // url where to submit the request
+            url: getHost() + '/service_hub/relays/' + relay, // url where to submit the request
             type : "DELETE", // type of action POST || GET || DELETE
             dataType : 'json', // data type
             // data : jsonData, // post data || get data
@@ -595,7 +595,7 @@ $(document).ready(function()
     {
         
         $.ajax({
-            url: 'http://127.0.0.1:5000/service_hub/settings/notification/pushbullet/user/' + name, // url where to submit the request
+            url: getHost() + '/service_hub/settings/notification/pushbullet/user/' + name, // url where to submit the request
             type : "DELETE", // type of action POST || GET || DELETE
             dataType : 'json', // data type
             // data : jsonData, // post data || get data
@@ -623,7 +623,7 @@ $(document).ready(function()
         jsonData = jsonData.replaceAll("\"True\"", "true");
         console.log(jsonData);
         $.ajax({
-            url: 'http://127.0.0.1:5000/service_hub/settings/notification/config', // url where to submit the request
+            url: getHost() + '/service_hub/settings/notification/config', // url where to submit the request
             type : "POST", // type of action POST || GET
             dataType : 'json', // data type
             data : jsonData, // post data || get data

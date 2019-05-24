@@ -3,7 +3,7 @@ var scheduleCounter = 0;
 function loadRelayDropdownIntoTemplate(templateAsDOM, currentZone)
 {
     
-    $.when($.ajax('http://127.0.0.1:5000/service_hub/relays'))
+    $.when($.ajax(getHost() + '/service_hub/relays'))
         .done(function(relay_mappings)
         {
             if (currentZone == null)

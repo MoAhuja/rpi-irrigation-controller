@@ -126,3 +126,15 @@ function displayAlertFromXHR( type, xhr)
 
     $("#alerts_container").append(body);
 }
+
+function getHost()
+{
+    var currentLocation = window.location.toString();
+    var indexOfDomain = currentLocation.indexOf("//");
+    var indexOfPath = currentLocation.indexOf("/", indexOfDomain+2);
+    var host = currentLocation.substring(0, indexOfPath);
+
+    console.log("Current location is:" + host);
+
+    return host;
+}

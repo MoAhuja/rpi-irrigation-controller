@@ -14,7 +14,7 @@ function loadZoneData(forceRefresh)
     if(forceRefresh == true || allZones == "")
     {
         $.ajax({
-            url: 'http://127.0.0.1:5000/service_hub/zones', // url where to submit the request
+            url: getHost() + '/service_hub/zones', // url where to submit the request
             type : "GET", // type of action POST || GET
             dataType : 'json', // data type
             async: false,
@@ -346,7 +346,7 @@ $(document).ready(function(){
 
 
         $.ajax({
-            url: 'http://127.0.0.1:5000/service_hub/zone/edit', // url where to submit the request
+            url: getHost() + '/service_hub/zone/edit', // url where to submit the request
             type : "POST", // type of action POST || GET
             dataType : 'json', // data type
             data : jsonData, // post data || get data
@@ -410,7 +410,7 @@ $(document).ready(function(){
     function deleteZone(id)
     {
         $.ajax({
-            url: 'http://127.0.0.1:5000/service_hub/zone/' + id,
+            url: getHost() + '/service_hub/zone/' + id,
             type : "DELETE", // type of action POST || GET
             async: true,
             contentType: 'application/json',

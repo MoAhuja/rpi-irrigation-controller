@@ -10,7 +10,7 @@ $(document).ready(function()
     console.log("hiding history panels")
     $("historycard").hide();
 
-
+    getHost();
 
     $.ajax({
         url: '/static/screens/portal/dashboard/dashboard_include_zone_template.html', // url where to submit the request
@@ -237,7 +237,7 @@ $(document).ready(function()
         current_history_selector = "historycard#" + zone_id;
 
         $.ajax({
-            url: 'http://127.0.0.1:5000/service_hub/decisionhistory?zone=' + zone_id, // url where to submit the request
+            url: getHost() + '/service_hub/decisionhistory?zone=' + zone_id, // url where to submit the request
             type : "GET", // type of action POST || GET
             dataType : 'json', // data type
             async: true,
@@ -331,7 +331,7 @@ $(document).ready(function()
 
         console.log(request);
         $.ajax({
-            url: 'http://127.0.0.1:5000/service_hub/zones/activate', 
+            url: getHost() + '/service_hub/zones/activate', 
             type : "POST", // type of action POST || GET
             dataType : 'json', // data type
             data: request,
@@ -356,7 +356,7 @@ $(document).ready(function()
 
         console.log(request);
         $.ajax({
-            url: 'http://127.0.0.1:5000/service_hub/zones/deactivate', 
+            url: getHost() + '/service_hub/zones/deactivate', 
             type : "POST", // type of action POST || GET
             dataType : 'json', // data type
             data: request,

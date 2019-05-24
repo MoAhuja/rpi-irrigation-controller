@@ -136,11 +136,11 @@ $(document).ready(function()
 
 
         $("logs").html("");
-        log_level_url = "http://127.0.0.1:5000/service_hub/logs"
+        log_level_url = "getHost()/service_hub/logs"
         
         // Set the URL based on the log level
         if(logLevel != 0){
-            log_level_url = "http://127.0.0.1:5000/service_hub/logs?level=" + logLevel
+            log_level_url = "getHost()/service_hub/logs?level=" + logLevel
             
             if(page_number > 0)
             {
