@@ -1,4 +1,9 @@
-import RPi.GPIO as GPIO
+isPIControllerEnabled = False
+try:
+    import RPi.GPIO as GPIO
+    isPIControllerEnabled = True
+except:
+    print("Can't import GPIO, must not be a RPI. Going to disable PIController functionality.")
 from service.core import shared
 
 # This class manipulates the PINS on the raspberry pi
@@ -10,21 +15,20 @@ class PIController():
         
         # Initialize all the pins to BCD
 
+        if isPIControllerEnabled is True:
 
-        if PIController.isInitialized is False:
-            shared.logger.debug(self, "Initializing Pins");
-            GPIO.setmode(GPIO.BCM);
+            if PIController.isInitialized is False:
+                shared.logger.debug(self, "Initializing Pins");
+                GPIO.setmode(GPIO.BCM);
 
+                chan_list = [19, 20]    # add as many channels as you want!
+                            # you can tuples instead i.e.:
+                            #   chan_list = (11,12)
+                GPIO.setup(chan_list, GPIO.OUT, initial=GPIO.HIGH)
 
-        
-            chan_list = [19, 20]    # add as many channels as you want!
-                           # you can tuples instead i.e.:
-                           #   chan_list = (11,12)
-            GPIO.setup(chan_list, GPIO.OUT, initial=GPIO.HIGH)
-
-            PIController.isInitialized = True
-        else:
-            shared.logger.debug(self, "Already initialized pins, no need to re-init")
+                PIController.isInitialized = True
+            else:
+                shared.logger.debug(self, "Already initialized pins, no need to re-init")
 
         #TODO: Add logic to support re-initialization of pins change
         
@@ -40,10 +44,14 @@ class PIController():
         #Add check to make sure PIN is numeric and one of the initialized pins
         shared.logger.debug(self,"Activating PIN:" + str(pin))
 
-        GPIO.output(pin, GPIO.LOW)
+        if isPIControllerEnabled is True:
+            GPIO.output(pin, GPIO.LOW)
         return True
 
     def deactivatePIN(self, pin):
         shared.logger.debug(self, "Deactivating PIN:" + str(pin))
-        GPIO.output(pin, GPIO.HIGH)
+
+        if isPIControllerEnabled is True:
+            GPIO.output(pin, GPIO.HIGH)
+
         return True
