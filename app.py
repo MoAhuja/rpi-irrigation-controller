@@ -4,7 +4,7 @@ from flask import request
 from pprint import pprint
 from service.rest_mappers.InvalidUsage import InvalidUsage
 
-import pi.main
+#import pi.main
 from service.zone.zone_data_manager import ZoneDataManager
 from service.core.engine import Engine
 from service.core import shared
@@ -333,7 +333,7 @@ def handle_invalid_usage(error):
 if __name__ == '__main__':
 	global event_pub
 	global zm
-	pi.main.initialize()
+	#pi.main.initialize()
 
 	shared.logger.debug(None, "About to create database!!")
 	service.database.db_schema.createDatabase()
