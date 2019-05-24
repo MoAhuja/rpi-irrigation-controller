@@ -91,7 +91,7 @@ $(document).ready(function()
         
         
         $.ajax({
-            url: 'http://0.0.0.0:5000/service_hub/dashboard', // url where to submit the request
+            url: getHost() + '/service_hub/dashboard', // url where to submit the request
             type : "GET", // type of action POST || GET
             dataType : 'json', // data type
             async: true,
