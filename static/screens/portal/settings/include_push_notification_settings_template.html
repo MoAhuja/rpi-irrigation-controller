@@ -3,44 +3,62 @@
 
     <group>
         <form id="notification_settings">
-        <row class="title">
-            <h3>Notification Settings</h3>
-            <button  class="btn btn-blue"  id="save_notification_settings">Save</button>
-        </row>
-        
-        <subgroup>
-            <!-- Notify on watering start -->
-            <row>
+            <row class="title">
+                <h3>Notification Settings</h3>
+                <button  class="btn btn-blue"  id="save_notification_settings">Save</button>
+            </row>
+
+            <simple_settings>
+                    
+                <!-- Enable Disable Setting -->
                 <label>Notify on watering start</label>
                 <input type="checkbox" class="fancycheckbox" name="notify_on_watering_start" id="notify_start" value="True" #NOTIFY_ON_WATERING_START_CHECKED#>
                 <label for="notify_start" class="checkboxframe"></label>
-            </row>
-            <!-- Notify when zone starts -->
-            <row>
+                <line></line>
+
                 <label>Notify on watering stop</label>
                 <input type="checkbox" class="fancycheckbox" name="notify_on_watering_stop" id="notify_stop" value="True" #NOTIFY_ON_WATERING_STOP_CHECKED#>
                 <label for="notify_stop" class="checkboxframe"></label>
-            </row>
-            
-            <!-- Notify when there is an error -->
-            <row>
+                <line></line>
+
                 <label>Notify on error</label>
                 <input type="checkbox" class="fancycheckbox" name="notify_on_error" id="notify_on_error" value="True" #NOTIFY_ON_ERROR_CHECKED#>
                 <label for="notify_on_error" class="checkboxframe"></label>
-            </row>
-            
-        </subgroup> 
-    </form>
+                <!-- <line></line> -->
+            </simple_settings>
+        </form>
     </group>
 
     <group>
-        <form id="pbform">
+        <!-- <form id="pbform"> -->
         <row class="title">
             <h3>Push Bullet</h3>
             <button  class="btn btn-blue"  id="save_pb">Save</button>
         </row>
         
-        <subgroup>
+        <simple_settings>
+            <!-- Subgroup header title -->
+            <label class="subheader_title">General Settings</label>
+    
+            <!-- Enable Disable Setting -->
+            <label>Enabled</label>
+            <input type="checkbox" class="fancycheckbox" name="enable" id="enable" value="0">
+            <label for="enable" class="checkboxframe"></label>
+            <!-- <line></line> -->
+        </simple_settings>
+
+        <simple_settings>
+            <label class="subheader_title_with_buttons">Users</label>
+            <button  class="btn btn-blue"  id="add_pb_user">Add</button>
+        </simple_settings>
+
+        <twofieldsettingsgrid id="push_bullet_user_grid">
+            <label class="header">User</label>
+            <label class="header">API Key</label>
+            <label class="header">Action</label>
+        </twofieldsettingsgrid> 
+        
+        <!-- <subgroup>
             <row>
                 <label>Enable Disable</label>
                 <input type="checkbox" class="fancycheckbox" name="enable" id="enable" value="0">
@@ -54,7 +72,7 @@
                 <h4>Users</h3>
                 <button  class="btn btn-blue"  id="add_pb_user">Add</button>
             </row>
-        </subgroup> 
-    </form>
+        </subgroup>  -->
+    <!-- </form> -->
     </group>
 </notifications>

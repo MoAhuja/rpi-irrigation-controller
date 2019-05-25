@@ -562,7 +562,7 @@ $(document).ready(function()
         curTemplate = curTemplate.replaceAll("#NAME#", "");
         curTemplate = curTemplate.replaceAll("#API_KEY#", "");
         // curTemplate = curTemplate.replaceAll("#PLACEHOLDER_FOR_BUTTON#", "<button id='save_pb_user'>Save</button>");
-        $("#pushbullet_users").append(curTemplate);
+        $("#push_bullet_user_grid").append(curTemplate);
     }
 
     function addPushBulletDisplayRow(item, index)
@@ -575,7 +575,7 @@ $(document).ready(function()
         curTemplate = curTemplate.replaceAll("#NAME#", name);
         curTemplate = curTemplate.replaceAll("#API_KEY#", apikey);
        
-        $("#pushbullet_users").append(curTemplate);
+        $("#push_bullet_user_grid").append(curTemplate);
     }
 
     function addPushBulletUser(name, key)
