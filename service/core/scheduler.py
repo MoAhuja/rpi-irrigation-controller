@@ -122,7 +122,7 @@ class Scheduler():
 
                     # NEed to check if the schedule is enabled, first
                     if sch.enabled is False:
-                        shared.logger.debug("Schedule is not enabled. Skipping.")
+                        shared.logger.debug(self, "Schedule is not enabled. Skipping.")
                         break
 
                     if sch.schedule_type is EnumScheduleType.DayAndTime:
