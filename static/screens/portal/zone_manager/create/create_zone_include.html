@@ -4,41 +4,77 @@
 
 <form id="formData">
 
-<ul class="create_zone_fields">
+<create_zone_grid>
     <input type="hidden" name="id" value="#ZONE_ID#"/>
-    <li><h2>Zones</h2></li>
-    <li>
-        <label for="zone_name">Zone Name</label>
-        <input type="text" name="zone_name" id="zone_name" placeholder="Enter the zone name here" value="#ZONE_NAME#">
-    </li>
-    <li>
-        <label for="zone_description">Zone Description</label>
-        <input type="text" name="zone_description" id="zone_description" placeholder="Enter a description of this zone" value="#ZONE_DESCRIPTION#">
-    </li>
-    <li>
-        <label for="zone_enabled">Zone Enabled</label>
-        <input type="checkbox" name="enabled" id="zone_enabled" #ZONE_ENABLED#>
-    </li>
-    <li>
-        <label for="relay">Relay #</label>
-        <select type="number" name="relay" id="relay" value="#RELAY#" />
-    </li>
-    <hr />
-    <li><h2>Forecasted Rain</h2></li>
-    <li>
-        <label for="rain_rules_enabled">Enable Rain Rules</label>
-        <input type="checkbox" id="rain_rules_enabled" name="rain[enabled]" #RAIN_ENABLED# >
-    </li>
-    <li>
-        <label for="short_term_rain">Short Term Rain Limit (mm)</label>
-        <input type="number" id="short_term_rain" value="#RAIN_SHORT#" name="rain[shortTermExpectedRainAmount]" placeholder="Enter the amount of rain in millimeters that would prevent watering (short term)">
-    </li>
-    <li>
-        <label for="daily_rain">Daily Rain Limit (mm)</label>
-        <input type="number" id="daily_rain" value="#RAIN_DAILY#" name="rain[dailyExpectedRainAmount]" placeholder="Enter the amount of rain in millimeters that would prevent watering (daily)">
-    </li>
+    <h2 class="section_header">Zone Info</h2>
+    
+    <!-- Zone Name -->
+    <label for="zone_name">Zone Name</label>
+    <input type="text" name="zone_name" id="zone_name" placeholder="Enter the zone name here" value="#ZONE_NAME#">
+    <line></line>
 
-    <hr />
+    <!-- Zone desc -->
+    <label for="zone_description">Zone Description</label>
+    <input type="text" name="zone_description" id="zone_description" placeholder="Enter a description of this zone" value="#ZONE_DESCRIPTION#">
+    <line></line>
+
+    <!-- Zone Enabled -->
+    <label for="zone_enabled">Zone Enabled</label>
+    <input type="checkbox" name="enabled" id="zone_enabled" #ZONE_ENABLED#>
+    <line></line>
+
+    <!-- Relay # -->
+    <label for="relay">Relay #</label>
+    <select type="number" name="relay" id="relay" value="#RELAY#" />
+    
+
+    <h2 class="section_header">Forecasted Rain Rules</h2>
+
+    <!-- Enable Rain Rules -->
+    <label for="rain_rules_enabled">Enable Rain Rules</label>
+    <input type="checkbox" id="rain_rules_enabled" name="rain[enabled]" #RAIN_ENABLED# >
+    <line></line>
+
+    <label for="short_term_rain">Short Term Rain Limit (mm)</label>
+    <input type="number" id="short_term_rain" value="#RAIN_SHORT#" name="rain[shortTermExpectedRainAmount]" placeholder="Enter the amount of rain in millimeters that would prevent watering (short term)">
+    <line></line>
+
+    <label for="daily_rain">Daily Rain Limit (mm)</label>
+    <input type="number" id="daily_rain" value="#RAIN_DAILY#" name="rain[dailyExpectedRainAmount]" placeholder="Enter the amount of rain in millimeters that would prevent watering (daily)">
+    <line></line>
+
+    <h2 class="section_header">Temperature Rules</h2>
+
+    <label for="temperature_rules_enabled">Enable Temperature Rules</label>
+    <input type="checkbox" id="temperature_rules_enabled" name="temperature[enabled]" #TEMP_ENABLED#>
+    <line></line>
+
+    <label for="temp_min">Minimum Temperature (c)</label>
+    <input type="number"  id="temp_min" name="temperature[min]" value="#TEMP_MIN#" placeholder="Enter the minimum environmental temperature for the sprinkler to activate">
+    <line></line>
+
+    <label for="temp_max">Maximum Temperature (c)</label>
+    <input type="number" id="temp_max" name="temperature[max]" value="#TEMP_MAX#" placeholder="Enter the maximum environmental temperature for the sprinkler to activate">
+
+    <h2 class="section_header with_button">Schedules</h2>
+    <div class="buttonContainer">
+        <button  class="ghbutton icon calendar"  id="btnAddSchedule">Add Schedule</button>
+    </div>
+    <line/>
+    
+    <schedules id="schedule_area">
+        
+        
+    </schedules>
+    <button class="btn btn-blue submit_button" id="btn#OPERATION_TYPE#Zone">Submit</button>
+
+</create_zone_grid>
+
+
+<!-- 
+<ul class="create_zone_fields">
+    
+   
     <li><h2>Temperature</h2></li>
     <li>
         <label for="temperature_rules_enabled">Enable Temperature Rules</label>
@@ -54,7 +90,7 @@
     </li>
 
     <li>
-        <h2>Schedules</h2>
+        
         <button  class="btn btn-blue"  id="btnAddSchedule">Add Schedule</button>
     </li>
     
@@ -66,5 +102,5 @@
         <button class="btn btn-blue" id="btn#OPERATION_TYPE#Zone">Submit</button>
     </li>
               
-</ul>
+</ul> -->
 </form>

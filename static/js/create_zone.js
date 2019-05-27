@@ -82,16 +82,17 @@ $(document).ready(function()
     });
 
     // delete a schedule
-    $('body').on('click', '.delButton', function() {
-        var id  = $(this).attr('id');
-        console.log(id);
+    $('body').on('click', '#btnDeleteSchedule', function() {
+        // var id  = $(this).attr('id');
+        // console.log(id);
 
         //If they hit delete on the schedule button, then we need to decrement the counter
-        if(id == "scheduleDelButton")
-        {
-            scheduleCounter--;
-            console.log("Schedule Counter == " + scheduleCounter);
-        }
+        // if(id == "scheduleDelButton")
+        // {
+        scheduleCounter--;
+        console.log("Schedule Counter == " + scheduleCounter);
+        // }
+        
         $(this).parent().parent().remove();
 
     });
@@ -99,6 +100,7 @@ $(document).ready(function()
     
 
     $('body').on('click', '#btnAddSchedule', function() {
+        // TODO: Move to only do this once.
         $.get("/static/screens/portal/zone_manager/create/schedule_template_include.html", function(data){
             var templateWithRealData = data.replaceAll("NUMBER_HOLDER", scheduleCounter)
             templateWithRealData = templateWithRealData.replaceAll("#START_TIME#", "");

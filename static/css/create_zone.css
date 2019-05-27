@@ -26,11 +26,11 @@ createzone {
     overflow: auto;
 }
 
-.create_zone_fields {
+/* .create_zone_fields {
     flex-direction: column;
     text-transform: uppercase;
     flex: 1;
-}
+} */
 
 /* Label Fields */
 .create_zone_fields > li > label {
@@ -166,3 +166,120 @@ hr {
   #btnCreateZone {
       flex: 1;
   }
+
+  create_zone_grid {
+      display: grid;
+      grid-template-columns: auto 2fr;
+      align-items: center;
+  }
+
+  create_zone_grid > label {
+    line-height: 3em;
+    margin: 0px;
+    justify-content: right;
+    text-align: right;
+    margin-right: 10px;
+    /* border: 1px solid red; */
+  }
+  create_zone_grid > input, create_zone_grid > select {
+    line-height: 2em;
+    margin-left: 10px !important;
+    /* border: 1px solid green; */
+  }
+
+  create_zone_grid > line {
+    border-bottom: 1px solid #F5F5F5;
+    grid-column: 1 /  span 2;
+  }
+
+  create_zone_grid > .section_header {
+    grid-column: 1 /  span 2;
+    margin-top: 15px;
+    font-weight: bolder;
+    color: var(--color-primary);
+    padding-left: 0px;
+    /* border-bottom-style: groove;
+    border-bottom-color: var(--color-secondary);
+    border-bottom-width: 5px; */
+  }
+
+  create_zone_grid > .with_button {
+      grid-column: 1 / span 1;
+  }
+
+  create_zone_grid > .submit_button {
+      grid-column: 1 / span 2;
+      margin-top: 15px;
+  }
+
+  create_zone_grid > #schedule_area {
+      grid-column: 1 / span 2;
+  }
+
+  create_zone_grid > schedules {
+      grid-column: 1 / span 2;
+  }
+
+  schedules > schedule {
+      display: grid;
+      grid-template-columns: 1fr 2fr 50px auto;
+      align-items: center;
+  }
+
+  schedule > label {
+    grid-column: 1;
+    line-height: 2.5em;
+    margin: 0px;
+    padding-left: 25px;
+  }
+
+  schedule > line {
+    border-bottom: 1px solid #F5F5F5;
+    grid-column: 1 /  span 4;
+      
+  }
+
+  schedule > input, schedule > select {
+      grid-column: 2 / span 3;
+      margin: 0px;
+  }
+
+
+  .schedule_checkbox {
+      grid-column: 3;
+  }
+  schedule_label {
+      grid-column: 4;
+      line-height: 2em;
+      margin-right: 15px;
+
+      margin-left: 10px;
+  }
+
+  schedule > h4 {
+      grid-column: 1 / span 3;
+  }
+
+  days_header {
+      grid-column: 1 / span 4;
+      padding-left: 25px;
+  }
+
+  #btnAddSchedule {
+      width: fit-content;
+      float: right;
+  }
+
+  .buttonContainer {
+      display: block;
+     
+  }
+
+  section_divider {
+    border-bottom-style: groove;
+    border-bottom-color: var(--color-secondary);
+    border-bottom-width: 5px;
+  }
+  
+
+  
