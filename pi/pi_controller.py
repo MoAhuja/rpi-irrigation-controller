@@ -1,6 +1,12 @@
 isPIControllerEnabled = False
+# from service.rest_mappers.relay_rest_mapper import RelayRestMapper
+from service.database.relay_dbo import RelayDBO
+from service.database.db_schema import RpiPinMapper
+ 
+
 try:
     import RPi.GPIO as GPIO
+    
     isPIControllerEnabled = True
 except:
     print("Can't import GPIO, must not be a RPI. Going to disable PIController functionality.")
@@ -18,12 +24,19 @@ class PIController():
         if isPIControllerEnabled is True:
 
             if PIController.isInitialized is False:
-                shared.logger.debug(self, "Initializing Pins");
-                GPIO.setmode(GPIO.BCM);
+                shared.logger.debug(self, "Initializing Pins")
+                GPIO.setmode(GPIO.BCM)
 
-                chan_list = [19, 20]    # add as many channels as you want!
-                            # you can tuples instead i.e.:
-                            #   chan_list = (11,12)
+                # Fetch all the relays
+                rm = RelayDBO()
+                relay_list = rm.retrieveRelays(asJSON = False)
+
+                chan_list = []
+
+                for pin_mapping in relay_list:
+                    shared.logger.debug(self, "Initializing Pin: " + str(pin_mapping.rpi_pin))
+                    chan_list.append(pin_mapping.rpi_pin)
+                
                 GPIO.setup(chan_list, GPIO.OUT, initial=GPIO.HIGH)
 
                 PIController.isInitialized = True
