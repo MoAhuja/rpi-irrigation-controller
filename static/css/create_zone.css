@@ -220,26 +220,26 @@ hr {
       grid-column: 1 / span 2;
   }
 
-  schedules > schedule {
+  create_zone_grid > schedules > schedule {
       display: grid;
       grid-template-columns: 1fr 2fr 50px auto;
       align-items: center;
   }
 
-  schedule > label {
+  create_zone_grid > schedules > schedule > label {
     grid-column: 1;
     line-height: 2.5em;
     margin: 0px;
     padding-left: 25px;
   }
 
-  schedule > line {
+  create_zone_grid > schedules > schedule > line {
     border-bottom: 1px solid #F5F5F5;
     grid-column: 1 /  span 4;
       
   }
 
-  schedule > input, schedule > select {
+  create_zone_grid > schedules > schedule > input, schedule > select {
       grid-column: 2 / span 3;
       margin: 0px;
   }
