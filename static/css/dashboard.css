@@ -350,3 +350,7 @@ img.status_icon {
     flex: 1;
     display: block;
 }
+
+subcontent#dashboard {
+    flex: 1;
+}

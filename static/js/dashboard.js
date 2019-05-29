@@ -1,6 +1,7 @@
 $(document).ready(function()
 {
-    var dashboard_template = ""
+    var zone_card_template = ""
+    var dashboard_page_template = "";
     var history_template = ""
     var history_header_template = ""
     var current_history_selector = ""
@@ -10,7 +11,11 @@ $(document).ready(function()
     console.log("hiding history panels")
     $("historycard").hide();
 
-    getHost();
+    function getAlertsContainer() {
+
+        return $("alerts#dashboard");
+    }
+
 
     $.ajax({
         url: '/static/screens/portal/dashboard/dashboard_include_zone_template.html', // url where to submit the request
@@ -18,7 +23,22 @@ $(document).ready(function()
         dataType : 'html', // data type
         async: true,
         success : function(data) {
-            dashboard_template = data
+            zone_card_template = data
+            console.log("Zone template loaded")
+            
+        },
+        error: function(xhr, resp, text) {
+            console.log(text);
+        }
+    });
+
+    $.ajax({
+        url: '/static/screens/portal/dashboard/dashboard_page_template.html', // url where to submit the request
+        type : "GET", // type of action POST || GET
+        dataType : 'html', // data type
+        async: true,
+        success : function(data) {
+            dashboard_page_template = data
             console.log("Zone template loaded")
             
         },
@@ -78,17 +98,11 @@ $(document).ready(function()
     // $("#content_dashboard").load("/static/screens/portal/dashboard_include.html");
     $("#btn_dashboard").click(function(){
         loadDashboardContent();
-
     });
 
     function loadDashboardContent()
     {
-        $("#content_dashboard").html("");
-
-        var alerts_container =  `<div id="alerts_container"></div>`
-
-        $("#content_dashboard").append(alerts_container)
-        
+        $("#content_dashboard").html(dashboard_page_template);
         
         $.ajax({
             url: getHost() + '/service_hub/dashboard', // url where to submit the request
@@ -147,7 +161,7 @@ $(document).ready(function()
         modifiedTemplate = modifiedTemplate.replaceAll("#LOCATION#", city + " , " + country);
         
 
-        $("#content_dashboard").append(modifiedTemplate);
+        $("subcontent#dashboard").append(modifiedTemplate);
 
     }
     function addZoneToScreen(item, index)
@@ -183,7 +197,7 @@ $(document).ready(function()
             lastRunString = "N/A"
         }
 
-        if(dashboard_template != "")
+        if(zone_card_template != "")
         {
             
             // Set checkmark or x image depending on value
@@ -193,14 +207,14 @@ $(document).ready(function()
             enabledImageTag = `<img class="status_icon" src="/static/images/${enabledImage}.png" />`;
             isRunningImageTag = `<img class="status_icon" src="/static/images/${isRunningImage}.png" />`;
 
-            var data2 = dashboard_template
-            data2 = data2.replaceAll("#NAME#", name)
-            data2 = data2.replaceAll("#DESCRIPTION#", description)
-            data2 = data2.replaceAll("#ENABLED#", enabledImageTag)
-            data2 = data2.replaceAll("#NEXT_RUN#", nextRunString )
-            data2 = data2.replaceAll("#LAST_RUN#", lastRunString)
-            data2 = data2.replaceAll("#CURRENT_STATUS#", isRunningImageTag)
-            data2 = data2.replaceAll("#ID#", id);
+            var modifiedTemplate = zone_card_template
+            modifiedTemplate = modifiedTemplate.replaceAll("#NAME#", name)
+            modifiedTemplate = modifiedTemplate.replaceAll("#DESCRIPTION#", description)
+            modifiedTemplate = modifiedTemplate.replaceAll("#ENABLED#", enabledImageTag)
+            modifiedTemplate = modifiedTemplate.replaceAll("#NEXT_RUN#", nextRunString )
+            modifiedTemplate = modifiedTemplate.replaceAll("#LAST_RUN#", lastRunString)
+            modifiedTemplate = modifiedTemplate.replaceAll("#CURRENT_STATUS#", isRunningImageTag)
+            modifiedTemplate = modifiedTemplate.replaceAll("#ID#", id);
 
 
             // nextRunDate = Date.parse(next_run_start);
@@ -208,15 +222,15 @@ $(document).ready(function()
             
             if(is_running)
             {
-                data2 = data2.replaceAll("#STATUS#", "Stop");
-                data2 = data2.replaceAll("#STATUS_CLASS#", "Active");
+                modifiedTemplate = modifiedTemplate.replaceAll("#STATUS#", "Stop");
+                modifiedTemplate = modifiedTemplate.replaceAll("#STATUS_CLASS#", "Active");
             }
             else
             {
-                data2 = data2.replaceAll("#STATUS#", "Start");
-                data2 = data2.replaceAll("#STATUS_CLASS#", "Deactive");
+                modifiedTemplate = modifiedTemplate.replaceAll("#STATUS#", "Start");
+                modifiedTemplate = modifiedTemplate.replaceAll("#STATUS_CLASS#", "Deactive");
             }
-            $("#content_dashboard").append(data2);
+            $("subcontent#dashboard").append(modifiedTemplate);
         }
         else
         {
@@ -342,7 +356,7 @@ $(document).ready(function()
                 $(elementToUpdate).addClass("Active");
             },
             error: function(xhr, resp, text) {
-                displayAlert("danger", xhr.responseJSON.error);
+                displayAlertInContainerFromXHR(getAlertsContainer(), "danger", xhr);
             }
         });
     }
