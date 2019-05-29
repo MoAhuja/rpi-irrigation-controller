@@ -9,6 +9,7 @@ function getZoneData()
 {
     return allZones;
 }
+
 function loadZoneData(forceRefresh)
 {
     if(forceRefresh == true || allZones == "")
@@ -29,6 +30,8 @@ function loadZoneData(forceRefresh)
         });
     }
 }
+
+
 // Load the static create zone screen
 function loadEditZoneScreen(zone_id)
 {
@@ -144,13 +147,32 @@ $(document).ready(function(){
            
     // var scheduleCounter = 0;
     manage_zone_row_template = ""
-    manage_zone_page_template = ""
+    manage_zone_subcontent_template = ""
     manage_zone_schedule_template = ""
-    
+    zone_management_page_template = ""
     edit_zone_template = ""
     edit_schedule_template = ""
     
     // Prefetch content
+
+    function loadZoneManagementPageTemplate()
+    {
+        $("#content_manager").html(zone_management_page_template);
+    }
+
+    $.ajax({
+        url: '/static/screens/portal/zone_manager/zone_management_page_template.html', // url where to submit the request
+        type : "GET", // type of action POST || GET
+        dataType : 'html', // data type
+        async: true,
+        success : function(data) {
+            zone_management_page_template = data
+            
+        },
+        error: function(xhr, resp, text) {
+            console.log(text);
+        }
+    });
 
     $.ajax({
         url: '/static/screens/portal/zone_manager/create/create_zone_include.html', // url where to submit the request
@@ -211,12 +233,12 @@ $(document).ready(function(){
     });
 
     $.ajax({
-        url: '/static/screens/portal/zone_manager/manage/manage_zone_page_template.html', // url where to submit the request
+        url: '/static/screens/portal/zone_manager/manage/manage_zone_subcontent_template.html', // url where to submit the request
         type : "GET", // type of action POST || GET
         dataType : 'html', // data type
         async: true,
         success : function(data) {
-            manage_zone_page_template = data
+            manage_zone_subcontent_template = data
             console.log("Manage zone page template loaded")
             
         },
@@ -231,12 +253,17 @@ $(document).ready(function(){
         loadManageZoneScreen();
     });
 
+    function getAlertContainer()
+    {
+        return $("alerts#zone_management");
+    }
+
     // Overload to support displaying of alert notification after zones are loaded
     function loadManageZoneScreenWithAlert(alertType, alertContent)
     {
         console.log("Load manage zone screen with alert invoked")
         loadManageZoneScreen();
-        displayAlert(alertType, alertContent);
+        displayAlertInContainer(getAlertContainer(), alertType, alertContent);
 
     }
 
@@ -247,7 +274,7 @@ $(document).ready(function(){
         
         console.log("Load manage zone screen invoked")
         
-        $("#content_manager content").html(manage_zone_page_template);
+        $("#content_manager content subcontent").html(manage_zone_subcontent_template);
 
         
         loadZoneData();
@@ -262,6 +289,7 @@ $(document).ready(function(){
     }
 
     $("#btn_manager").click(function(){
+        loadZoneManagementPageTemplate();
         loadManageZoneScreen();
     });
 
