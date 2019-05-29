@@ -39,7 +39,9 @@ $(document).ready(function()
         async: true,
         success : function(data) {
             dashboard_page_template = data
-            console.log("Zone template loaded")
+            console.log("Page template loaded")
+            loadDashboardContent();
+
             
         },
         error: function(xhr, resp, text) {
@@ -93,9 +95,7 @@ $(document).ready(function()
     });
 
     // Default view
-    loadDashboardContent();
-
-    // $("#content_dashboard").load("/static/screens/portal/dashboard_include.html");
+    
     $("#btn_dashboard").click(function(){
         loadDashboardContent();
     });
