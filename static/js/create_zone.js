@@ -3,10 +3,18 @@ $(document).ready(function()
     // var scheduleCounter = 0;
     create_zone_template = ""
     
+    function getAlertContainer()
+    {
+        return $("alerts#zone_management");
+    }
 
+    function scrollToTopOfAlertContainer()
+    {
+        $("#content_manager content").animate({ scrollTop: 0 }, "fast");
+    }
 
     $.ajax({
-        url: '/static/screens/portal/zone_manager/create/create_zone_include.html', // url where to submit the request
+        url: '/static/screens/portal/zone_manager/create/create_zone_subcontent_template.html', // url where to submit the request
         type : "GET", // type of action POST || GET
         dataType : 'html', // data type
         async: true,
@@ -63,7 +71,7 @@ $(document).ready(function()
         var templateAsDOM = $($.parseHTML(modifiedTemplate));
         loadRelayDropdownIntoTemplate(templateAsDOM, null);
         
-        $("#content_manager content").html(templateAsDOM);
+        $("#content_manager content subcontent").html(templateAsDOM);
         
         // TODO: Disable the create zone link or something
         // TODO: Enable the mnage zone link
@@ -73,9 +81,6 @@ $(document).ready(function()
     }
 
     
-
-    
-
     // When the time is selected in the create zone screen, load the time picker module
     $('body').on('click', '.time', function() {
         $(this).timepicker({'step': 10, 'timeFormat': 'H:i'});
@@ -127,15 +132,15 @@ $(document).ready(function()
                 // you can see the result from the console
                 // tab of the developer tools
                 console.log(result);
-                displayAlert("success", "Zone added successfully")
-
-                // Hide the form data
+                displayAlertInContainer(getAlertContainer(), "success", "Zone added successfully")
+                scrollToTopOfAlertContainer(); 
                 $("#formData").hide()
             },
             error: function(xhr, resp, text) {
                 console.log(text);
 
-                displayAlert("danger", "ERROR: To do - parse error message 22")
+                displayAlertInContainerFromXHR(getAlertContainer(), "danger", xhr)
+                scrollToTopOfAlertContainer();
             }
         });
     });
