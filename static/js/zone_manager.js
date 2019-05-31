@@ -10,6 +10,8 @@ function getZoneData()
     return allZones;
 }
 
+
+
 function loadZoneData(forceRefresh)
 {
     if(forceRefresh == true || allZones == "")
@@ -154,6 +156,11 @@ $(document).ready(function(){
     edit_schedule_template = ""
     
     // Prefetch content
+
+    function scrollToTopOfAlertContainer()
+    {
+        $("#content_manager content").animate({ scrollTop: 0 }, "fast");
+    }
 
     function loadZoneManagementPageTemplate()
     {
@@ -382,15 +389,15 @@ $(document).ready(function(){
                 // you can see the result from the console
                 // tab of the developer tools
                 console.log(result);
-                displayAlert("success", "Zone edited successfully")
-
+                displayAlertInContainer(getAlertContainer(), "success", "Zone edited successfully")
+                scrollToTopOfAlertContainer();
                 // Hide the form data
                 $("#formData").hide()
             },
             error: function(xhr, resp, text) {
                 console.log(resp);
 
-                displayAlertFromXHR("danger", xhr)
+                displayAlertFromXHRInContainer(getAlertContainer(), "danger", xhr)
             }
         });
     });
@@ -443,12 +450,13 @@ $(document).ready(function(){
             async: true,
             contentType: 'application/json',
             success : function(data) {
-                loadManageZoneScreenWithAlert("success", "Zone deleted successfully. ");
+                loadManageZoneScreenWithAlert("success", "Zone deleted successfully.");
                 
             },
             error: function(xhr, resp, text) {
                 // alert("Unable to delete zone -> " + id)
-                displayAlert("danger", "Failed to delete zone")
+                displayAlertInContainerFromXHR(getAlertContainer(), "danger", xhr);
+                scrollToTopOfAlertContainer();
             }
         });
     }

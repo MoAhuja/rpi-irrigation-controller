@@ -268,14 +268,12 @@ $(document).ready(function()
             {
                 if(a1[0]!= 200)
                 {
-                    console.log("KS != 200 ");
-                    displayAlert(a1[1]);
+                    displayAlertInContainerFromXHR(getAlertContainer(), "danger", a1[1]);
                 }
 
                 if(a2[0] != 200)
                 {
-                    console.log("RD != 200");
-                    displayAlert(a2[1]);
+                    displayAlertInContainerFromXHR(getAlertContainer(), "danger", a2[1]);
                 }
             }
         });
@@ -303,7 +301,7 @@ $(document).ready(function()
                     deferredPromise.resolve(200, "")
                 },
                 error: function(xhr, resp, text) {
-                    deferredPromise.resolve(xhr.status, text)
+                    deferredPromise.resolve(xhr.status, xhr)
                 }
             });
         }
@@ -342,7 +340,7 @@ $(document).ready(function()
                     deferredPromise.resolve(200, "")
                 },
                 error: function(xhr, resp, text) {
-                    deferredPromise.resolve(xhr.status, text)
+                    deferredPromise.resolve(xhr.status, xhr)
                 }
             });
         }
@@ -365,15 +363,15 @@ $(document).ready(function()
         disableSaveButton();
 
         // Throw up an alert
-        displayAlert("success", "Settings saved successfully!");
+        displayAlertInContainer(getAlertContainer(), "success", "Settings saved successfully!");
 
     }
 
-    function saveFailed(data)
-    {
-        console.log("save failed!!");
-        displayAlert("danger", "Failed to save settings. Please try again.");
-    }
+    // function saveFailed(data)
+    // {
+    //     console.log("save failed!!");
+    //     displayAlertInContainer(getAlertContainer(), "danger", "Failed to save settings. Please try again.");
+    // }
 
     function enableSaveButton()
     {
@@ -608,7 +606,7 @@ $(document).ready(function()
             },
             error: function(xhr, resp, text) {
                 console.log(text);
-                displayAlert("danger", "Failed to delete user. Please try again.");
+                displayAlertInContainerFromXHR(getAlertContainer(), "danger", xhr);
             }
         });
     }
