@@ -1,0 +1,41 @@
+:root 
+{
+
+    /* Orange and Blue */
+    /* --color-legend-1: #0b3c5d;
+    --color-legend-2: #F5F5F5;
+    --color-legend-3: orange;
+    --color-legend-4: #1d2731;
+    --color-legend-5: white; */
+
+    /* --color-legend-1: #044471;
+    --color-legend-2: #9acbee;
+    --color-legend-3: #e33d00;
+    --color-legend-4: #FFb99E;
+    --color-legend-5: #FFb99E; */
+
+
+    /* Dark Green Theme */
+    --color-legend-1: #003b46;
+    --color-legend-2: #C4DfE6;
+    --color-legend-3: #07575b;
+    --color-legend-4: #66A5AD;
+    --color-legend-5: white;
+
+
+    --color-primary: var(--color-legend-1);
+    --color-primary-text1: var(--color-legend-2);
+    --color-primary-text2: var(--color-legend-5);
+    --color-primary-accent:var(--color-legend-3);
+
+    --color-secondary: var(--color-legend-2);
+    --color-secondary-text1: var(--color-legend-1);
+    --color-secondary-accent:  var(--color-legend-4);
+
+    --color-tertiary: var(--color-legend-3);
+    --color-tertiary-text1: var(--color-legend-5);
+    --color-tertiary-text2: var(--color-legend-5);
+    --color-tertiary-accent: var(--color-legend-1);
+
+}
+

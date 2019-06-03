@@ -2,11 +2,11 @@
 {
 
     /* Orange and Blue */
-    /* --color-legend-1: #0b3c5d;
+    --color-legend-1: #0b3c5d;
     --color-legend-2: #F5F5F5;
     --color-legend-3: orange;
     --color-legend-4: #1d2731;
-    --color-legend-5: white; */
+    --color-legend-5: white;
 
     /* --color-legend-1: #044471;
     --color-legend-2: #9acbee;
@@ -16,11 +16,7 @@
 
 
     /* Dark Green Theme */
-    --color-legend-1: #003b46;
-    --color-legend-2: #C4DfE6;
-    --color-legend-3: #07575b;
-    --color-legend-4: #66A5AD;
-    --color-legend-5: white;
+    
 
 
     --color-primary: var(--color-legend-1);
@@ -36,4 +32,6 @@
     --color-tertiary-text1: var(--color-legend-5);
     --color-tertiary-text2: var(--color-legend-5);
     --color-tertiary-accent: var(--color-legend-1);
+
 }
+

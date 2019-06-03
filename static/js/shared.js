@@ -6,6 +6,14 @@ $(document).ready(function()
     //Indicate the currently showing panel as the dashboard
     
 
+    $('body').on('click', '.colour-changer', function() {
+        var colour = $(this).data('path');
+        $('#theme-colour').attr('href', "/static/css/colours/" + colour + ".css");
+
+        // Reload page?
+    });
+
+
     // Hide/show content by default
     $(function(){
         // Show this pane to start
