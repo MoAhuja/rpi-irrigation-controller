@@ -11,6 +11,9 @@ $(document).ready(function()
     pin_relay_mapping_input_row_template = "";
     pin_relay_mapping_display_row_template = "";
     pin_relay_mapping_page_template = "";
+
+    app_update_history_page_template = ""
+    commit_history_row_template = ""
     kill_switch_modified = false
     rain_delay_modified = false
     
@@ -26,6 +29,35 @@ $(document).ready(function()
     {
         system_settings_template = data;
         console.log("System settings template loaded")
+    });
+
+    $.ajax({
+        url: '/static/screens/portal/settings/include_app_update_page_template.html', // url where to submit the request
+        type : "GET", // type of action POST || GET
+        dataType : 'html', // data type
+        async: true,
+        success : function(data) {
+            app_update_history_page_template = data
+            console.log("App update history page template")
+            
+        },
+        error: function(xhr, resp, text) {
+            console.log(text);
+        }
+    });
+
+    $.ajax({
+        url: '/static/screens/portal/settings/include_commit_history_row_template.html', // url where to submit the request
+        type : "GET", // type of action POST || GET
+        dataType : 'html', // data type
+        async: true,
+        success : function(data) {
+            commit_history_row_template = data
+            console.log("Commit history row template")
+        },
+        error: function(xhr, resp, text) {
+            console.log(text);
+        }
     });
 
     $.ajax({
@@ -150,6 +182,10 @@ $(document).ready(function()
     //Load pin relay mappings when side menu is selected
     $('body').on('click', '#nav_relay_mappings', function() {
         loadPinRelayMappings();
+    });
+
+    $('body').on('click', '#nav_updates', function() {
+        loadAppUpdateHistory();
     });
 
     // Add push bullet user
@@ -440,6 +476,74 @@ $(document).ready(function()
     }
 
 
+
+    function loadAppUpdateHistory()
+    {
+        loadAppUpdateHistoryWithAlert(null, null)
+    }
+
+    function loadAppUpdateHistoryWithAlert(alertType, alertContent)
+    {
+
+        // Load the subcontent
+        $("#content_settings content subcontent").html(app_update_history_page_template);
+
+        // Get the Git History
+        $.when($.ajax(getHost() + '/service_hub/updater/history'))
+        .done(function(commit_history)
+        {
+            console.log(commit_history);
+
+            commit_history.commits.forEach(
+                function(item, index)
+                {
+                    curTemplate = commit_history_row_template;
+                    curTemplate = curTemplate.replaceAll("#DATE#", serverTimeToCommonDateTime(item.DATE));
+                    curTemplate = curTemplate.replaceAll("#HASH#", item.HASH);
+                    curTemplate = curTemplate.replaceAll("#MESSAGE#", item.MESSAGE);
+                    $("commit_history").append(curTemplate);
+                });
+
+            if((alertType != null) & (alertContent != null))
+            {
+                var x = $("alerts#settings");
+
+                displayAlertInContainer(getAlertContainer(), alertType, alertContent);
+            }
+            
+        });
+
+
+        // Loop through it and append to the page
+
+
+
+        $.when($.ajax(getHost() + '/service_hub/relays'))
+        .done(function(relay_mappings)
+        {
+            
+            // Draw the screen
+            
+            // TODO: For each for the relay mappings to the drawPinRelayMappingsRows functon
+            relay_mappings.relays.forEach(
+                function(item, index)
+                {
+                    curTemplate = pin_relay_mapping_display_row_template;
+                    curTemplate = curTemplate.replaceAll("NUMBER_HOLDER", number_of_users++);
+                    curTemplate = curTemplate.replaceAll("#RELAY#", item.relay);
+                    curTemplate = curTemplate.replaceAll("#PIN#", item.pin);
+                    $("#pin_mappings_section").append(curTemplate);
+                });
+
+            if((alertType != null) & (alertContent != null))
+            {
+                var x = $("alerts#settings");
+
+                displayAlertInContainer(getAlertContainer(), alertType, alertContent);
+            }
+            
+        });
+    }
 
     function loadPinRelayMappings()
     {

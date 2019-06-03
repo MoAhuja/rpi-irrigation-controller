@@ -1,10 +1,14 @@
 from git import Repo
 from git import RemoteProgress
 from pydriller import RepositoryMining
+from service.utilities.conversion import Conversions
 import os
 
 class GitUpdater(RemoteProgress):
 
+    FIELD_DATE = "DATE"
+    FIELD_MESSAGE = "MESSAGE"
+    FIELD_HASH = "HASH"
 
     def __init__(self):
         self.repo_dir = os.getcwd()
@@ -14,29 +18,29 @@ class GitUpdater(RemoteProgress):
         
         print("Checking if repo is valid!!")
         assert not self.repo.bare
-    
+
+
     def getHistory(self):
-        print("Get History called")
-        self.fetch()
+        
+        historyList = []
 
-
-    def getCommits(self):
-        miner = RepositoryMining(self.repo_dir)
+        miner = RepositoryMining(self.repo_dir, reversed_order=True)
         for commit in miner.traverse_commits():
-            print("{} - {}".format(commit.committer_date,  commit.msg))
-    
-    # def fetch(self):
-    #     for remote in self.repo.remotes:
-    #         fetchResult = remote.fetch()
+            historyDict = {}
+            historyDict[GitUpdater.FIELD_DATE] = Conversions.convertRainDelayDateTimeToString(commit.committer_date)
+            historyDict[GitUpdater.FIELD_HASH] = commit.hash 
+            historyDict[GitUpdater.FIELD_MESSAGE] = commit.msg 
 
-    #         for info in fetchResult:
-    #             print(info.ref)
-    #             print(info.flags)
-    #             print(info.note)
+            # print("{} - {}".format(commit.committer_date,  commit.msg))
+            historyList.append(historyDict)
+        
+        
+        
+        return historyList
 
     def updateToLatest(self):
         print("Updating from development!!")
-        print(self.repo.remotes[0].pull())
+        return self.repo.remotes[0].pull()
 
 
         

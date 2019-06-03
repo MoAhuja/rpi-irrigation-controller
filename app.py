@@ -18,7 +18,10 @@ from service.rest_mappers.decision_history_rest_mapper import DecisionHistoryRes
 from service.rest_mappers.notification_users_rest_mapper import NotificationUsersRestMapper
 from service.rest_mappers.relay_rest_mapper import RelayRestMapper
 from service.rest_mappers.weather_rest_mapper import WeatherRestMapper
+from service.rest_mappers.app_updater_rest_mapper import AppUpdaterRestMapper
 import service.database.db_schema
+
+# from updater.git_updater import GitUpdater
 
 from service.zone.zone_controller import ZoneController
 
@@ -324,6 +327,22 @@ def get_weather_forecast(country, city):
 	
 	return resp
 
+@app.route('/service_hub/updater/history', methods=['GET'])
+def get_app_update_history():
+	mapper = AppUpdaterRestMapper()
+	resp = Response(mapper.getUpdateHistory(), mimetype='application/json')
+	resp.headers['Access-Control-Allow-Origin'] = '*'
+	
+	return resp
+
+@app.route('/service_hub/updater/update', methods=['GET'])
+def update_app():
+	mapper = AppUpdaterRestMapper()
+	resp = Response(mapper.updateApp(), mimetype='application/json')
+	resp.headers['Access-Control-Allow-Origin'] = '*'
+	
+	return resp
+
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
@@ -342,6 +361,12 @@ if __name__ == '__main__':
 	# Initialize the event publisher
 	# event_pub = EventPublisher()
 	engine = Engine()
+
+	# # Test the git updater
+	# updater =  GitUpdater()
+	# updater.getCommits()
+	# updater.updateToLatest()
+
 	
 	# zm = ZoneManager(event_pub)
 	app.run(debug=True, threaded=True, host='0.0.0.0')
