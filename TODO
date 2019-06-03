@@ -202,6 +202,7 @@ Future Considerations:
   ☐ What kind of API gateway to manage access control in front of Flask
     ☐ Only required when public (digest basic auth)
   ☐ Implement GCM and an Android app
+  Testing commit stuff.
   ✔ 
 
 
