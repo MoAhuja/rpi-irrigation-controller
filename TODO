@@ -150,7 +150,7 @@ Current App To Do:
       ☐ Fix push bullet users screent to display user rows as labels instead of input boxes
       ✔ Fix dashboard rows so they don't grow so fat when there are only 1 or 2 @done(19-05-01 08:52)
       ✔ Clean dashboard to display zone settings a bit more asthetically @done(19-05-07 18:21)
-      ☐ Fix rain elay display on UI to be more human readable
+      ✔ Fix rain delay display on UI to be more human readable @done(19-05-17 09:23)
       ☐ Fix dashboard.css and collapse allt he zone segments that relate tot he same class into one block
       ✔ Make edit button on dashboard actually go to the edit zone screen @started(19-05-07 17:45) @done(19-05-07 18:21) @lasted(36m17s)
       ✔ Checkmark and X for dashboard enabled/disabled indicators @done(19-05-03 09:14)
@@ -159,6 +159,36 @@ Current App To Do:
       ✔ Make dashboard colmn header use ellipses for overflow instead of growing vertically @done(19-05-09 22:17)
       ✔ Convert dashboard to grids instead of flexbox @started(19-05-08 08:35) @done(19-05-09 22:17) @lasted(1d13h42m19s)
       ☐ Convert decision history in dashboard to use grids
+      ☐ Limit dashboard history to 10
+      ☐ Create a new screen for full history (maybe zone manager)
+      ✔ Convert logs screen to a CSS Grid @started(19-05-17 09:23) @done(19-05-17 22:55) @lasted(13h32m36s)
+      ✔ Change times to 12 hour format @done(19-05-17 22:55)
+      ☐ Make hour format (12/24)  a setting option
+      ☐ Make all the date format settings options in the settings panel
+      ✔ Load a default screen when teh settings header is selected @done(19-05-23 08:54)
+      ✔ Add notification section to PIN/Relay screen @done(19-05-23 08:54)
+      ☐ Make text boxes in pin relay section smaller/more flexible so button isn't hidden
+      ✔ Change pin/relay mapping section to a grid view @done(19-05-22 09:12)
+      ✔ Update push bullet screen with nicer buttons @done(19-05-23 08:53)
+      ✔ Update push bullet screen with text/input styling for display/input @done(19-05-27 19:59)
+      ✔ Update push bullet screen with grid @done(19-05-27 20:00)
+      ✔ loadPushNotificationSettings uses dual WHEN. How to pass alertType/alertContent into the invocation after. @done(19-05-23 08:54)
+      ☐ Fix fonts to use variables and find a better font set
+      ☐ Add logging of important events (when zone is is activated from engine)
+      ☐ Add ability to purge logs older than X
+      ☐ Add ability to purge all logs
+      ☐ Add ability to refresh logs without reloading page
+      ✔ Update create zone page to CSS grid @done(19-05-27 19:57)
+      ✔ Fix notification on create zone screen and try to scroll up automatically @done(19-05-29 09:03)
+      ✔ Fix zone manager formatting. Looks weird... @done(19-05-27 19:57)
+      ☐ Add to settings screen: console and debug log level configurations
+      ✔ Deprecate the displayAlert in shared that doesn't use containers @done(19-05-31 08:44)
+      ☐ Add logic to prevent invalid schedule times (e.g. start after end)
+      ☐ Find a way to move gh-icons from css to images folder
+      ☐ Add Notifications for:
+        ☐ Saving settings (kill switch)
+        ☐ Successfully activating a zone (+ reload page, or change X to checkmark without reload)
+
       
 
 
@@ -167,9 +197,10 @@ Future Considerations:
   ☐ Wire up a rain sensor to RPI and feed that data into the system to force an automated rain delay.
   ☐ Wire up water flow meter to the main valve and calculate how much is being used per zone. (https://www.adafruit.com/product/828 || https://www.adafruit.com/product/833)
   ☐ Consider an OAuth implementation if this is going public [Need to research permissioning]
+    ☐ Can't do this with dialogflow. They only support basic digest auth.
   ☐ Integration to Google home (Turn on Zone by ID, by name. Check status of watering, get History)
   ☐ What kind of API gateway to manage access control in front of Flask
-    ☐ Only required when public
+    ☐ Only required when public (digest basic auth)
   ☐ Implement GCM and an Android app
   ✔ 
 
