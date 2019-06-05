@@ -34,6 +34,8 @@ class GitUpdater(RemoteProgress):
             # print("{} - {}".format(commit.committer_date,  commit.msg))
             historyList.append(historyDict)
         
+        self.getLocalGitHash()
+        
         
         
         return historyList
@@ -42,6 +44,8 @@ class GitUpdater(RemoteProgress):
         print("Updating from development!!")
         return self.repo.remotes[0].pull()
 
+    def getLocalGitHash(self):
+        return self.repo.head.object.hexsha
 
         
     

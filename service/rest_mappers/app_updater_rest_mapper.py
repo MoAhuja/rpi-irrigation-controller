@@ -10,8 +10,9 @@ class AppUpdaterRestMapper(BaseRestMapper):
     def getUpdateHistory(self):
         responseData = {}
         commitHistory = self.updater.getHistory()
-        responseData["commits"] = commitHistory
-
+        responseData["remote_commits"] = commitHistory
+        responseData["local_commit"] = self.updater.getLocalGitHash()
+        responseData["latest_commit"] = commitHistory[0]["HASH"]
         return self.returnSuccessfulResponse(responseData)
     
     def updateApp(self):

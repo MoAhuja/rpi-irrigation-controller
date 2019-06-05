@@ -188,6 +188,10 @@ $(document).ready(function()
         loadAppUpdateHistory();
     });
 
+    $('body').on('click', '#update_app', function() {
+        updateAppToLatestCommit();
+    });
+
     // Add push bullet user
     $('body').on('click', '#add_pb_user', function() {
         addPushBulletUserInputRow();
@@ -482,6 +486,15 @@ $(document).ready(function()
         loadAppUpdateHistoryWithAlert(null, null)
     }
 
+    function updateAppToLatestCommit()
+    {
+        $.when($.ajax(getHost() + '/service_hub/updater/update'))
+        .done(function(response)
+        {
+            loadAppUpdateHistoryWithAlert("success", "Application updated successfully!");
+        })
+    }
+
     function loadAppUpdateHistoryWithAlert(alertType, alertContent)
     {
 
@@ -494,51 +507,31 @@ $(document).ready(function()
         {
             console.log(commit_history);
 
-            commit_history.commits.forEach(
+            // disable the update button if we'er already at the latest commit
+            if(commit_history.local_commit == commit_history.latest_commit)
+            {
+                // $("#update_app").attr('disabled', true);
+            }
+
+            commit_history.remote_commits.forEach(
                 function(item, index)
                 {
                     curTemplate = commit_history_row_template;
+                
                     curTemplate = curTemplate.replaceAll("#DATE#", serverTimeToCommonDateTime(item.DATE));
-                    curTemplate = curTemplate.replaceAll("#HASH#", item.HASH);
+                    // curTemplate = curTemplate.replaceAll("#HASH#", item.HASH);
                     curTemplate = curTemplate.replaceAll("#MESSAGE#", item.MESSAGE);
+
+                    //TODO: Add a class to each one if it's the selected commmit
+                    curTemplate = curTemplate.replaceAll("#IS_CURRENT_HIDDEN#", (item.HASH == commit_history.local_commit)? "" : "hidden");
+                    curTemplate = curTemplate.replaceAll("#IS_LATEST_HIDDEN#", (item.HASH == commit_history.latest_commit)? "" : "hidden");
+
                     $("commit_history").append(curTemplate);
                 });
 
             if((alertType != null) & (alertContent != null))
             {
-                var x = $("alerts#settings");
-
-                displayAlertInContainer(getAlertContainer(), alertType, alertContent);
-            }
-            
-        });
-
-
-        // Loop through it and append to the page
-
-
-
-        $.when($.ajax(getHost() + '/service_hub/relays'))
-        .done(function(relay_mappings)
-        {
-            
-            // Draw the screen
-            
-            // TODO: For each for the relay mappings to the drawPinRelayMappingsRows functon
-            relay_mappings.relays.forEach(
-                function(item, index)
-                {
-                    curTemplate = pin_relay_mapping_display_row_template;
-                    curTemplate = curTemplate.replaceAll("NUMBER_HOLDER", number_of_users++);
-                    curTemplate = curTemplate.replaceAll("#RELAY#", item.relay);
-                    curTemplate = curTemplate.replaceAll("#PIN#", item.pin);
-                    $("#pin_mappings_section").append(curTemplate);
-                });
-
-            if((alertType != null) & (alertContent != null))
-            {
-                var x = $("alerts#settings");
-
+                
                 displayAlertInContainer(getAlertContainer(), alertType, alertContent);
             }
             

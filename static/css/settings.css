@@ -194,7 +194,12 @@ line {
 
 commit_history {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto auto 1fr;
+}
+
+commit_history > line {
+    grid-column: 1 / span 3;
+    border-bottom: 1px solid #F5F5F5;
 }
 
 commit.hash {
@@ -204,10 +209,46 @@ commit.hash {
 commit {
     margin-left: 5px;
     margin-right: 5px;
+    line-height: 2em;
 }
 
 commit.header {
     border-bottom: 2px solid black;
     font-size: 14pt;
     margin-bottom: 10px;
+}
+
+/* Create badge for the status icons */
+.version {
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 6px;
+    font-variant: small-caps;
+    line-height: 1.7em;
+    display: inline-block;
+    width: -webkit-fill-available;
+    margin-bottom: 0.3em;
+    text-align: center;
+    font-weight: bolder;
+    font-size: 1.1em;
+    
+}
+
+.current {
+    background-color: greenyellow;
+    border: 1px solid darkgreen;
+}
+
+.latest {
+    background-color: rgb(31, 84, 138);
+    border: 1px solid rgb(141, 141, 199);
+    color: white;
+}
+
+commit.hidden {
+    display: none;
+}
+
+versions {
+    width: 5em;
 }
