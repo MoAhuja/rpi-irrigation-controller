@@ -510,7 +510,7 @@ $(document).ready(function()
             // disable the update button if we'er already at the latest commit
             if(commit_history.local_commit == commit_history.latest_commit)
             {
-                // $("#update_app").attr('disabled', true);
+                $("#update_app").attr('disabled', true);
             }
 
             commit_history.remote_commits.forEach(
