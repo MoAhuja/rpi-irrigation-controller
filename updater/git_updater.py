@@ -12,29 +12,36 @@ class GitUpdater(RemoteProgress):
 
     def __init__(self):
         self.repo_dir = os.getcwd()
+        self.remote_repo_location = "git@bitbucket.org:MoAhuja/irrigationcontroller.git"
         # parentDir = os.path.abspath(os.path.join(currentDir, os.pardir))
 
-        self.repo = Repo(self.repo_dir)
+        self.local_repo = Repo(self.repo_dir)
         
         print("Checking if repo is valid!!")
-        assert not self.repo.bare
+        assert not self.local_repo.bare
 
 
     def getHistory(self):
         
         historyList = []
 
-        miner = RepositoryMining(self.repo_dir, reversed_order=True)
+        # Fetch the latest info
+        # print("Fetching from remote")
+        # self.local_repo.remotes[0].fetch()
+        # print("Fetch complete")    
+        # Building commit history
+
+        print("Building commit history")
+        miner = RepositoryMining(self.remote_repo_location, reversed_order=True)
         for commit in miner.traverse_commits():
             historyDict = {}
             historyDict[GitUpdater.FIELD_DATE] = Conversions.convertRainDelayDateTimeToString(commit.committer_date)
             historyDict[GitUpdater.FIELD_HASH] = commit.hash 
             historyDict[GitUpdater.FIELD_MESSAGE] = commit.msg 
-
-            # print("{} - {}".format(commit.committer_date,  commit.msg))
+           
             historyList.append(historyDict)
         
-        self.getLocalGitHash()
+        # self.getLocalGitHash()
         
         
         
@@ -42,10 +49,10 @@ class GitUpdater(RemoteProgress):
 
     def updateToLatest(self):
         print("Updating from development!!")
-        return self.repo.remotes[0].pull()
+        return self.local_repo.remotes[0].pull()
 
     def getLocalGitHash(self):
-        return self.repo.head.object.hexsha
+        return self.local_repo.head.object.hexsha
 
         
     
