@@ -500,6 +500,7 @@ $(document).ready(function()
 
         // Load the subcontent
         $("#content_settings content subcontent").html(app_update_history_page_template);
+        $("#update_app").hide();
 
         // Get the Git History
         $.when($.ajax(getHost() + '/service_hub/updater/history'))
@@ -508,9 +509,9 @@ $(document).ready(function()
             console.log(commit_history);
 
             // disable the update button if we'er already at the latest commit
-            if(commit_history.local_commit == commit_history.latest_commit)
+            if(commit_history.local_commit != commit_history.latest_commit)
             {
-                $("#update_app").attr('disabled', true);
+                $("#update_app").show();
             }
 
             commit_history.remote_commits.forEach(

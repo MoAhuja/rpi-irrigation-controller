@@ -216,6 +216,7 @@ commit.header {
     border-bottom: 2px solid black;
     font-size: 14pt;
     margin-bottom: 10px;
+    font-variant: small-caps;
 }
 
 /* Create badge for the status icons */
