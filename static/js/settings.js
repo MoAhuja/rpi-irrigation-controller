@@ -506,7 +506,8 @@ $(document).ready(function()
         $.when($.ajax(getHost() + '/service_hub/updater/history'))
         .done(function(commit_history)
         {
-            console.log(commit_history);
+            //Hide the loading message
+            $("#commit_loading_message").hide();
 
             // disable the update button if we'er already at the latest commit
             if(commit_history.local_commit != commit_history.latest_commit)

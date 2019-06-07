@@ -197,9 +197,19 @@ commit_history {
     grid-template-columns: auto auto 1fr;
 }
 
+commit_history > message {
+    grid-column: 1 / span 3;
+}
+
 commit_history > line {
     grid-column: 1 / span 3;
-    border-bottom: 1px solid #F5F5F5;
+    border-bottom: 0.1em solid #F5F5F5;
+}
+
+commit_history > line.thick {
+    grid-column: 1 / span 3;
+    border-bottom: 0.3em solid var(--color-secondary);
+    margin-bottom: 1em;
 }
 
 commit.hash {
@@ -210,12 +220,12 @@ commit {
     margin-left: 5px;
     margin-right: 5px;
     line-height: 2em;
+    font-size: 1em;
 }
 
 commit.header {
-    border-bottom: 2px solid black;
-    font-size: 14pt;
-    margin-bottom: 10px;
+    /* border-bottom: 2px solid black; */
+    font-size: 1.5em;
     font-variant: small-caps;
 }
 
