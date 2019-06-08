@@ -12,6 +12,11 @@ function getZoneData()
 
 
 
+function clearZoneData()
+{
+    allZones = "";
+
+}
 function loadZoneData(forceRefresh)
 {
     if(forceRefresh == true || allZones == "")
@@ -391,6 +396,7 @@ $(document).ready(function(){
                 console.log(result);
                 displayAlertInContainer(getAlertContainer(), "success", "Zone edited successfully")
                 scrollToTopOfAlertContainer();
+                clearZoneData();
                 // Hide the form data
                 $("#formData").hide()
             },

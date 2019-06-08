@@ -134,6 +134,7 @@ $(document).ready(function()
                 console.log(result);
                 displayAlertInContainer(getAlertContainer(), "success", "Zone added successfully")
                 scrollToTopOfAlertContainer(); 
+                clearZoneData();
                 $("#formData").hide()
             },
             error: function(xhr, resp, text) {
