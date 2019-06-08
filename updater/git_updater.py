@@ -15,7 +15,10 @@ class GitUpdater(RemoteProgress):
         self.remote_repo_location = "git@bitbucket.org:MoAhuja/irrigationcontroller.git"
         # parentDir = os.path.abspath(os.path.join(currentDir, os.pardir))
 
-        self.local_repo = Repo(self.repo_dir)
+        print("Current working directory is: " + self.repo_dir)
+
+        self.local_repo = Repo(self.repo_dir, search_parent_directories=True)
+        
         
         print("Checking if repo is valid!!")
         assert not self.local_repo.bare
