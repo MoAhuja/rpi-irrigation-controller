@@ -68,7 +68,7 @@ function loadEditZoneScreen(zone_id)
     loadRelayDropdownIntoTemplate(zone_dom, zone.id);
     
     // Loads the create zone content
-    $("#content_manager content").html(zone_dom);
+    $("#content_manager content subcontent").html(zone_dom);
 }
 
 function findZoneById(id)
@@ -182,7 +182,7 @@ $(document).ready(function(){
     });
 
     $.ajax({
-        url: '/static/screens/portal/zone_manager/create/create_zone_include.html', // url where to submit the request
+        url: '/static/screens/portal/zone_manager/create/create_zone_subcontent_template.html', // url where to submit the request
         type : "GET", // type of action POST || GET
         dataType : 'html', // data type
         async: true,
@@ -374,6 +374,7 @@ $(document).ready(function(){
      // Handles the submission of the create zone
      $('body').on('click', '#btnEditZone', function() {
 
+        
         alert("edit zone clicked")
         // e.preventDefault();
         var jsonData = $("#formData").serializeJSON();
@@ -437,6 +438,7 @@ $(document).ready(function(){
         id_string = ($(this).attr('id'))
         index_of_underscore = id_string.indexOf("_")
         id = id_string.substr(index_of_underscore+1)
+        loadZoneManagementPageTemplate();
         loadEditZoneScreen(id);
     });
 
