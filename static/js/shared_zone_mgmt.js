@@ -12,7 +12,7 @@ function loadRelayDropdownIntoTemplate(templateAsDOM, currentZone)
             }
 
             // find the select tag
-            selectElement = templateAsDOM.find('select');
+            selectElement = templateAsDOM.find('select#relay');
 
             // Loop through all the relays in the json response
             for(i = 0; i < relay_mappings.relays.length; i++)
