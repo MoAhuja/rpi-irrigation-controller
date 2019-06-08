@@ -37,6 +37,7 @@ function loadZoneData(forceRefresh)
 // Load the static create zone screen
 function loadEditZoneScreen(zone_id)
 {
+    scheduleCounter = 0;
     loadZoneData(false);
     zone = findZoneById(zone_id)
     console.log("Editing zone: " + zone)
@@ -374,8 +375,6 @@ $(document).ready(function(){
      // Handles the submission of the create zone
      $('body').on('click', '#btnEditZone', function() {
 
-        
-        alert("edit zone clicked")
         // e.preventDefault();
         var jsonData = $("#formData").serializeJSON();
         console.log(jsonData);
