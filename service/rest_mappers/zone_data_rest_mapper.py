@@ -54,7 +54,7 @@ class ZoneDataRestMapper(BaseRestMapper):
         shared.logger.debug(self, "Edit Zone Called for ZOne --> " + str(zone_id))
 
         # Validate all the data
-        newZone = self.validateDataAndCreateZoneObject(json_data, zone_id)
+        newZone = self.validateDataAndCreateZoneObject(json_data, zone_id, isEdit=True)
 
          # Get the relay ID if it's provided
         relay_id = self.getKeyOrSetAsNone(json_data, Zone.FIELD_RELAY)
@@ -93,7 +93,7 @@ class ZoneDataRestMapper(BaseRestMapper):
         else:
             self.raiseServerErrorException()
         
-    def validateDataAndCreateZoneObject(self, json_data, zone_id=None):
+    def validateDataAndCreateZoneObject(self, json_data, zone_id=None, isEdit=False):
 
         # TODO: Add business logic to validate that the schedules don't overlap
         # TODO: Add logic to check if start time < end time for all schedules
@@ -109,14 +109,16 @@ class ZoneDataRestMapper(BaseRestMapper):
         zone_name = self.getKeyOrThrowException(json_data, Zone.FIELD_ZONE_NAME, json_data)
         self.validateIsProvidedAndString(zone_name, Zone.FIELD_ZONE_NAME, json_data)
 
-        # Check if the name already exists
-        originalZone = self.zdm.getZoneByName(zone_name)
+        # Check if the name already exists (when creating new zone)
+        if(isEdit is False):
+            originalZone = self.zdm.getZoneByName(zone_name)
 
-        if originalZone is not None:
+            if originalZone is not None:
 
             # Check if the ID is the same as the ID collected (meaning we're trying to create a new object)
-            if zone_id != originalZone.id:
-                self.raiseBadRequestException(Zone.FIELD_ZONE_NAME, self.ERROR_TYPE_ZONE_NAME_MUST_BE_UNIQUE, json_data)
+                if zone_id != originalZone.id:
+                    self.raiseBadRequestException(Zone.FIELD_ZONE_NAME, self.ERROR_TYPE_ZONE_NAME_MUST_BE_UNIQUE, json_data)
+        
         
         
         # Check zone description
