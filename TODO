@@ -186,8 +186,34 @@ Current App To Do:
       ☐ Add logic to prevent invalid schedule times (e.g. start after end)
       ☐ Find a way to move gh-icons from css to images folder
       ☐ Add Notifications for:
-        ☐ Saving settings (kill switch)
+        ✔ Saving settings (kill switch) @done(19-06-07 09:17)
         ☐ Successfully activating a zone (+ reload page, or change X to checkmark without reload)
+      ☐ Convert all PX to EM or REM
+      ☐ Update github buttons to follow colour scheme @started(19-06-10 08:19)
+      ☐ Look at all the $.when() and add negative cases
+      ☐ Re-factor all CSS to create sections for events/services/etc
+      ☐ Update PyDriller to allow reading all committs (currently only reads main branch from bitbucket)
+      ☐ Add refresh button to app updater page
+      ☐ Add time to Next run
+      ✔ Reset schedule counter when create or edit zone is reloaded @done(19-06-08 16:35)
+      ☐ Creat a nice UI for rain delay setter
+      ✔ Fix bug where edit zone fails because of a duplicate zone name check @done(19-06-08 16:29)
+      ✔ Create an isDirty cache so the zones require refresh on changes @done(19-06-08 16:29)
+      ✔ Fix bug where schedule type contains relay data as well @done(19-06-08 16:29)
+      ☐ Add 5 second refresh for "IsRunning" refresh (toggle on/off) that updates the isRunning status on the dashboard
+      ☐ Find out how to reboot the python app from teh app itself
+      ☐ Add an engine status (update memory for last engine run and post to dashboard)
+      ☐ Add current time to dashboard
+      ☐ Make logging level configurable with drop down in settings
+      ☐ Add a trace level for logging for the really obscure stuff (release locks)
+      ☐ Update zone controller to put an info log when zone is started, currently only activates when done automatically, not manually
+      ☐ Implement a safety shutoff timer so that if the engine fails, there is a backup timer to turn the water off.
+        ☐ Engine check should reset the safety timer everytime it runs and when the zone deactivates, teh safety timer is destroyed
+        ☐ Safety timer length config should be configurable
+      ☐ Run the flask app using Gunicorn/Nginx and see if stability improves
+
+
+
 
       
 
