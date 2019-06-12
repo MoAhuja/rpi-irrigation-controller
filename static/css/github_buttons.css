@@ -14,28 +14,42 @@
     overflow: visible;
     display: inline-block;
     padding: 0.5em 1em;
-    border: 1px solid #d4d4d4;
+    /* border: 1px solid #d4d4d4; */
     margin: 0;
     text-decoration: none;
     text-align: center;
-    text-shadow: 1px 1px 0 #fff;
-    font:11px/normal sans-serif;
-    color: #333;
+    /* text-shadow: 1px 1px 0 #fff; */
+    font-variant-caps: all-small-caps;
+    /* font:11px/normal sans-serif; */
+    font-style: normal;
+    line-height: normal;
+    font-size:1.1em;
+    font-weight: 800;
+    font-family: 'Josefin', sans-serif;
+    color: var(--color-button-text);
     white-space: nowrap;
     cursor: pointer;
     outline: none;
-    background-color: #ececec;
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f4f4f4), to(#ececec));
-    background-image: -moz-linear-gradient(#f4f4f4, #ececec);
-    background-image: -ms-linear-gradient(#f4f4f4, #ececec);
-    background-image: -o-linear-gradient(#f4f4f4, #ececec);
-    background-image: linear-gradient(#f4f4f4, #ececec);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(var(--color-button-gradiant-top)), to(var(--color-button-gradiant-bottom)));
+    background-image: -moz-linear-gradient(var(--color-button-gradiant-top), var(--color-button-gradiant-bottom));
+    background-image: -ms-linear-gradient(var(--color-button-gradiant-top), var(--color-button-gradiant-bottom));
+    background-image: -o-linear-gradient(var(--color-button-gradiant-top), var(--color-button-gradiant-bottom));
+    background-image: linear-gradient(var(--color-button-gradiant-top), var(--color-button-gradiant-bottom));
     -moz-background-clip: padding; /* for Firefox 3.6 */
     background-clip: padding-box;
+    /* -webkit-border-radius: 0.5em;
+    -moz-border-radius: 0.5em; */
     border-radius: 0.2em;
     /* IE hacks */
     zoom: 1;
     *display: inline;
+
+    /* Colour styling */
+    background-color: #ececec;
+    /* background-color: var(--color-primary); */
+    color: var(--color-button-text);
+    
+
 }
 
 .ghbutton:hover,
@@ -84,7 +98,7 @@
     float:left;
     width: 12px;
     height: 12px;
-    margin: 0 0.75em 0 -0.25em;
+    margin: 0.2em 0.5em 0 -0.25em;
     background: url(gh-icons.png) 0 99px no-repeat;
 }
 
@@ -258,9 +272,9 @@
 /* Danger button
    ========================================================================== */
 
-.ghbutton.danger {
-    color: #900;
-}
+/* .ghbutton.danger {
+    border-color: #900;
+} */
 
 .ghbutton.danger:hover,
 .ghbutton.danger:focus,
