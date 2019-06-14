@@ -22,18 +22,20 @@ inputlevels button
 
 inputlevels button.logLevelFilter {
     background-color: var(--color-tertiary);
-    color: var(--color-tertiary-text1);
+    color: var(--color-tertiary-text);
+    font-size: 1em;
 }
 
-inputlevels button.logLevelFilter:hover {
-    color: var(--color-primary);
-    background-color: var(--color-primary-text1);
+inputlevels button.logLevelFilter:hover, 
+inputlevels button.logLevelFilter:active, 
+inputlevels button.logLevelFilter:focus, 
+inputlevels button.active{
+    color: var(--color-tertiary);
+    background-color: var(--color-primary);
+    font-size: 1.1em;
 }
 
-inputlevels button.active {
-    background: var(--color-primary);
-    background-color: var(--color-secondary-text1);
-}
+
 
 inputlevels button.left {
     border-top-left-radius: 15px;
@@ -71,10 +73,10 @@ pagenavigation {
 
 pagenavigation button {
     background-color: var(--color-tertiary);
-    color: var(--color-tertiary-text1);
+    color: var(--color-tertiary-text);
 }
 
 pagenavigation button:hover {
     color: var(--color-primary);
-    background-color: var(--color-primary-text1);
+    background-color: var(--color-primary-text);
 }
