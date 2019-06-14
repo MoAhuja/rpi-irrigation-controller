@@ -1,0 +1,40 @@
+:root 
+{
+
+    --color-legend-1: rgb(8, 45, 75);          
+    --color-legend-2: rgba(255, 159, 28, 1);
+    --color-legend-3: rgba(46, 196, 182, 1);
+    --color-legend-4: rgba(79, 82, 97, 0.986);
+    --color-legend-5: rgba(231, 29, 54, 1);
+    --color-legend-6: white;
+
+
+    /* Primary colour */
+    --color-primary: var(--color-legend-1);
+    --color-primary-text: var(--color-legend-6); /* Text colour */
+    --color-primary-accent: var(--color-legend-3); /* Focus/Hover colour */
+
+
+    --color-secondary: var(--color-legend-2);
+    --color-secondary-text: var(--color-legend-6);
+    --color-secondary-accent:  var(--color-legend-4);
+
+
+    --color-tertiary: var(--color-legend-3);
+    --color-tertiary-text: var(--color-legend-6);
+    --color-tertiary-accent: var(--color-legend-1);
+
+    --color-button-text:  var(--color-legend-1);
+    --color-button-gradiant-top: var(--color-legend-2);
+    --color-button-gradiant-bottom: var(--color-legend-4);
+    --color-button-hover-text: white;
+    --color-line-divider: #F5F5F5;
+
+    /* --color-button-text:  */
+    /* --color-button-gradiant-top:  */
+    /* --color-button-gradiant-bottom:  */
+     /* --color-button-hover-text:  */
+    /* --color-button-hover-gradiant-top:  */
+    /* --color-button-hover-gradiant-bottom:  */
+}
+
