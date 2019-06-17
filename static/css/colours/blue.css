@@ -28,7 +28,9 @@
     --color-button-gradiant-top: var(--color-legend-2);
     --color-button-gradiant-bottom: var(--color-legend-4);
     --color-button-hover-text: white;
-    --color-line-divider: #F5F5F5;
+    --color-line-divider-subtle: #F5F5F5;
+    --color-line-divider-bold: rgb(170, 168, 168);
+    /* --color-line-divider: var(--color-secondary); */
 
     /* --color-button-text:  */
     /* --color-button-gradiant-top:  */

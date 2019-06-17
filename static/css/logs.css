@@ -59,7 +59,7 @@ logs {
 
 .log_cell {
     padding: 3px;
-    border-bottom: 1px solid grey;
+    border-bottom: 1px solid var(--color-line-divider-bold);
     overflow-x: scroll;
     overflow-wrap: break-word;
 }

@@ -36,7 +36,7 @@ label.checkboxframe:after {
 
 /* When the checkbox is checked, change the background of the frame */
 .fancycheckbox:checked + label.checkboxframe {
-	background:var(--color-secondary);
+	background:var(--color-primary-accent);
 }
 
 /* When the checkbox is checked, move the ball from one side to the other */

@@ -17,7 +17,7 @@ manage_zones zone {
     border-top-right-radius: 1em;
     border-bottom-right-radius: 1em;
     border-bottom-left-radius: 1em;
-    border: 0.12em solid var(--color-line-divider);
+    border: 0.06em solid var(--color-line-divider-bold);
     overflow: hidden;
     
 }
@@ -25,7 +25,7 @@ manage_zones zone {
 manage_zones zone row {
     /* border-top: 1px solid rgba(32, 32, 34, 0.5); */
 
-    border-top: 0.04em solid var(--color-line-divider);
+    border-top: 0.04em solid var(--color-line-divider-subtle);
     display: flex;
     flex: 1;
     flex-direction: row;
@@ -43,11 +43,6 @@ row.header {
     background-color: var(--color-secondary);
     padding-right: 10px;
     border: 0px;
-    /* border-radius: 5px; */
-    /* border-top-left-radius: 5px; */
-    /* border-top-right-radius: 5px; */
-    /* border-bottom-right-radius: 5px; */
-    /* border-bottom-left-radius: 5px; */
 }
 
 manage_zones zone row name {
@@ -85,7 +80,7 @@ manage_zones zone row schedules {
 
 manage_zones zone row schedules schedule {
     margin: 0.75em;
-    border: 0.05em solid var(--color-secondary-accent);
+    border: 0.05em solid var(--color-line-divider-bold);
     border-radius: 1em;
     overflow: hidden;
     padding-top: 1em;
@@ -93,10 +88,7 @@ manage_zones zone row schedules schedule {
 }
 
 
-manage_zones zone row schedules schedule:not(:first-child) {
-    /* background-color: #900; */
-    border-top: 0.1em solid var(--color-primary);
-}
+
 
 manage_zones zone row schedules schedule srow {
     /* padding-left: 15px; */
@@ -109,7 +101,7 @@ manage_zones zone row schedules schedule srow {
 
 manage_zones zone row schedules schedule srow:not(:last-child)
 {
-    border-bottom: 0.04em solid var(--color-line-divider);
+    border-bottom: 0.04em solid var(--color-line-divider-subtle);
 }
 
 srow > name {
