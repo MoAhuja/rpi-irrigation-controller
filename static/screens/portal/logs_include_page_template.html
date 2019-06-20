@@ -1,18 +1,25 @@
 <!-- TOGGLE BUTTON FOR log level - Right Aligned -->
-<inputlevels>
+<!-- <inputlevels>
     <button id="loglevel_0" class="logLevelFilter left">ALL</button>
     <button id="loglevel_3" class="logLevelFilter">DEBUG</button>
     <button id="loglevel_2" class="logLevelFilter">INFO</button>
     <button id="loglevel_1" class="logLevelFilter right">ERROR</button>
-</inputlevels>
+</inputlevels> -->
+<div class="ghbutton-group">
+    
+    <a href="#" id="loglevel_0" class="ghbutton logLevelFilter">ALL</a>
+    <a href="#" id="loglevel_3" class="ghbutton logLevelFilter">DEBUG</a>
+    <a href="#" id="loglevel_2" class="ghbutton logLevelFilter">INFO</a>
+    <a href="#" id="loglevel_1" class="ghbutton logLevelFilter">ERROR</a>
+</div>
 
 <logs>
     
 </logs>
 
 <pageNavigation>
-    <button id="previous_page">Back</button>
+    <button class="ghbutton icon arrowleft" id="previous_page">Back</button>
     <input type="number" id="page_number" placeholder="1">
-    <button id="next_page">Next</button>
+    <button class="ghbutton icon arrowright" id="next_page">Next</button>
 </pageNavigation>
 
