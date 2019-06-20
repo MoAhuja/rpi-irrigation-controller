@@ -1,9 +1,11 @@
 :root 
 {
 
-    --color-legend-1: rgb(8, 45, 75);          
+    --color-legend-1: rgb(8, 45, 75); 
+    --color-legend-8: rgb(103, 146, 182);             
     --color-legend-2: rgba(255, 159, 28, 1);
     --color-legend-3: rgba(46, 196, 182, 1);
+    --color-legend-7: rgb(12, 116, 105);
     --color-legend-4: rgba(79, 82, 97, 0.986);
     --color-legend-5: rgba(231, 29, 54, 1);
     --color-legend-6: white;
@@ -24,17 +26,20 @@
     --color-tertiary-text: var(--color-legend-6);
     --color-tertiary-accent: var(--color-legend-1);
 
-    --color-button-text:  var(--color-legend-1);
-    --color-button-gradiant-top: var(--color-legend-2);
-    --color-button-gradiant-bottom: var(--color-legend-4);
-    --color-button-hover-text: white;
+    --color-button-text:  var(--color-primary-text);
+    --color-button-gradiant-top: var(--color-legend-3);
+    --color-button-gradiant-bottom: var(--color-legend-7);
+    --color-button-hover-text: var(--color-primary-accent);
+    --color-button-hover-gradiant-top: var(--color-legend-8);
+    --color-button-hover-gradiant-bottom: var(--color-legend-1);
+
     --color-line-divider-subtle: #F5F5F5;
     --color-line-divider-bold: rgb(170, 168, 168);
+
     /* --color-line-divider: var(--color-secondary); */
 
     /* --color-button-text:  */
-    /* --color-button-gradiant-top:  */
-    /* --color-button-gradiant-bottom:  */
+    
      /* --color-button-hover-text:  */
     /* --color-button-hover-gradiant-top:  */
     /* --color-button-hover-gradiant-bottom:  */

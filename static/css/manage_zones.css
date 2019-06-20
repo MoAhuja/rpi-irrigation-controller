@@ -43,6 +43,7 @@ row.header {
     background-color: var(--color-secondary);
     padding-right: 10px;
     border: 0px;
+    font-variant: small-caps;
 }
 
 manage_zones zone row name {

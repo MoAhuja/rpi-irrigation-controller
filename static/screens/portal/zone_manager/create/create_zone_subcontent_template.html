@@ -56,17 +56,20 @@
     <label for="temp_max">Maximum Temperature (c)</label>
     <input type="number" id="temp_max" name="temperature[max]" value="#TEMP_MAX#" placeholder="Enter the maximum environmental temperature for the sprinkler to activate">
 
-    <h2 class="section_header with_button">Schedules</h2>
-    <div class="buttonContainer">
-        <button  class="ghbutton icon calendar"  id="btnAddSchedule">Add Schedule</button>
-    </div>
+    <h2 class="section_header with_button">
+        Schedules
+        <div class="buttonContainer">
+            <button  class="ghbutton icon calendar"  id="btnAddSchedule">Add Schedule</button>
+        </div>
+    </h2>
+    
     <line/>
     
     <schedules id="schedule_area">
         
         
     </schedules>
-    <button class="btn btn-blue submit_button" id="btn#OPERATION_TYPE#Zone">Submit</button>
+    <button class="ghbutton big submit_button" id="btn#OPERATION_TYPE#Zone">Submit</button>
 
 </create_zone_grid>
 
@@ -91,7 +94,7 @@
 
     <li>
         
-        <button  class="btn btn-blue"  id="btnAddSchedule">Add Schedule</button>
+        <button  class="ghbutton big"  id="btnAddSchedule">Add Schedule</button>
     </li>
     
     <ul class="create_zone_fields" id="schedule_area">
@@ -99,7 +102,7 @@
     </ul>
     
     <li>
-        <button class="btn btn-blue" id="btn#OPERATION_TYPE#Zone">Submit</button>
+        <button class="ghbutton big" id="btn#OPERATION_TYPE#Zone">Submit</button>
     </li>
               
 </ul> -->

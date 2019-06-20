@@ -28,6 +28,21 @@ from service.zone.zone_controller import ZoneController
 global app
 app = Flask(__name__)
 
+def appInit():
+	global event_pub
+	global zm
+	#pi.main.initialize()
+
+	shared.logger.debug(None, "About to create database!!")
+	service.database.db_schema.createDatabase()
+
+
+	# Initialize the event publisher
+	# event_pub = EventPublisher()
+	engine = Engine()
+	
+appInit()
+
 @app.route('/')
 def index():
 	# return render_template('landing.html')
@@ -349,18 +364,10 @@ def handle_invalid_usage(error):
     response.status_code = error.status_code
     return response
 
+
+
 if __name__ == '__main__':
-	global event_pub
-	global zm
-	#pi.main.initialize()
-
-	shared.logger.debug(None, "About to create database!!")
-	service.database.db_schema.createDatabase()
-
-
-	# Initialize the event publisher
-	# event_pub = EventPublisher()
-	engine = Engine()
+	
 
 	# # Test the git updater
 	# updater =  GitUpdater()

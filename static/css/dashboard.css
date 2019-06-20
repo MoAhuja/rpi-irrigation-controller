@@ -4,7 +4,11 @@
     flex: 1;
     overflow-y: scroll;
     padding: 10px;
+    
 }
+
+/* Hides the scrollbar */
+#content_dashboard::-webkit-scrollbar { width: 0 !important }
 
 /* Enable display of all divs within the zonecard */
 zonecard div, settingscard div {
@@ -67,7 +71,7 @@ zonecard {
 /* Zone card title */
 .zone_card_title {
     border-right: 1px solid var(--color-secondary-accent);
-    color: var(--color-secondary-accent);
+    color: var(--color-secondary-text);
     background: var(--color-secondary);
     font-variant: small-caps;
     font-weight: bolder;

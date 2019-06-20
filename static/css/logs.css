@@ -5,47 +5,12 @@
     flex-direction: column
 }
 
-/* Settings for the input level picker */
-inputlevels
-{
-    display: flex;
-    flex-shrink:0;
-    flex-grow: 1;
-    flex-direction: row;
-    margin: 8px;
-}
-
-inputlevels button
-{
-    flex: 1;
-}
-
-inputlevels button.logLevelFilter {
-    background-color: var(--color-tertiary);
-    color: var(--color-tertiary-text);
-    font-size: 1em;
-}
-
-inputlevels button.logLevelFilter:hover, 
-inputlevels button.logLevelFilter:active, 
-inputlevels button.logLevelFilter:focus, 
-inputlevels button.active{
-    color: var(--color-tertiary);
-    background-color: var(--color-primary);
-    font-size: 1.1em;
-}
 
 
 
-inputlevels button.left {
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
-}
 
-inputlevels button.right {
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
-}
+
+
 
 /* Settings for the logs display */
 logs {
@@ -69,14 +34,4 @@ pagenavigation {
     width: 100%;
     text-align: center;
     margin: 7px;
-}
-
-pagenavigation button {
-    background-color: var(--color-tertiary);
-    color: var(--color-tertiary-text);
-}
-
-pagenavigation button:hover {
-    color: var(--color-primary);
-    background-color: var(--color-primary-text);
 }
