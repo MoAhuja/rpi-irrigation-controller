@@ -1,8 +1,9 @@
 :root 
 {
+
     /*
     1= Major
-    8 = Major gradiant
+    8 = Major gradiant (lighter)
 
     2 = Secondary
     3 = Tert
@@ -10,16 +11,19 @@
     4 = Tert accent
     6 = Text (white for most)
     */
-    --color-legend-1: rgb(8, 45, 75); 
-    --color-legend-8: rgb(103, 146, 182);  
 
-    --color-legend-2: rgba(255, 159, 28, 1);
+    --color-legend-1: rgb(8, 55, 56);
+    --color-legend-8:  rgb(55, 108, 110);
+    
+    --color-legend-2: rgb(253, 141, 49);
+    
+    --color-legend-3: rgba(149, 198, 35, 1);
+    --color-legend-7: rgb(104, 141, 16);
 
-    --color-legend-3: rgba(46, 196, 182, 1);
-    --color-legend-7: rgb(12, 116, 105);
+    --color-legend-4: rgb(42, 49, 49);
+    --color-legend-6: rgba(239, 231, 218, 1);
 
-    --color-legend-4: rgba(79, 82, 97, 0.986);
-    --color-legend-6: white;
+    
 
 
     /* Primary colour */
@@ -45,7 +49,5 @@
 
     --color-line-divider-subtle: #F5F5F5;
     --color-line-divider-bold: rgb(170, 168, 168);
-
-   
 }
 

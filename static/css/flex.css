@@ -1,6 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 @import url(https://fonts.googleapis.com/css?family=Josefin+Slab:100,300,400,600,700);
-@import url(colors.css);
+/* @import url(colors.css); */
 
 /* overcast */
 
@@ -24,10 +24,13 @@ body {
     flex-direction: column;
     border-right: 1px solid black;
     border-left: 1px solid black;
+    border-bottom: 1px solid black;
     width: 90vw;
     height: 100%;
     margin: auto;
     overflow: auto;
+    padding-bottom: 1em;
+    margin-bottom: 0.5em;
     /* justify-content: center */
 
 }

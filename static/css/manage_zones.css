@@ -113,7 +113,7 @@ srow > name {
 
 manage_zones zone row.subheader {
     background-color: var(--color-secondary-accent);
-    color: var(--color-secondary);
+    color: var(--color-secondary-text);
 }
     
 listitem.enabled {

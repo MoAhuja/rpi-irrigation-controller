@@ -11,7 +11,7 @@ $(document).ready(function()
     pin_relay_mapping_input_row_template = "";
     pin_relay_mapping_display_row_template = "";
     pin_relay_mapping_page_template = "";
-
+    display_settings_page_template = "";
     app_update_history_page_template = ""
     commit_history_row_template = ""
     kill_switch_modified = false
@@ -29,6 +29,13 @@ $(document).ready(function()
     {
         system_settings_template = data;
         console.log("System settings template loaded")
+    });
+
+    $.get('/static/screens/portal/settings/include_display_settings_page_template.html', 
+    function(data)
+    {
+        display_settings_page_template = data;
+        console.log("display settings page template loaded")
     });
 
     $.ajax({
@@ -188,6 +195,10 @@ $(document).ready(function()
         loadAppUpdateHistory();
     });
 
+    $('body').on('click', '#nav_display', function() {
+        loadDisplaySettings();
+    });
+
     $('body').on('click', '#update_app', function() {
         updateAppToLatestCommit();
     });
@@ -208,6 +219,12 @@ $(document).ready(function()
         addPinRelayInputRow();
     });
     
+    $('body').on('change', "#theme_selector", function() {
+        var selectedTheme = $(this).children("option:selected").val();
+        // alert("You have selected the theme - " + selectedTheme);
+        var urlOfThemeFile = "/static/css/colours/" + selectedTheme;
+        $("#theme-colour").attr('href', urlOfThemeFile)
+    })
     
 
     // Save notification settings button click
@@ -480,6 +497,20 @@ $(document).ready(function()
     }
 
 
+    function loadDisplaySettings()
+    {
+        loadDisplaySettingsWithAlert(null, null)
+    }
+    
+
+    function loadDisplaySettingsWithAlert(alertType, alertContent)
+    {
+        // Load the subcontent
+        $("#content_settings content subcontent").html(display_settings_page_template);
+        displayAlertInContainer(getAlertContainer(), alertType, alertContent);
+         
+    }
+    
 
     function loadAppUpdateHistory()
     {
