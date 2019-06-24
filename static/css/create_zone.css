@@ -1,4 +1,4 @@
-@import url(colors.css);
+/* @import url(colors.css); */
 
 #content_manager {
     display: flex;
@@ -193,19 +193,17 @@ hr {
   }
 
   create_zone_grid > .section_header {
-    grid-column: 1 /  span 2;
+    grid-column: 1 / span 2;
     margin-top: 15px;
     font-weight: bolder;
-    color: var(--color-primary);
+    color: var(--color-secondary-text);
+    background-color: var(--color-secondary);
     padding-left: 0px;
-    /* border-bottom-style: groove;
-    border-bottom-color: var(--color-secondary);
-    border-bottom-width: 5px; */
+    padding: 0.2em;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
   }
 
-  create_zone_grid > .with_button {
-      grid-column: 1 / span 1;
-  }
 
   create_zone_grid > .submit_button {
       grid-column: 1 / span 2;
@@ -272,6 +270,7 @@ hr {
 
   .buttonContainer {
       display: block;
+      float: right;
      
   }
 

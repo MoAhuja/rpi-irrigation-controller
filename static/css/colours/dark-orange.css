@@ -20,16 +20,16 @@
 
 
     --color-primary: var(--color-legend-1);
-    --color-primary-text1: var(--color-legend-2);
-    --color-primary-text2: var(--color-legend-5);
+    --color-primary-text: var(--color-legend-2);
+    --color-primary-accent: var(--color-legend-5);
     --color-primary-accent:var(--color-legend-3);
 
     --color-secondary: var(--color-legend-2);
-    --color-secondary-text1: var(--color-legend-1);
+    --color-secondary-text: var(--color-legend-1);
     --color-secondary-accent:  var(--color-legend-4);
 
     --color-tertiary: var(--color-legend-3);
-    --color-tertiary-text1: var(--color-legend-5);
+    --color-tertiary-text: var(--color-legend-5);
     --color-tertiary-text2: var(--color-legend-5);
     --color-tertiary-accent: var(--color-legend-1);
 

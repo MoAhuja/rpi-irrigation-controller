@@ -68,9 +68,10 @@ row h3 {
 
 row.title {
     background: var(--color-secondary);
+    color: var(--color-secondary-text);
     padding-left: 0px;
     font-weight: bolder;
-    text-transform: uppercase;
+    font-variant: small-caps;
 }
 
 row.subtitle {

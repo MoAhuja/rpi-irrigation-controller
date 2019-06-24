@@ -1,6 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 @import url(https://fonts.googleapis.com/css?family=Josefin+Slab:100,300,400,600,700);
-@import url(colors.css);
+/* @import url(colors.css); */
 
 /* overcast */
 
@@ -24,10 +24,13 @@ body {
     flex-direction: column;
     border-right: 1px solid black;
     border-left: 1px solid black;
+    border-bottom: 1px solid black;
     width: 90vw;
     height: 100%;
     margin: auto;
     overflow: auto;
+    padding-bottom: 1em;
+    margin-bottom: 0.5em;
     /* justify-content: center */
 
 }
@@ -59,7 +62,7 @@ header {
 
 header h1 {
     font-size: 3em;
-    color: var(--color-primary-text1);
+    color: var(--color-primary-text);
     text-align: center;
     line-height: 4em;
     
@@ -82,7 +85,7 @@ footer {
     border-radius: 5px;
     align-items: center; /* This determines the vertical positioning of the list items */
     justify-content:space-around; /* This determines the horizontal distribution of the list items */
-    color: var(--color-primary-text1);
+    color: var(--color-primary-text);
     padding-bottom: 5px;
     padding-top: 0px;
     margin: 0; /* remove the margin so it's snug against the other components */
@@ -101,14 +104,14 @@ footer {
     }
 
 .main_nav a, .main_nav a:visited {
-    color: var(--color-primary-text1);
+    color: var(--color-primary-text);
     font-size: .99em;
     text-decoration: none;
     
 }
 
 .main_nav a:hover, .main_nav a:focus {
-    color: var(--color-primary-text2);
+    color: var(--color-primary-accent);
     font-weight: bolder;
     text-decoration: none;
 }
@@ -123,7 +126,7 @@ content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: auto;
+    /* overflow: auto; */
 }
 
 content div {
@@ -154,19 +157,19 @@ content div.show {
 
 .content_nav a, .content_nav a:visited {
     text-decoration: none;
-    color: var(--color-primary-text1);
+    color: var(--color-primary-text);
     font-size: .99em;
 }
 
 .content_nav a:hover,  .content_nav a:active , .content_nav a:focus {
-    color: var(--color-primary-text2);
+    color: var(--color-primary-accent);
     font-weight: bolder;
     text-decoration: none;
 
 }
 
 .content_nav a:hover {
-    color: var(--color-primary-text2);
+    color: var(--color-primary-accent);
 }
 
 

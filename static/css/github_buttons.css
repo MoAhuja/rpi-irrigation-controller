@@ -13,7 +13,8 @@
     position: relative;
     overflow: visible;
     display: inline-block;
-    padding: 0.5em 1em;
+    border-color: var(--color-button-gradiant-bottom);
+    padding: 0.5rem 1.5rem;
     /* border: 1px solid #d4d4d4; */
     margin: 0;
     text-decoration: none;
@@ -23,7 +24,7 @@
     /* font:11px/normal sans-serif; */
     font-style: normal;
     line-height: normal;
-    font-size:1.1em;
+    font-size: 1.5rem;
     font-weight: 800;
     font-family: 'Josefin', sans-serif;
     color: var(--color-button-text);
@@ -56,28 +57,31 @@
 .ghbutton:focus,
 .ghbutton:active,
 .ghbutton.active {
-    border-color: #3072b3;
-    border-bottom-color: #2a65a0;
+    /* border-color: #3072b3; */
+    color: var(--color-button-text);
+    border-color: var(--color-button-hover-gradiant-top);
+    /* border-bottom-color: #2a65a0; */
     text-decoration: none;
-    text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
-    color: #fff;
-    background-color: #3c8dde;
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#599bdc), to(#3072b3));
-    background-image: -moz-linear-gradient(#599bdc, #3072b3);
-    background-image: -o-linear-gradient(#599bdc, #3072b3);
-    background-image: linear-gradient(#599bdc, #3072b3);
+    /* text-shadow: -1px -1px 0 rgba(0,0,0,0.3); */
+    /* color: var(--color-button-hover-text); */
+    background-color: var(--color-button-hover-text);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(var(--color-button-hover-gradiant-top)), to(var(--color-button-hover-gradiant-bottom)));
+    /* background-image: -moz-linear-gradient(#599bdc, #3072b3); */
+    /* background-image: -o-linear-gradient(#599bdc, #3072b3); */
+    /* background-image: linear-gradient(#599bdc, #3072b3); */
 }
 
 .ghbutton:active,
 .ghbutton.active {
-    border-color: #2a65a0;
+    /* border-color: #2a65a0;
     border-bottom-color: #3884cd;
     background-color: #3072b3;
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#3072b3), to(#599bdc));
     background-image: -moz-linear-gradient(#3072b3, #599bdc);
     background-image: -ms-linear-gradient(#3072b3, #599bdc);
     background-image: -o-linear-gradient(#3072b3, #599bdc);
-    background-image: linear-gradient(#3072b3, #599bdc);
+    background-image: linear-gradient(#3072b3, #599bdc); */
+    color: var(--color-button-hover-text);
 }
 
 /* overrides extra padding on button elements in Firefox */
@@ -112,27 +116,29 @@
 .ghbutton.arrowdown.icon:focus:before,
 .ghbutton.arrowdown.icon:active:before { background-position: -12px -12px; }
 
-.ghbutton.arrowleft.icon:before { background-position: 0 -24px; }
+.ghbutton.arrowleft.icon:before { background-position: -12px -24px; }
 .ghbutton.arrowleft.icon:hover:before,
 .ghbutton.arrowleft.icon:focus:before,
 .ghbutton.arrowleft.icon:active:before { background-position: -12px -24px; }
 
-.ghbutton.arrowright.icon:before { float:right; margin: 0 -0.25em 0 0.5em; background-position: 0 -36px; }
+.ghbutton.arrowright.icon:before { float:right; margin: 0 -0.25em 0 0.5em; background-position: -12px -36px; }
 .ghbutton.arrowright.icon:hover:before,
 .ghbutton.arrowright.icon:focus:before,
 .ghbutton.arrowright.icon:active:before { background-position: -12px -36px; }
 
-.ghbutton.approve.icon:before { background-position: 0 -48px; }
+/* .ghbutton.approve.icon:before { background-position: 0 -48px; } */
+.ghbutton.approve.icon:before { background-position: -12px -48px; } 
 .ghbutton.approve.icon:hover:before,
 .ghbutton.approve.icon:focus:before,
 .ghbutton.approve.icon:active:before { background-position: -12px -48px; }
 
-.ghbutton.add.icon:before { background-position: 0 -288px; }
+.ghbutton.add.icon:before { background-position: -12px -288px; }
 .ghbutton.add.icon:hover:before,
 .ghbutton.add.icon:focus:before,
 .ghbutton.add.icon:active:before { background-position: -12px -288px; }
 
-.ghbutton.remove.icon:before { background-position: 0 -60px; }
+.ghbutton.remove.icon:before { background-position: -12px -60px; }
+/* .ghbutton.remove.icon:before { background-position: 0 -60px; } */
 .ghbutton.remove.icon:hover:before,
 .ghbutton.remove.icon:focus:before,
 .ghbutton.remove.icon:active:before { background-position: -12px -60px; }
@@ -320,7 +326,8 @@
    ========================================================================== */
 
 .ghbutton.big {
-    font-size: 14px;
+    font-size: 2rem;
+    font-variant: all-small-caps;
 }
 
 .ghbutton.big.icon:before {
@@ -336,31 +343,35 @@
    ========================================================================== */
 
 .ghbutton-group {
-    display: inline-block;
     list-style: none;
     padding: 0;
     margin: 0;
     /* IE hacks */
     zoom: 1;
-    *display: inline;
+    display: flex;
+
+    margin: 1rem;
 }
 
 .ghbutton + .ghbutton,
 .ghbutton + .ghbutton-group,
 .ghbutton-group + .ghbutton,
 .ghbutton-group + .ghbutton-group {
-    margin-left: 15px;
+    margin-left: 0.3em;
 }
 
 .ghbutton-group li {
     float: left;
     padding: 0;
-    margin: 0;
+    
 }
 
 .ghbutton-group .ghbutton {
     float: left;
-    margin-left: -1px;
+    margin-left: -0px;
+    flex: 1;
+    border-right: 1px solid var(--color-button-text);
+
 }
 
 .ghbutton-group > .ghbutton:not(:first-child):not(:last-child),

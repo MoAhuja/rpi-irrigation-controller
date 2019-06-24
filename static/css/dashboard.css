@@ -3,8 +3,12 @@
     flex-direction: column;
     flex: 1;
     overflow-y: scroll;
-    padding: 10px;
+    padding: 1em;
+    
 }
+
+/* Hides the scrollbar */
+#content_dashboard::-webkit-scrollbar { width: 0 !important }
 
 /* Enable display of all divs within the zonecard */
 zonecard div, settingscard div {
@@ -22,9 +26,7 @@ settingscard {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    grid-template-areas:
-        "propt1 propt2 propt3"
-        "prop1 prop2 prop3"
+    
 }
 
 /* Setup the */
@@ -38,7 +40,7 @@ zonecard {
     /* display: flex; */
     /* flex: 0 1 auto; */
     margin-top: 10px;
-    /* overflow: scroll; */
+    overflow: hidden;
     min-height: max-content;
     
     
@@ -68,8 +70,8 @@ zonecard {
 
 /* Zone card title */
 .zone_card_title {
-    border-right: 1px solid grey;
-    color: var(--color-tertiary);
+    border-right: 1px solid var(--color-secondary-accent);
+    color: var(--color-secondary-text);
     background: var(--color-secondary);
     font-variant: small-caps;
     font-weight: bolder;
@@ -79,7 +81,7 @@ zonecard {
 
 .description {
     font-style: italic;
-    border-right: 1px solid grey;
+    border-right: 1px solid var(--color-line-divider-subtle);
     padding-left: 10px;
     padding-top:5px;
     text-overflow: ellipsis;
@@ -87,20 +89,25 @@ zonecard {
 }
 /* Zone property title */
 .prop_title {
-    border-right: 1px solid grey;
+    border-right: 1px solid var(--color-secondary-accent);
     text-align: center;
-    background-color: var(--color-tertiary); 
-    color: var(--color-tertiary-text1);
+    background-color: var(--color-secondary); 
+    color: var(--color-secondary-text);
     font-weight: 500;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    line-height: 2em;
     
+}
+
+.no_border_right {
+    border-right: none;
 }
 
 .prop_content {
     text-align: center;
-    border-right: 1px solid grey;
+    border-right: 1px solid var(--color-line-divider-subtle);
     padding-top: 5px;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -114,12 +121,11 @@ ul.action {
     margin: 0px;
     padding: 0px;
     flex-direction: column;
-    font-size: 1.0em;
+    font-size: 0.8em;
     justify-content: center;
     align-items: center;
     overflow: scroll;
     justify-content: center;
-    background: var(--color-tertiary);
 
     
 }
@@ -129,10 +135,18 @@ ul.action li {
     display: flex;
     flex:1;
     width: 100%;
-    border-bottom: 1px solid var(--color-tertiary-accent);
+    border-bottom: 1px solid var(--color-secondary);
     overflow: auto;
     justify-content: center;
+    background: var(--color-primary);
+    
 }
+
+
+/* ul.action li:hover {
+    background-color: var(--color-primary-accent);
+    
+} */
 
 ul.action li.bottom_item {
     border: none;
@@ -146,12 +160,20 @@ ul.action li a {
     justify-content: center; 
     height: auto;
     padding: 5px;
-    color: var(--color-tertiary-text1);
+    color: var(--color-primary-text);
+    text-transform: uppercase;
+
+    
 }
 
-ul.action li:hover {
-    background: var(--color-secondary-text1);
+ul.action li a:hover, ul.action li a:active {
+    color: var(--color-primary-accent);
 }
+
+/* ul.action li:hover {
+    background: var(--color-secondary-text); 
+    color: var(--color-primary-text-accent);
+} */
 
 
 
@@ -187,7 +209,7 @@ historycard {
 
 .decisionheader {
     background-color:var(--color-tertiary);
-    color: var(--color-tertiary-text1);
+    color: var(--color-tertiary-text);
     border-bottom: 1px solid var(--color-secondary); 
     /* flex-direction: row; */
     min-height: max-content;
@@ -203,124 +225,12 @@ historycard {
 
 
 
-/* Applies to all zone segments */
-zonesegment {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* Aligns items vertically in the segment */
-    justify-content: center; /* ALigns items horizontally in the segment */
-    padding: 10px;
-    overflow: scroll;
-}
-
-zonesegment.middle {
-    flex-direction: row;
-    /* background: var(--color-secondary);
-    color: var(--color-secondary-text1); */
-    border-left: 1px solid grey;
-    border-right: 1px solid grey;
-    align-items: stretch;
-    padding:0px;
-    justify-content: left;
-    flex: 2;
-}
-
-
-segment {
-    flex: 1;
-    flex-direction: column;
-    display: flex;
-    border-right: 1px solid grey;
-    
-}
-
-segment > * {
-    overflow: hidden;
-    text-align: center;
-}
-
-segmentbottom {
-    flex: 1;
-}
-
-segmenttop {
-    margin-bottom: 10px;
-    font-weight: 800;
-    background: var(--color-secondary);
-    color: var(--color-secondary-text1);
-    /* -webkit-border-radius: 5px; */
-    /* -moz-border-radius: 5px; */
-    /* border-radius: 5px; */
-    /* border: 1px solid var(--color-secondary); */
-    /* margin-left:2px;
-    margin-right: 2px; */
-
-}
-
-
-
-zonesegment.right {
-    padding: 0px;
-    display: flex;
-    flex-direction: column;
-    /* justify-content: flex-start; */
-}
-
-/* zonesegment.right ul.action {
-    display: flex;
-    flex: 1;
-    margin: 0px;
-    padding: 0px;
-    flex-direction: column;
-    font-size: 1.0em;
-    justify-content: center;
-    align-items: center;
-    overflow: scroll;
-    justify-content: center;
-    background: var(--color-tertiary);
-
-    
-    
-} */
-
-/* zonesegment ul.action li {
-    display: flex;
-    flex:1;
-    width: 100%;
-    border-bottom: 1px solid var(--color-tertiary-accent);
-    overflow: auto;
-    justify-content: center;
-} */
-/* zonesegment ul.action li.bottom_item {
-    border: none;
-} */
 
 
 
 
 
 
-
-zonesegment.left {
-    flex: 1 1 auto;
-    min-width: 10em;
-    max-width: 10em;
-    display: block;
-    background: var(--color-tertiary);
-    color: white;
-}
-
-zonesegment.left > zone_description {
-    display: inline-block;
-    font-size: 1em;
-    font-style: italic;
-}
-
-zonesegment.left > zone_title {
-    display: inline-block;
-    font-size: 1.5em;
-
-}
 
 
 

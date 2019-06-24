@@ -40,12 +40,7 @@ def appInit():
 	# Initialize the event publisher
 	# event_pub = EventPublisher()
 	engine = Engine()
-
-	# # Test the git updater
-	# updater =  GitUpdater()
-	# updater.getCommits()
-	# updater.updateToLatest()
-
+	
 appInit()
 
 @app.route('/')
@@ -370,7 +365,22 @@ def handle_invalid_usage(error):
     return response
 
 if __name__ == '__main__':
-	
+	global event_pub
+	global zm
+	#pi.main.initialize()
+
+	shared.logger.debug(None, "About to create database!!")
+	service.database.db_schema.createDatabase()
+
+
+	# Initialize the event publisher
+	# event_pub = EventPublisher()
+	engine = Engine()
+
+	# # Test the git updater
+	# updater =  GitUpdater()
+	# updater.getCommits()
+	# updater.updateToLatest()
 
 	
 	# zm = ZoneManager(event_pub)

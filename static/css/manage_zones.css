@@ -9,15 +9,23 @@ manage_zones div {
 }
 
 manage_zones zone {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 5px;
+    display: block;
+    /* padding: 5px; */
     margin: 10px;
+    
+     border-top-left-radius: 1em;
+    border-top-right-radius: 1em;
+    border-bottom-right-radius: 1em;
+    border-bottom-left-radius: 1em;
+    border: 0.06em solid var(--color-line-divider-bold);
+    overflow: hidden;
+    
 }
 
 manage_zones zone row {
-    border: 1px solid rgba(32, 32, 34, 0.5);
+    /* border-top: 1px solid rgba(32, 32, 34, 0.5); */
+
+    border-top: 0.04em solid var(--color-line-divider-subtle);
     display: flex;
     flex: 1;
     flex-direction: row;
@@ -26,17 +34,16 @@ manage_zones zone row {
     padding-left: 0px;
     padding-right: 0px;
     border-bottom: 0px;
-}
 
-manage_zones zone row:last-child
-{
-    border-bottom: 1px solid rgba(32, 32, 34, 0.5);
+   
 }
 
 row.header {
-    color: var(--color-primary); 
+    color: var(--color-secondary-text); 
     background-color: var(--color-secondary);
     padding-right: 10px;
+    border: 0px;
+    font-variant: small-caps;
 }
 
 manage_zones zone row name {
@@ -73,21 +80,20 @@ manage_zones zone row schedules {
 }
 
 manage_zones zone row schedules schedule {
-    margin-bottom: 5px;
+    margin: 0.75em;
+    border: 0.05em solid var(--color-line-divider-bold);
+    border-radius: 1em;
+    overflow: hidden;
+    padding-top: 1em;
     
 }
 
 
-manage_zones zone row schedules schedule:not(:first-child) {
-    /* background-color: #900; */
-    border-top: 1px solid grey;
-}
+
 
 manage_zones zone row schedules schedule srow {
     /* padding-left: 15px; */
     border: 0px;
-    margin-left: 15px;
-    margin-right: 15px;
     display: flex;
     flex: 1;
     flex-direction: row;
@@ -96,8 +102,18 @@ manage_zones zone row schedules schedule srow {
 
 manage_zones zone row schedules schedule srow:not(:last-child)
 {
-    border-bottom: 1px solid rgb(79, 107, 201, .2);
+    border-bottom: 0.04em solid var(--color-line-divider-subtle);
+}
 
+srow > name {
+    margin-left: 1em;
+    padding: 0.3em;
+
+}
+
+manage_zones zone row.subheader {
+    background-color: var(--color-secondary-accent);
+    color: var(--color-secondary-text);
 }
     
 listitem.enabled {
