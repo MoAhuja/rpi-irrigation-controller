@@ -505,8 +505,20 @@ $(document).ready(function()
 
     function loadDisplaySettingsWithAlert(alertType, alertContent)
     {
+        
         // Load the subcontent
         $("#content_settings content subcontent").html(display_settings_page_template);
+        
+
+        var currentThemeURL = $("#theme-colour").attr('href');
+
+        var lastslash = currentThemeURL.lastIndexOf("/");
+        currentTheme = currentThemeURL.substring(lastslash+1);
+
+        // Select the option matches the current theme
+        $("#theme_selector").val(currentTheme)
+        
+        
         displayAlertInContainer(getAlertContainer(), alertType, alertContent);
          
     }
