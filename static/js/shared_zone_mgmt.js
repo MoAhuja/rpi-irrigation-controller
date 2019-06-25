@@ -14,6 +14,8 @@ function loadRelayDropdownIntoTemplate(templateAsDOM, currentZone)
             // find the select tag
             selectElement = templateAsDOM.find('select#relay');
 
+            var selectedValue = "";
+
             // Loop through all the relays in the json response
             for(i = 0; i < relay_mappings.relays.length; i++)
             {
@@ -29,6 +31,7 @@ function loadRelayDropdownIntoTemplate(templateAsDOM, currentZone)
                 {
                     text = text + " [Mapped to this zone]"
                     selectedDD = true
+                    selectedValue = value;
                 }
                 else if(relay_data.zone == null)
                 {
@@ -44,6 +47,13 @@ function loadRelayDropdownIntoTemplate(templateAsDOM, currentZone)
                 selectElement.append($(option));
 
             }
+
+            console.log("Setting select relay to " + selectedValue);
+            
+            selectElement.val(selectedValue);
+            
+
+
         });
 
 }

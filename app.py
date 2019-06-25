@@ -29,6 +29,8 @@ global app
 app = Flask(__name__)
 
 def appInit():
+	
+
 	global event_pub
 	global zm
 	#pi.main.initialize()
@@ -39,7 +41,7 @@ def appInit():
 
 	# Initialize the event publisher
 	# event_pub = EventPublisher()
-	engine = Engine()
+	engine = Engine()	
 	
 appInit()
 
@@ -365,25 +367,7 @@ def handle_invalid_usage(error):
     return response
 
 if __name__ == '__main__':
-	global event_pub
-	global zm
-	#pi.main.initialize()
-
-	shared.logger.debug(None, "About to create database!!")
-	service.database.db_schema.createDatabase()
-
-
-	# Initialize the event publisher
-	# event_pub = EventPublisher()
-	engine = Engine()
-
-	# # Test the git updater
-	# updater =  GitUpdater()
-	# updater.getCommits()
-	# updater.updateToLatest()
-
 	
-	# zm = ZoneManager(event_pub)
 	app.run(debug=True, threaded=True, host='0.0.0.0')
 
 	
