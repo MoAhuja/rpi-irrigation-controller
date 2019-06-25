@@ -14,10 +14,11 @@ class DecisionDBO(BaseDBOperations):
 
         shared.logger.debug(self, "Inserting decision event")
         self.initialize()
-        current_db_sessions = self.session.object_session(decisionEvent)
-        current_db_sessions.add(decisionEvent)
-        current_db_sessions.flush()
-        current_db_sessions.commit()
+
+        # current_db_sessions = self.session.object_session(decisionEvent)
+        self.session.add(decisionEvent)
+        self.session.flush()
+        self.saveAndClose()
         
     
     def fetchLastRunRecord(self, zone_id):

@@ -33,7 +33,7 @@ class Zone(Base):
     pin_config = relationship("RpiPinMapper", uselist=False, back_populates="zone")
 
     # TODO: do we want to back-populate this? It's going to be a ton of data to load even if we don't need it
-    decision_history = relationship("DecisionHistory", uselist=True, back_populates="zone", cascade="delete, save-update")
+    #decision_history = relationship("DecisionHistory", uselist=True, back_populates="zone", cascade="delete, save-update")
     
     def toDictionary(self):
 
@@ -302,8 +302,9 @@ class DecisionHistory(Base):
     id = Column('id', Integer, primary_key=True)
 
     # Map this decision back to a zone
-    zone_id = Column('zone_id', Integer, ForeignKey('zone.id'), nullable=False)
-    zone=relationship("Zone", back_populates="decision_history") 
+    #zone_id = Column('zone_id', Integer, ForeignKey('zone.id'), nullable=False)
+    zone_id=Column('zone_id', Integer, nullable=False)
+    #zone=relationship("Zone", back_populates="decision_history") 
 
     event_time = Column('event_time', DateTime, nullable=False, default=datetime.utcnow)
     

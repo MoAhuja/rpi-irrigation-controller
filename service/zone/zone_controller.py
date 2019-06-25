@@ -114,7 +114,9 @@ class ZoneController():
         return result
 
     def insertDecisionHistoryEvent(self, decisionObject, zoneTiming, reasonCode, decisionCode, overrideEndTime=None):
-        decisionObject.zone = zoneTiming.zone
+        shared.logger.debug(self,"insertDecisionHistoryEvent called. Data ==")
+        
+        decisionObject.zone_id = zoneTiming.zone.id
         decisionObject.start_time = zoneTiming.start_time
 
         # Allows for the end time to be overriden in the scenario where the zone is stopped manually
@@ -126,6 +128,11 @@ class ZoneController():
         decisionObject.decision = decisionCode
         decisionObject.reason = reasonCode
 
+        shared.logger.debug(self,str(decisionObject.zone_id))
+        # shared.logger.debug(self,decisionObject.start_time)
+        # shared.logger.debug(self,decisionObject.end_time)
+        # shared.logger.debug(self,decisionObject.reasonCode)
+        # shared.logger.debug(self,decisionObject.decisionCode)
         self.decisionDBO.insertDecisionEvent(decisionObject)
 
     def deactivateAllZones(self, decisionHistoryReasonCode=None, overrideEndTime=None):
