@@ -126,7 +126,7 @@ class Engine():
 
                         # Create a decision event w/ current info
                         decisionEvent = None
-                        decisionEvent = DecisionHistory(zone=zonetiming.zone, event_time=currentDateTime, start_time=zonetiming.start_time, end_time=zonetiming.end_time)
+                        decisionEvent = DecisionHistory(zone_id=zonetiming.zone.id, event_time=currentDateTime, start_time=zonetiming.start_time, end_time=zonetiming.end_time)
                         # decisionEvent = DecisionHistory()
                         shared.logger.debug(self, "Current Time within boundries")
                         

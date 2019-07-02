@@ -191,7 +191,7 @@ historycard {
     min-height: max-content;
 
     display: grid;
-    grid-template-columns: auto auto auto auto auto;
+    grid-template-columns: auto auto auto auto auto auto;
     /* grid-template-rows: 1fr 1fr 1fr; */
     /* grid-template-areas:
         "title propt1 propt2 propt3 propt4 links"
@@ -204,24 +204,45 @@ historycard {
 .decisionitem {
     padding-left: 5px;
     border-bottom: 1px solid grey;
+    font-variant: small-caps;
+    vertical-align: middle;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+}
+
+.actionbuttoncell {
+    margin-top: 0.5em !important;
+    margin-bottom:0.5em !important;
+    border-bottom: 1px solid grey !important;
+    
 }
 
 
-.decisionheader {
+decisionheader {
     background-color:var(--color-tertiary);
     color: var(--color-tertiary-text);
     border-bottom: 1px solid var(--color-secondary); 
     /* flex-direction: row; */
     min-height: max-content;
     padding-left: 5px;
-    /* text-align: center; */
+    font-variant: all-small-caps;
+    font-size: 1.9rem;
 }
 
+history_details {
+    grid-column: 1 / span 6;
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    border-bottom: 1px solid var(--color-line-divider-bold);
+    color: var(--color-primary-text);
+    background-color: var(--color-primary)
+    
+}
 /* time, starttime, righttime {
     min-width: 7em;
     max-width: 7em;
 } */
-
 
 
 

@@ -38,7 +38,7 @@ createzone {
 }
 
 /* Input fields */
-.create_zone_fields > li > input,select,button {
+.create_zone_fields > li > input,select {
      flex: 0 1 auto;
      height: 35px;
      padding: 5px;  

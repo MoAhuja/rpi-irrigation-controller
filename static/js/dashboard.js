@@ -4,12 +4,15 @@ $(document).ready(function()
     var dashboard_page_template = "";
     var history_template = ""
     var history_header_template = ""
+    var history_id = 0;
     var current_history_selector = ""
     var dashboard_settings_template = ""
+
 
     // Initialize all history panels to hide
     console.log("hiding history panels")
     $("historycard").hide();
+    $("history_details").hide();
 
     function getAlertsContainer() {
 
@@ -246,7 +249,8 @@ $(document).ready(function()
         // Get the hidden ID field to find the ID of this zone
         var zone_id = $(this).parent().parent().parent().parent().find("#zone_id").text();
                      
-        
+        history_id = 0;
+
         // alert(zone_id);
         current_history_selector = "historycard#" + zone_id;
 
@@ -264,6 +268,7 @@ $(document).ready(function()
                 $(current_history_selector).html(history_header_template);
 
                 decisions.forEach(addDecisionToScreen)
+                $("history_details").hide();
                 $(current_history_selector).toggle(500);
             },
             error: function(xhr, resp, text) {
@@ -271,6 +276,16 @@ $(document).ready(function()
             }
         });
     });
+
+    $('body').on('click', '.decisiondetails', function() {
+        //Find the next decision details
+        var id = $(this).attr('id');
+        var indexOfUnderscope = id.lastIndexOf('_');
+        history_id = id.substring(indexOfUnderscope+1);
+
+        var decisiondetailsSelector = "#history_details_" + history_id;
+        $(decisiondetailsSelector).toggle(500);
+    })
 
     $('body').on('click', 'a#edit', function() {
         
@@ -336,6 +351,7 @@ $(document).ready(function()
         // $(selector).toggle(500);
     });
 
+    
     function activateZone(zone_id, duration, elementToUpdate)
     {
         // let zone_id_var = zone_id;
@@ -386,16 +402,76 @@ $(document).ready(function()
         });
     }
 
+    function getYesNoNA(item)
+    {
+        if((item == null) || (item == ""))
+        {
+            return "N/A"
+        }
+        else if(item == true)
+        {
+            return "Yes"
+        }
+        else
+        {
+            return "No"
+        }
+    }
+
+    function getValueOrNA(item)
+    {
+        if((item == null) || (item == ""))
+        {
+            return "N/A"
+        }
+        else
+        {
+            return item;
+        }
+        
+    }
+
     function addDecisionToScreen(item, index)
     {
+        history_id++;
         console.log(item);
         template = history_template;
+
+        template = template.replaceAll("#HISTORY_ID#", history_id);
         template = template.replaceAll("#DECISION#", SplitByUppercase(item["decision"]));
         template = template.replaceAll("#TIME#", serverTimeToCommonDateTime(item["event_time"].replaceAll("T", " ")));
         template = template.replaceAll("#START_TIME#", serverTimeToCommonDateTime(item["start_time"].replaceAll("T", " ")));
         template = template.replaceAll("#END_TIME#", serverTimeToCommonDateTime(item["end_time"].replaceAll("T", " ")));
         template = template.replaceAll("#REASON#", SplitByUppercase(item["reason"]));
+        template = template.replaceAll("#TEMP_ENABLED#", (getYesNoNA(item["temperature_enabled"])));
+        template = template.replaceAll("#RAIN_ENABLED#", (getYesNoNA(item["rain_enabled"])));
+        template = template.replaceAll("#CURRENT_TEMP#", getValueOrNA(item["current_temp"]));
+        template = template.replaceAll("#RAIN_SHORT_TERM#", getValueOrNA(item["current_3_hour_rain_forecast"]));
+        template = template.replaceAll("#TEMP_LOWER_LIMIT#", getValueOrNA(item["temperature_lower_limit"]));
+        template = template.replaceAll("#RAIN_SHORT_TERM_LIMIT#", getValueOrNA(item["rain_short_term_limit"]));
+        template = template.replaceAll("#TEMP_UPPER_LIMIT#", getValueOrNA(item["temperature_upper_limit"]))
+        template = template.replaceAll("#RAIN_DAILY_LIMIT#", getValueOrNA(item["rain_daily_limit"]));
+        template = template.replaceAll("#RAIN_DAILY#", getValueOrNA(item["current_daily_rain_forecast"]));
         
+        // now replace all the details
+
+        // <hdl>Short Term Rain:</hdl><hdc>#RAIN_SHORT_TERM#</hdc>
+        // <hdl>Temp Lower Limit:</hdl><hdc>#TEMP_LOWER_LIMIT#</hdc>
+        // <hdl>Short Term Rain Limit:</hdl><hdc>#RAIN_SHORT_TERM_LIMIT#</hdc>
+        // <hdl>Temp Upper Limit:</hdl><hdc>#TEMP_UPPER_LIMIT#</hdc>
+        // <hdl>&nbsp;</hdl><hdc>&nbsp;</hdc>
+        // <hdl>Daily Rain Limit:</hdl><hdc>#RAIN_DAILY_LIMIT#</hdc>
+        
+
+        // <!-- "current_temp": null,
+        //     "current_3_hour_rain_forecast": null,
+        //     "current_daily_rain_forecast": null,
+        //     "temperature_enabled": null,
+        //     "temperature_lower_limit": null,
+        //     "temperature_upper_limit": null,
+        //     "rain_enabled": null,
+        //     "rain_short_term_limit": null,
+        //     "rain_daily_limit": null, -->
 
         $(current_history_selector).append(template);
     };
