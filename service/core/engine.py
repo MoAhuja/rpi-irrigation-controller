@@ -32,10 +32,21 @@ class Engine():
         self.zone_controller = ZoneController()
         self.weather_centre = WeatherCenter()
         self.settingsManager = SettingsManager()
+        self.engineLastRan = None
         NotifierEngine()
-        self.heartbeat()
+        self.start();
         
+    def getEngineLastRan(self):
+        return self.engineLastRan;
 
+    def start(self):
+        self.heartbeat()
+    
+    def kill(self):
+
+        # Before shutting ourself down, let's stop any zones that are running
+        self.zone_controller.deactivateAllZones();
+    
     def checkAndDeactivateZones(self):
         # TODO: Determine if deactivation should be done if kill switch is on
         deactivateList = []
@@ -163,13 +174,21 @@ class Engine():
 
 
     def heartbeat(self):
-        shared.logger.debug(self, "\n\n========================= HEARTBEAT START =========================\n\n")
         
-        self.checkAndActivateZones()
-        self.checkAndDeactivateZones()
+        try:
+            shared.logger.debug(self, "\n\n========================= HEARTBEAT START =========================\n\n")
+            self.engineLastRan = datetime.now()
+            self.checkAndActivateZones()
+            self.checkAndDeactivateZones()
+        except:
+            shared.logger.error(self, "Heartbeat caught an exception")
+        finally:
+            # Run the heartbeat every minute
+            self.timer = threading.Timer(60, self.heartbeat).start()
+        
 
-        # Run the heartbeat every minute
-        threading.Timer(60, self.heartbeat).start()
+        
+        
 
     def meetsTemperatureConditions(self, temperature_bo, decisionEvent):
 
