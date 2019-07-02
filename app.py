@@ -26,14 +26,17 @@ import service.database.db_schema
 from service.zone.zone_controller import ZoneController
 
 global app
+global engine
+
 app = Flask(__name__)
 
 def appInit():
 	
 
-	global event_pub
-	global zm
+	#global event_pub
+	#global zm
 	#pi.main.initialize()
+	global engine
 
 	shared.logger.debug(None, "About to create database!!")
 	service.database.db_schema.createDatabase()
@@ -198,10 +201,23 @@ def service_get_zones():
 	resp.headers['Access-Control-Allow-Origin'] = '*'
 	return resp
 
+@app.route('/service_hub/engine/stop')
+def service_stop_engine():
+	global engine
+
+	engine.stop()
+	return Response()
+
+@app.route('/service_hub/engine/start')
+def service_start_engine():
+	global engine
+	engine.stop()
+	engine.start()
+	return Response()
 
 @app.route('/service_hub/dashboard', methods=['GET'])
 def service_get_dashboard():
-	resp = Response(DashboardRestMapper().getDashboard(), mimetype='application/json')
+	resp = Response(DashboardRestMapper().getDashboard(engine), mimetype='application/json')
 	resp.headers['Access-Control-Allow-Origin'] = '*'
 	return resp
 

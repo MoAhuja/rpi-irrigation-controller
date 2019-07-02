@@ -34,18 +34,27 @@ class Engine():
         self.settingsManager = SettingsManager()
         self.engineLastRan = None
         NotifierEngine()
-        self.start();
+        self.timer = None
+        self.start()
+    
         
     def getEngineLastRan(self):
         return self.engineLastRan;
 
     def start(self):
+
+        shared.logger.info(self, "Heartbeat has been started")
         self.heartbeat()
     
-    def kill(self):
-
+    def stop(self):
+        shared.logger.info(self, "Heartbeat has been stopped")
         # Before shutting ourself down, let's stop any zones that are running
         self.zone_controller.deactivateAllZones();
+        self.timer.cancel()
+
+
+
+
     
     def checkAndDeactivateZones(self):
         # TODO: Determine if deactivation should be done if kill switch is on
@@ -184,7 +193,9 @@ class Engine():
             shared.logger.error(self, "Heartbeat caught an exception")
         finally:
             # Run the heartbeat every minute
-            self.timer = threading.Timer(60, self.heartbeat).start()
+            shared.logger.debug(self, "Scheduling timer for 1 minute from now")
+            self.timer = threading.Timer(60, self.heartbeat)
+            self.timer.start()
         
 
         
