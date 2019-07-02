@@ -211,6 +211,25 @@ Current App To Do:
         ☐ Engine check should reset the safety timer everytime it runs and when the zone deactivates, teh safety timer is destroyed
         ☐ Safety timer length config should be configurable
       ☐ Run the flask app using Gunicorn/Nginx and see if stability improves
+      ☐ Fix: Edit zone removes history
+        ☐ Not sure how to fix with the ORM.
+        ☐ Maybe decision history needs to be it's own entity and not tied to the zone? (historic?)
+      ☐ Fix: No weather data in decision history? Click to get more details?
+      ✔ Fix: Zone relay is not pre-populating @done(19-06-24 20:15)
+      ☐ Create a decision history screen for decisions on everything
+        ☐ Add filter for zone, decision type, etc
+      
+      ☐ Add engine health check to dashboard
+      ☐ add toggle switch to restart engine/turn off engine
+      ☐ Change date on dashboard to datetime
+      ☐ fix: Crash when weather api times out
+      ☐ Create a service for is runing to enable dashboard to update itself frequently
+        ☐ Create drop down to select refresh frequency
+      ☐ Make the open weather map API key pull from teh settings file instead of hard code
+      ☐ Make the push bullet API key pull from the settings file instead of hard coded
+      ☐ Figure our algorithm for rain percentages
+      ☐ Add search function to logs
+      
 
 
 
