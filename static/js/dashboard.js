@@ -139,6 +139,8 @@ $(document).ready(function()
         var city = settings["city"];
         var country = settings ["country"];
         var rain_delay = settings["rain_delay"];
+        var engine_last_ran = settings["engine_last_ran"]
+        var system_time = settings["system_time"]
 
         if(rain_delay == null)
         {
@@ -162,6 +164,8 @@ $(document).ready(function()
         modifiedTemplate = modifiedTemplate.replaceAll("#KILL_SWITCH#", kill_switch);
         modifiedTemplate = modifiedTemplate.replaceAll("#RAIN_DELAY#", rain_delay);
         modifiedTemplate = modifiedTemplate.replaceAll("#LOCATION#", city + " , " + country);
+        modifiedTemplate = modifiedTemplate.replaceAll("#ENGINE_LAST_RAN#", serverTimeToCommonDateTime(engine_last_ran))
+        modifiedTemplate = modifiedTemplate.replaceAll("#SYSTEM_TIME#", serverTimeToCommonDateTime(system_time))
         
 
         $("subcontent#dashboard").append(modifiedTemplate);
@@ -180,7 +184,7 @@ $(document).ready(function()
         {
             start = item["next_run"]["start"]
             
-            startDateString = serverTimestamptoHumanReadableDate(start);
+            startDateString = serverTimeToCommonDateTime(start);
             
             nextRunString = startDateString;
         }
@@ -192,7 +196,7 @@ $(document).ready(function()
         if(item["last_run"] != null)
         {
             start = item["last_run"]["start"]
-            startDateString = serverTimestamptoHumanReadableDate(start);
+            startDateString = serverTimeToCommonDateTime(start);
             lastRunString = startDateString;
         }
         else

@@ -5,6 +5,7 @@ from service.zone.zone_data_manager import ZoneDataManager
 from service.database.decision_dbo import DecisionDBO
 from service.utilities.conversion import Conversions
 from service.core.scheduler import Scheduler
+from datetime import datetime
 
 
 class DashboardRestMapper(BaseRestMapper):
@@ -15,6 +16,8 @@ class DashboardRestMapper(BaseRestMapper):
     FIELD_LOCATION = "location"
     FIELD_CITY = "city"
     FIELD_COUNTRY = "country"
+    FIELD_ENGINE_LAST_RAN = "engine_last_ran"
+    FIELD_SYSTEM_TIME = "system_time"
 
     # Zone fields
     FIELD_ID = "id"
@@ -38,7 +41,7 @@ class DashboardRestMapper(BaseRestMapper):
 
 
     
-    def getDashboard(self):
+    def getDashboard(self, engineInstance):
 
         result = {}
 
@@ -53,7 +56,8 @@ class DashboardRestMapper(BaseRestMapper):
         # Current Location
         systemDict[DashboardRestMapper.FIELD_CITY] = self.settingsManager.getCity()
         systemDict[DashboardRestMapper.FIELD_COUNTRY] = self.settingsManager.getCountry()
-
+        systemDict[DashboardRestMapper.FIELD_ENGINE_LAST_RAN] = Conversions.convertRainDelayDateTimeToString(engineInstance.getEngineLastRan())
+        systemDict[DashboardRestMapper.FIELD_SYSTEM_TIME] = Conversions.convertRainDelayDateTimeToString(datetime.now())
         # Attach to overall result
         result[DashboardRestMapper.FIELD_SYSTEM] = systemDict
         # Predicted Forecast (Future)
