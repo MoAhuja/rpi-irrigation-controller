@@ -16,8 +16,11 @@ class WeatherSnapshot():
     
     def toDictionary(self):
         myDict = {}
-        myDict[WeatherSnapshot.FIELD_CURRENT_FORECAST] = self.currentForecast.toDictionary()
-        myDict[WeatherSnapshot.FIELD_DAILY_FORECAST] = self.twentyfourhourForecast.toDictionary()
+        if self.currentForecast is not None:
+            myDict[WeatherSnapshot.FIELD_CURRENT_FORECAST] = self.currentForecast.toDictionary()
+        
+        if self.twentyfourhourForecast is not None:
+            myDict[WeatherSnapshot.FIELD_DAILY_FORECAST] = self.twentyfourhourForecast.toDictionary()
         return myDict
         
 

@@ -242,12 +242,12 @@ class Engine():
 
             if self.getShortTermRain() > rain_rule.short_term_limit:
 
-                shared.logger.debug(self,"Short term rain rule FAILED. Will not activate.")
+                shared.logger.debug(self,"Short term rain rule FAILED. Will not activate. " + str(self.getShortTermRain()) + " > " + str(rain_rule.short_term_limit))
                 decisionEvent.reason = EnumReasonCodes.ShortTermRainExpected
                 decisionEvent.decision = EnumDecisionCodes.DontActivateZone
                 return False
             elif self.getDailyRain() > rain_rule.daily_limit:
-                shared.logger.debug(self,"Daily  rain rule FAILED. Will not activate.")
+                shared.logger.debug(self,"Daily rain rule FAILED. Will not activate " + str(self.getDailyRain()) + " > " + str(rain_rule.daily_limit))
                 decisionEvent.reason = EnumReasonCodes.LongTermRainExpected
                 decisionEvent.decision = EnumDecisionCodes.DontActivateZone
                 return False    
@@ -281,15 +281,25 @@ class Engine():
         return self.weather_snapshot
 
     def markWeatherProfileAsDirty(self):
+        shared.logger.debug(self, "Marking the weather forecast as old. Will fetch a new one on next heartbeat")
         self.weather_snapshot_is_old = True
 
     def getCurrentTemp(self):
+        if self.getWeatherSnapshot().currentForecast is None:
+            return 1000
+
         return self.getWeatherSnapshot().currentForecast.temperature.current
     
     def getShortTermRain(self):
+        if self.getWeatherSnapshot().currentForecast is None:
+            return 2000
+
         return self.getWeatherSnapshot().currentForecast.rainAmount
     
     def getDailyRain(self):
+        if self.getWeatherSnapshot().twentyfourhourForecast is None:
+            return 3000
+
         return self.getWeatherSnapshot().twentyfourhourForecast.rainAmount
     
     

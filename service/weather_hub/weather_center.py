@@ -19,16 +19,19 @@ class WeatherCenter():
         # Create the objec to hold the short and long term forecast
         snapshot = WeatherSnapshot()
         
+        try:
         # Create a forecaster object for the city and country provided
-        forecasterObj = self.owm.three_hours_forecast(city + "," + country).get_forecast()
+            forecasterObj = self.owm.three_hours_forecast(city + "," + country).get_forecast()
+            dailyForecast = self.getDailyForecast(forecasterObj)
+            snapshot.set24HourForecast(dailyForecast)
         
+            # Get the short term forecast
+            currentForecast = self.getCurrentForecast(forecasterObj)
+            snapshot.setCurrentForecast(currentForecast)
+        except:
+            shared.logger.debug(self, "Failed to get forecast. Going to create forecast with no rain.")
         # Get the daily forecast
-        dailyForecast = self.getDailyForecast(forecasterObj)
-        snapshot.set24HourForecast(dailyForecast)
         
-        # Get the short term forecast
-        currentForecast = self.getCurrentForecast(forecasterObj)
-        snapshot.setCurrentForecast(currentForecast)
 
         if(asJSON):
             # Convert the snapshot to a dictrionary
