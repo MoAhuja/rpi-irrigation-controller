@@ -33,13 +33,14 @@ class Engine():
         self.weather_centre = WeatherCenter()
         self.settingsManager = SettingsManager()
         self.engineLastRan = None
+        self.weather_snapshot = None
         NotifierEngine()
         self.timer = None
         self.start()
     
         
     def getEngineLastRan(self):
-        return self.engineLastRan;
+        return self.engineLastRan
 
     def start(self):
 
@@ -212,8 +213,12 @@ class Engine():
             decisionEvent.temperature_lower_limit = temperature_bo.lower_limit
             decisionEvent.temperature_upper_limit = temperature_bo.upper_limit
             decisionEvent.current_temperature = self.getCurrentTemp()
-                
-            if  self.getCurrentTemp() <temperature_bo.lower_limit:
+            
+            if self.getCurrentTemp() == 9999:
+                decisionEvent.reason = EnumReasonCodes.FailedToGetWeatherData
+                decisionEvent.decision = EnumDecisionCodes.DontActivateZone
+                return False
+            elif  self.getCurrentTemp() <temperature_bo.lower_limit:
                 shared.logger.debug(self,"Temperature is BELOW lower limit. Will not activate.")
                 decisionEvent.reason = EnumReasonCodes.TemperatureBelowMin
                 decisionEvent.decision = EnumDecisionCodes.DontActivateZone
@@ -240,7 +245,11 @@ class Engine():
             decisionEvent.current_3hour_forecast = self.getShortTermRain()
             decisionEvent.current_daily_forecast = self.getDailyRain()
 
-            if self.getShortTermRain() > rain_rule.short_term_limit:
+            if self.getShortTermRain() == 9999 or self.getDailyRain() == 9999:
+                decisionEvent.reason = EnumReasonCodes.FailedToGetWeatherData
+                decisionEvent.decision = EnumDecisionCodes.DontActivateZone
+                return False
+            elif self.getShortTermRain() > rain_rule.short_term_limit:
 
                 shared.logger.debug(self,"Short term rain rule FAILED. Will not activate. " + str(self.getShortTermRain()) + " > " + str(rain_rule.short_term_limit))
                 decisionEvent.reason = EnumReasonCodes.ShortTermRainExpected
@@ -261,6 +270,7 @@ class Engine():
         return True
 
     def getWeatherSnapshot(self):
+        shared.logger.debug(self, "getWeatherSnapshot invoked")
 
         if self.weather_snapshot is None or self.weather_snapshot_is_old:
             
@@ -268,16 +278,20 @@ class Engine():
             city = self.settingsManager.getCity()
             country = self.settingsManager.getCountry()
 
-            shared.logger.debug(self,"need to retrieve new weather snapshot")
+            shared.logger.debug(self,"Need to retrieve new weather snapshot")
             self.weather_snapshot = self.weather_centre.createWeatherSnapshot(city, country)
 
-            # shared.logger.debug(self,vars(self.weather_snapshot))
-            # We got a new snapshot, so reset the "old" flag
+            #If the weather snapshot is None, it means it failed to retrieve from the API,
+            # so we set the reset timers accordingly (30 if we hit the API, 1 if we didn't)
+            if self.weather_snapshot.currentForecast is not None:
+                # After 30 minutes, the weather snapshot will be invalidated.
+                threading.Timer(60*30, self.markWeatherProfileAsDirty).start()
+            else:
+                # After 1 minutes, the weather API will be retried
+                threading.Timer(60*1, self.markWeatherProfileAsDirty).start()
+
             self.weather_snapshot_is_old = False
-            
-            # After 10 minutes, the weather snapshot will be invalidated.
-            threading.Timer(60*10, self.markWeatherProfileAsDirty).start()
-        
+
         return self.weather_snapshot
 
     def markWeatherProfileAsDirty(self):
@@ -286,19 +300,19 @@ class Engine():
 
     def getCurrentTemp(self):
         if self.getWeatherSnapshot().currentForecast is None:
-            return 1000
+            return 9999
 
         return self.getWeatherSnapshot().currentForecast.temperature.current
     
     def getShortTermRain(self):
         if self.getWeatherSnapshot().currentForecast is None:
-            return 2000
+            return 9999
 
         return self.getWeatherSnapshot().currentForecast.rainAmount
     
     def getDailyRain(self):
         if self.getWeatherSnapshot().twentyfourhourForecast is None:
-            return 3000
+            return 9999
 
         return self.getWeatherSnapshot().twentyfourhourForecast.rainAmount
     

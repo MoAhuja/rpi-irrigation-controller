@@ -10,7 +10,8 @@ class WeatherCenter():
 
     def __init__(self):
         if self.owm is None:
-            self.owm = pyowm.OWM('46994039d0ee54eb08eeb19503e37a9c')
+            #self.owm = pyowm.OWM('46994039d0ee54eb08eeb19503e37a9c')
+            self.owm = pyowm.OWM('doesNotExist')
 
     # Create a weather snapshot of a 3 hour and daily forecast
     def createWeatherSnapshot(self, city, country, asJSON=False):
@@ -29,7 +30,7 @@ class WeatherCenter():
             currentForecast = self.getCurrentForecast(forecasterObj)
             snapshot.setCurrentForecast(currentForecast)
         except:
-            shared.logger.debug(self, "Failed to get forecast. Going to create forecast with no rain.")
+            shared.logger.error(self, "Failed to get forecast. Going to create forecast with no rain.")
         # Get the daily forecast
         
 
