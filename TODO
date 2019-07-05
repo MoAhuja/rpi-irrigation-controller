@@ -211,17 +211,19 @@ Current App To Do:
         ☐ Engine check should reset the safety timer everytime it runs and when the zone deactivates, teh safety timer is destroyed
         ☐ Safety timer length config should be configurable
       ☐ Run the flask app using Gunicorn/Nginx and see if stability improves
-      ☐ Fix: Edit zone removes history
-        ☐ Not sure how to fix with the ORM.
-        ☐ Maybe decision history needs to be it's own entity and not tied to the zone? (historic?)
-      ☐ Fix: No weather data in decision history? Click to get more details?
+      ✔ Fix: Edit zone removes history @done(19-07-02 08:39)
+        ✔ Not sure how to fix with the ORM. @done(19-07-02 08:39)
+        ✔ Maybe decision history needs to be it's own entity and not tied to the zone? (historic?) @done(19-07-02 08:39)
+      ✔ Fix: No weather data in decision history? Click to get more details? @done(19-07-02 08:38)
       ✔ Fix: Zone relay is not pre-populating @done(19-06-24 20:15)
       ☐ Create a decision history screen for decisions on everything
         ☐ Add filter for zone, decision type, etc
       
-      ☐ Add engine health check to dashboard
-      ☐ add toggle switch to restart engine/turn off engine
-      ☐ Change date on dashboard to datetime
+      ✔ Add engine health check to dashboard @started(19-07-02 08:41) @done(19-07-02 18:20) @lasted(9h39m57s)
+      ☐ add toggle switch to restart engine/turn off engine @started(19-07-02 08:41)
+      ✔ Add current time to dashboard @started(19-07-02 08:44) @done(19-07-02 18:21) @lasted(9h37m1s)
+
+      ✔ Change date on dashboard to datetime @done(19-07-02 18:21)
       ☐ fix: Crash when weather api times out
       ☐ Create a service for is runing to enable dashboard to update itself frequently
         ☐ Create drop down to select refresh frequency
@@ -229,7 +231,9 @@ Current App To Do:
       ☐ Make the push bullet API key pull from the settings file instead of hard coded
       ☐ Figure our algorithm for rain percentages
       ☐ Add search function to logs
-      
+      ☐ Edit zone fails on dashboard if zone manager isn't called first. It must not have the templates ready...
+      ☐ Add entry for WeatherFailed. Adding to decision history but it's not working @started(19-07-03 08:50)
+      ☐ Add support for API failed reason code
 
 
 
