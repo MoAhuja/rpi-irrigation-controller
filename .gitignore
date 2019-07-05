@@ -1,5 +1,7 @@
 __pycache__/
 *.py[cod]
+*.pyc
+__pycache__
 
 # C extensions
 *.so
@@ -47,3 +49,9 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+python3.6m
+pip-selfcheck.json
+settings.json
+.Python
+sqlalchemy_example.db
+lizard_ext
