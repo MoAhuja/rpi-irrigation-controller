@@ -278,6 +278,7 @@ class EnumReasonCodes(enum.Enum):
     TemperatureAboveMax = 4
     Manual = 5
     KillSwitch = 6
+    FailedToGetWeatherData = 7
 
 # TODO: Complete this event history object (consider rename to "ZoneDecisionHistory")
 class DecisionHistory(Base):

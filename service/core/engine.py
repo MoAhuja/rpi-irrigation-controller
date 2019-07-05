@@ -153,7 +153,9 @@ class Engine():
                         
                         #Check conditions
                         tempRuleMet = self.meetsTemperatureConditions(zonetiming.zone.temperature_rule, decisionEvent)
-                        rainRuleMet = self.meetsRainConditions(zonetiming.zone.rain_rule, decisionEvent)
+                        
+                        if(decisionEvent.reason is None or decisionEvent.reason != EnumReasonCodes.FailedToGetWeatherData):
+                            rainRuleMet = self.meetsRainConditions(zonetiming.zone.rain_rule, decisionEvent)
                         
                         activateZone = tempRuleMet * rainRuleMet
                         
@@ -162,6 +164,7 @@ class Engine():
                             self.zone_controller.activateZone(zonetiming, decisionEvent, EnumReasonCodes.AllConditionsPassed)
                         else:
 
+                            shared.logger.debug(self, "Going to log decision event")
                             #Log an event, if one is available to be logged.
                             self.decisionHistoryDBO.insertDecisionEvent(decisionEvent)
                             self.decisionHistoryDBO.saveAndClose()
@@ -192,6 +195,8 @@ class Engine():
             self.checkAndDeactivateZones()
         except:
             shared.logger.error(self, "Heartbeat caught an exception")
+            raise #Comment this out for prod
+            
         finally:
             # Run the heartbeat every minute
             shared.logger.debug(self, "Scheduling timer for 1 minute from now")
@@ -215,8 +220,13 @@ class Engine():
             decisionEvent.current_temperature = self.getCurrentTemp()
             
             if self.getCurrentTemp() == 9999:
+                shared.logger.debug(self,"Temperature is 9999. Will not activate due to API failure.")
+                
                 decisionEvent.reason = EnumReasonCodes.FailedToGetWeatherData
+                shared.logger.debug(self,"Set reason code as failed to get weather data")
+                
                 decisionEvent.decision = EnumDecisionCodes.DontActivateZone
+                shared.logger.debug(self,"Set decision as do not activate")
                 return False
             elif  self.getCurrentTemp() <temperature_bo.lower_limit:
                 shared.logger.debug(self,"Temperature is BELOW lower limit. Will not activate.")
