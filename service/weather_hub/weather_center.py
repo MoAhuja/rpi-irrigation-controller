@@ -10,9 +10,8 @@ class WeatherCenter():
 
     def __init__(self):
         if self.owm is None:
-            #self.owm = pyowm.OWM('46994039d0ee54eb08eeb19503e37a9c')
-            self.owm = pyowm.OWM('doesNotExist')
-
+            self.owm = pyowm.OWM('46994039d0ee54eb08eeb19503e37a9c')
+            
     # Create a weather snapshot of a 3 hour and daily forecast
     def createWeatherSnapshot(self, city, country, asJSON=False):
 
