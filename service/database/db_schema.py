@@ -332,8 +332,9 @@ class DecisionHistory(Base):
     def toDictionary(self):
         out={}
 
+        
         out[self.FIELD_ZONE_ID] = self.zone_id
-        out[self.FIELD_TIME] = Conversions.convertRainDelayDateTimeToString(self.event_time)
+        out[self.FIELD_TIME] = Conversions.convertDateTimeToString(Conversions.utc_to_local(self.event_time))
         out[self.FIELD_CURRENT_TEMP] = self.current_temperature
         out[self.FIELD_CURRENT_3HOUR_FC] = self.current_3hour_forecast #3 hour rain forecast
         out[self.FIELD_CURRENT_DAILY_FC] = self.current_daily_forecast #daily rain forecast
@@ -343,8 +344,8 @@ class DecisionHistory(Base):
         out[self.FIELD_RAIN_ENABLED] = self.rain_enabled
         out[self.FIELD_RAIN_SHORT_TERM_LIMIT] = self.rain_short_term_limit
         out[self.FIELD_RAIN_DAILY_LIMIT] = self.rain_daily_limit
-        out[self.FIELD_START_TIME] = Conversions.convertRainDelayDateTimeToString(self.start_time)
-        out[self.FIELD_END_TIME] = Conversions.convertRainDelayDateTimeToString(self.end_time)
+        out[self.FIELD_START_TIME] = Conversions.convertDateTimeToString(self.start_time)
+        out[self.FIELD_END_TIME] = Conversions.convertDateTimeToString(self.end_time)
         out[self.FIELD_DECISION] = self.decision.name
         out[self.FIELD_REASON] = self.reason.name
 
@@ -421,7 +422,7 @@ class Logs(Base):
     def toDictionary(self):
 
         logDict = {}
-        logDict[Logs.FIELD_TIMESTAMP] = Conversions.convertRainDelayDateTimeToString(self.datetime)
+        logDict[Logs.FIELD_TIMESTAMP] = Conversions.convertDateTimeToString(self.datetime)
         logDict[Logs.FIELD_LEVEL] = self.level.value
         logDict[Logs.FIELD_COMPONENT] = self.component
         logDict[Logs.FIELD_MESSAGE] = self.message

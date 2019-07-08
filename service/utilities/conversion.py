@@ -1,4 +1,4 @@
-from datetime import datetime, time
+from datetime import datetime, time, timezone
 from time import gmtime, strftime
 # from service.utilities.logger import Logger
 
@@ -10,6 +10,10 @@ class Conversions():
         self.humanReadableDatePattern = ""
     
     @staticmethod
+    def utc_to_local(utc_dt):
+        return utc_dt.replace(tzinfo=timezone.utc).astimezone(tz=None)
+
+    @staticmethod
     def convertDBTimeToHumanReadableTime(time_object):
         return time_object.strftime("%H:%M")
     
@@ -18,7 +22,7 @@ class Conversions():
         return datetime.strptime(stringTime, '%H:%M').time()
     
     @staticmethod
-    def convertRainDelayDateTimeToString(datetime):
+    def convertDateTimeToString(datetime):
         return datetime.strftime(Conversions.rainDelayFormat)
     
     @staticmethod

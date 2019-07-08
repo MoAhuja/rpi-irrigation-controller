@@ -56,8 +56,8 @@ class DashboardRestMapper(BaseRestMapper):
         # Current Location
         systemDict[DashboardRestMapper.FIELD_CITY] = self.settingsManager.getCity()
         systemDict[DashboardRestMapper.FIELD_COUNTRY] = self.settingsManager.getCountry()
-        systemDict[DashboardRestMapper.FIELD_ENGINE_LAST_RAN] = Conversions.convertRainDelayDateTimeToString(engineInstance.getEngineLastRan())
-        systemDict[DashboardRestMapper.FIELD_SYSTEM_TIME] = Conversions.convertRainDelayDateTimeToString(datetime.now())
+        systemDict[DashboardRestMapper.FIELD_ENGINE_LAST_RAN] = Conversions.convertDateTimeToString(engineInstance.getEngineLastRan())
+        systemDict[DashboardRestMapper.FIELD_SYSTEM_TIME] = Conversions.convertDateTimeToString(datetime.now())
         # Attach to overall result
         result[DashboardRestMapper.FIELD_SYSTEM] = systemDict
         # Predicted Forecast (Future)
@@ -78,16 +78,16 @@ class DashboardRestMapper(BaseRestMapper):
             lastRunDecisionHistoryRecord = self.decisionDBO.fetchLastRunRecord(zone.id)
             lastRunDict = {}
             if lastRunDecisionHistoryRecord is not None:
-                lastRunDict[DashboardRestMapper.FIELD_START] = Conversions.convertRainDelayDateTimeToString(lastRunDecisionHistoryRecord.start_time)
-                lastRunDict[DashboardRestMapper.FIELD_END] = Conversions.convertRainDelayDateTimeToString(lastRunDecisionHistoryRecord.end_time)
+                lastRunDict[DashboardRestMapper.FIELD_START] = Conversions.convertDateTimeToString(lastRunDecisionHistoryRecord.start_time)
+                lastRunDict[DashboardRestMapper.FIELD_END] = Conversions.convertDateTimeToString(lastRunDecisionHistoryRecord.end_time)
                 zoneDict[DashboardRestMapper.FIELD_LAST_RUN] = lastRunDict
             
             # Query the schedule table for the next run
             start_time, end_time = self.scheduler.getNextRunStartAndEndForZone(zone.id)
             nextRunDict = {}
             if start_time is not None and end_time is not None:
-                nextRunDict[DashboardRestMapper.FIELD_START] = Conversions.convertRainDelayDateTimeToString(start_time)
-                nextRunDict[DashboardRestMapper.FIELD_END] = Conversions.convertRainDelayDateTimeToString(end_time)
+                nextRunDict[DashboardRestMapper.FIELD_START] = Conversions.convertDateTimeToString(start_time)
+                nextRunDict[DashboardRestMapper.FIELD_END] = Conversions.convertDateTimeToString(end_time)
                 zoneDict[DashboardRestMapper.FIELD_NEXT_RUN] = nextRunDict
             
             

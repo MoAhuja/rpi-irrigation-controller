@@ -38,7 +38,7 @@ class GitUpdater(RemoteProgress):
         miner = RepositoryMining(self.remote_repo_location, reversed_order=True)
         for commit in miner.traverse_commits():
             historyDict = {}
-            historyDict[GitUpdater.FIELD_DATE] = Conversions.convertRainDelayDateTimeToString(commit.committer_date)
+            historyDict[GitUpdater.FIELD_DATE] = Conversions.convertDateTimeToString(commit.committer_date)
             historyDict[GitUpdater.FIELD_HASH] = commit.hash 
             historyDict[GitUpdater.FIELD_MESSAGE] = commit.msg 
            
