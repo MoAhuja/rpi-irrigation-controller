@@ -2,16 +2,26 @@ currentlyShowingPanel = ""
 
 $(document).ready(function()
 {
-    currentlyShowingPanel = $("#content_dashboard")
+    currentlyShowingPanel = $("#content_dashboard");
+    loadTheme();
     //Indicate the currently showing panel as the dashboard
     
 
-    $('body').on('click', '.colour-changer', function() {
-        var colour = $(this).data('path');
-        $('#theme-colour').attr('href', "/static/css/colours/" + colour + ".css");
+    
 
-        // Reload page?
-    });
+    
+
+
+    function loadTheme()
+    {
+        console.log("loading theme");
+        $.get("/service_hub/settings/display/theme", function(data){
+            theme = data.value;
+            setTheme(theme);
+        });
+    }
+
+
 
 
     // Hide/show content by default
@@ -43,6 +53,12 @@ $(document).ready(function()
     });
 
 });
+
+function setTheme(selectedTheme)
+{
+    var urlOfThemeFile = "/static/css/colours/" + selectedTheme;
+    $("#theme-colour").attr('href', urlOfThemeFile);
+}
 
 function serverTimeToCommonDateTime(serverDateString)
 {

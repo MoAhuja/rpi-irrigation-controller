@@ -229,4 +229,24 @@ class SettingsRestMapper(BaseRestMapper):
         
         # response[self.FIELD_KILL_SWITCH] = self.smgr.getKillSwitch()
         return self.returnSuccessfulResponse(response)
+    
+    def setTheme(self, json_data):
+        
+        shared.logger.debug(self, "setTheme - Entered")
+        shared.logger.debug(self, "Data = " + json.dumps(json_data))
+
+        theme = self.getKeyOrThrowException(json_data, SettingsRestMapper.GENERIC_PROPERTY_VALUE_FIELD, json_data)
+
+        # Validate the kill switch is a bool
+        self.validateIsProvidedAndString(theme, SettingsRestMapper.GENERIC_PROPERTY_VALUE_FIELD, json_data)
+
+        response = self.smgr.setTheme(theme)
+        return self.returnSuccessfulResponse()
+    
+    def getTheme(self):
+        
+        response = {}
+        response[self.FIELD_VALUE] = self.smgr.getTheme()
+        return self.returnSuccessfulResponse(response)
+
 

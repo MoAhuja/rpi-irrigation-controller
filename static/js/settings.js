@@ -222,8 +222,13 @@ $(document).ready(function()
     $('body').on('change', "#theme_selector", function() {
         var selectedTheme = $(this).children("option:selected").val();
         // alert("You have selected the theme - " + selectedTheme);
-        var urlOfThemeFile = "/static/css/colours/" + selectedTheme;
-        $("#theme-colour").attr('href', urlOfThemeFile)
+        
+        setTheme(selectedTheme);
+        // Update the theme in the database on the server
+        jsonData = `{"value": "${selectedTheme}"}`
+
+        $.post("/service_hub/settings/display/theme", jsonData);
+
     })
     
 

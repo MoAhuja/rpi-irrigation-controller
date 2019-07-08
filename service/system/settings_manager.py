@@ -26,6 +26,10 @@ class SettingsManager():
     field_notify_on_watering_start = 'notifyOnWateringStart'
     field_notify_on_watering_end = 'notifyOnWateringEnd'
 
+    #Display section and fields
+    section_display = 'Display'
+    field_theme = 'theme'
+
     # Locks for each property so we don't read while a write is ongoing
     lockRainDelay = Lock()
     lockLoggingLevel = Lock()
@@ -193,6 +197,18 @@ class SettingsManager():
         self.save()
         shared_events.event_publisher.publishNotificationConfigUpdated()
     
+    ##############
+    # Display settings
+    ##############
+    def setTheme(self, theme):
+        # self.readConfig()
+        self.config[SettingsManager.section_display][SettingsManager.field_theme] = theme
+        self.save()
+    
+    def getTheme(self):
+        # self.readConfig()
+        return(self.config[SettingsManager.section_display][SettingsManager.field_theme])
+
 
     def save(self):
         # self.lock.acquire()

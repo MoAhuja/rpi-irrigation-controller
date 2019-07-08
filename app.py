@@ -213,6 +213,7 @@ def service_start_engine():
 	global engine
 	engine.stop()
 	engine.start()
+	
 	return Response()
 
 @app.route('/service_hub/dashboard', methods=['GET'])
@@ -286,6 +287,22 @@ def service_settings_notification_config():
 		resp.headers['Access-Control-Allow-Origin'] = '*'
 
 	return resp
+
+@app.route('/service_hub/settings/display/theme', methods=['GET', 'POST'])
+def service_settings_display_theme_config():
+	srm = SettingsRestMapper()
+	if request.method == 'GET':
+		resp = Response(srm.getTheme(), mimetype='application/json')
+		resp.headers['Access-Control-Allow-Origin'] = '*'
+		
+	else:
+		# POst request, so we need to update the notification settings
+		json_data = request.get_json(force=True)
+		resp = Response(srm.setTheme(json_data), mimetype='application/json')
+		resp.headers['Access-Control-Allow-Origin'] = '*'
+
+	return resp
+
 
 @app.route('/service_hub/settings/notification/pushbullet/user', methods=['POST'])
 def service_settings_pushbullet_user():
@@ -375,6 +392,8 @@ def update_app():
 	resp.headers['Access-Control-Allow-Origin'] = '*'
 	
 	return resp
+
+
 
 @app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):
