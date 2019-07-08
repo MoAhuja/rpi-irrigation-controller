@@ -224,16 +224,26 @@ Current App To Do:
       ✔ Add current time to dashboard @started(19-07-02 08:44) @done(19-07-02 18:21) @lasted(9h37m1s)
 
       ✔ Change date on dashboard to datetime @done(19-07-02 18:21)
-      ☐ fix: Crash when weather api times out
+      ✔ fix: Crash when weather api times out @done(19-07-08 08:27)
       ☐ Create a service for is runing to enable dashboard to update itself frequently
         ☐ Create drop down to select refresh frequency
       ☐ Make the open weather map API key pull from teh settings file instead of hard code
       ☐ Make the push bullet API key pull from the settings file instead of hard coded
-      ☐ Figure our algorithm for rain percentages
+      ☐ Figure out algorithm for rain percentages
       ☐ Add search function to logs
-      ☐ Edit zone fails on dashboard if zone manager isn't called first. It must not have the templates ready...
-      ☐ Add entry for WeatherFailed. Adding to decision history but it's not working @started(19-07-03 08:50)
-      ☐ Add support for API failed reason code
+      ☐ Edit zone fails on dashboard if zone manager isn't called first. It must not have the templates ready... @started(19-07-05 08:37)
+      ✔ Add entry for WeatherFailed. Adding to decision history but it's not working @started(19-07-03 08:50) @done(19-07-05 08:36) @lasted(1d23h46m44s)
+      ✔ Add support for API failed reason code @done(19-07-05 08:32)
+      ☐ Add inline refresh in dashboard for:
+        ☐ Is running
+        ☐ Engine last ran
+        ☐ Add refresh interval setting
+      
+      ☐ change the evaluating zones FLAG to a hard lock. See if the lock (released in a finally block)
+      ☐ Save PB settings doesn't work. there's no function for savePushBulletUser defined. 
+      ☐ Make color scheme savable in settings.ini
+      ☐ Fix dashboard event timme being 4 hours off
+
 
 
 
@@ -251,6 +261,7 @@ Future Considerations:
   ☐ What kind of API gateway to manage access control in front of Flask
     ☐ Only required when public (digest basic auth)
   ☐ Implement GCM and an Android app
+  ☐ Create notifications toggle per notification provider
   Testing commit stuff.
   ✔ 
 
