@@ -43,6 +43,8 @@ class Logger():
         
     
 
+    
+    
     def error(self,callingClass, text):
         # self.getLogLevel()
         if self.consolelogLevel > 0:
@@ -50,6 +52,9 @@ class Logger():
 
         if self.dbLogLevel > 0:
             self.internalDBLogger(EnumLogLevel.ERROR, callingClass, text)
+        
+        #Sent a notification an error occured
+        shared_events.event_publisher.publishError(text)
 
     def info(self,callingClass, text):
         # self.getLogLevel()
