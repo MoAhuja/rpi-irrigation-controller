@@ -17,8 +17,11 @@ class NotifierEngine():
         # load notification preferences
         self.loadNotificationPreferences()
 
+        self.loadRegisteredNotifiers()
+
        
-    def loadRegisteredNotifiers():
+    def loadRegisteredNotifiers(self):
+        shared.logger.debug(self, "Loading all notifiers")
         # self.registeredNotifiers.clear()
 
          # register all the notifiers
