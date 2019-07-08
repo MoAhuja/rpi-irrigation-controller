@@ -4,7 +4,7 @@ from service.zone.zone_timing_bo import ZoneTiming
 from service.database.decision_dbo import DecisionDBO
 from service.core.scheduler import Scheduler
 from service.zone.zone_controller import ZoneController
-from service.core import shared
+from service.core import shared, shared_events
 from service.system.settings_manager import SettingsManager
 from service.notifications.notifier_engine import NotifierEngine
 
@@ -100,89 +100,92 @@ class Engine():
 
         shared.logger.debug(self,"Evaluating Zones == " + str(self.evaluatingZones))
 
+            
         # We need to make sure no one else is looping through the zones in case this gets invoked on another thread
         if self.evaluatingZones is False:
 
-            shared.logger.debug(self,"Evaluating zones")
-            # Set a flag indicating the zones are being evaluated
-            self.evaluatingZones = True
-
-            # Load the zones that we need to monitor
-            self.scheduler.loadNextRunSchedule()
-
-            shared.logger.debug(self,"Finished loading zones")
-
-            # Get Time
-            currentDateTime = datetime.now()
-            currentTime = currentDateTime.time()
-            shared.logger.debug(self, "Current Time is: " + Conversions.convertDBTimeToHumanReadableTime(currentTime))
-            currentTemp = self.getCurrentTemp()
-            shared.logger.debug(self, "Current Temperature is: " + str(currentTemp))
-            
-            
-            rebuildSchedule = False
-
-            shared.logger.debug(self, "CheckAndActivateZones - Waiting for lock: nextRunSchedule")
-            shared.lockNextRunSchedule.acquire()
             try:
-                for id, zonetiming in Scheduler.nextRunSchedule.items():
-                    
-                    shared.logger.debug(self, "Evaluating Zone: " + zonetiming.zone.name)
 
-                    # Check if this zone is already active
-                    # TODO: What do we do if two schedules overlap? I suppose they can't? Need to make sure of this.
-                    # TODO: If they can't overlap, then we likely don't need this.
-                    if id in self.activeZones:
-                        shared.logger.debug(self,"Zone already active. Skipping evaluation.")
-                        break
+                shared.logger.debug(self,"Evaluating zones")
+                # Set a flag indicating the zones are being evaluated
+                self.evaluatingZones = True
 
-                    # Reset all the conditions
-                    rainRuleMet = False
-                    tempRuleMet = False
+                # Load the zones that we need to monitor
+                self.scheduler.loadNextRunSchedule()
+
+                shared.logger.debug(self,"Finished loading zones")
+
+                # Get Time
+                currentDateTime = datetime.now()
+                currentTime = currentDateTime.time()
+                shared.logger.debug(self, "Current Time is: " + Conversions.convertDBTimeToHumanReadableTime(currentTime))
+                currentTemp = self.getCurrentTemp()
+                shared.logger.debug(self, "Current Temperature is: " + str(currentTemp))
                 
-                    shared.logger.debug(self, "Activate if: " + str(zonetiming.start_time) + " < " + str(currentDateTime)  + " < " + str(zonetiming.end_time))
-                    # Check if the current time is past the start time, but before the end time
-                    if zonetiming.start_time <= currentDateTime < zonetiming.end_time:
-                        rebuildSchedule = True
+                
+                rebuildSchedule = False
 
-                        # Create a decision event w/ current info
-                        decisionEvent = None
-                        decisionEvent = DecisionHistory(zone_id=zonetiming.zone.id, event_time=currentDateTime, start_time=zonetiming.start_time, end_time=zonetiming.end_time)
-                        # decisionEvent = DecisionHistory()
-                        shared.logger.debug(self, "Current Time within boundries")
+                shared.logger.debug(self, "CheckAndActivateZones - Waiting for lock: nextRunSchedule")
+                shared.lockNextRunSchedule.acquire()
+                try:
+                    for id, zonetiming in Scheduler.nextRunSchedule.items():
                         
-                        #Check conditions
-                        tempRuleMet = self.meetsTemperatureConditions(zonetiming.zone.temperature_rule, decisionEvent)
-                        
-                        if(decisionEvent.reason is None or decisionEvent.reason != EnumReasonCodes.FailedToGetWeatherData):
-                            rainRuleMet = self.meetsRainConditions(zonetiming.zone.rain_rule, decisionEvent)
-                        
-                        activateZone = tempRuleMet * rainRuleMet
-                        
-                        if activateZone:
-                            # Copy the zone timing object to the active running zones
-                            self.zone_controller.activateZone(zonetiming, decisionEvent, EnumReasonCodes.AllConditionsPassed)
-                        else:
+                        shared.logger.debug(self, "Evaluating Zone: " + zonetiming.zone.name)
 
-                            shared.logger.debug(self, "Going to log decision event")
-                            #Log an event, if one is available to be logged.
-                            self.decisionHistoryDBO.insertDecisionEvent(decisionEvent)
-                            self.decisionHistoryDBO.saveAndClose()
+                        # Check if this zone is already active
+                        # TODO: What do we do if two schedules overlap? I suppose they can't? Need to make sure of this.
+                        # TODO: If they can't overlap, then we likely don't need this.
+                        if id in self.activeZones:
+                            shared.logger.debug(self,"Zone already active. Skipping evaluation.")
+                            break
 
-                        # Since the current time can only fall in one schedule, we can stop evaluating
-                        # schedules for this zone
-                        break
-            finally:
-                shared.logger.debug(self, "CheckAndActivateZones - Releasing lock: nextRunSchedule")
-                shared.lockNextRunSchedule.release()
+                        # Reset all the conditions
+                        rainRuleMet = False
+                        tempRuleMet = False
                     
-            
-            if rebuildSchedule is True:
-                shared.logger.debug(self, "A zone was evaluated. Schedule needs to be updated.")
-                Scheduler.nextRunScheduleIsDirty = True
+                        shared.logger.debug(self, "Activate if: " + str(zonetiming.start_time) + " < " + str(currentDateTime)  + " < " + str(zonetiming.end_time))
+                        # Check if the current time is past the start time, but before the end time
+                        if zonetiming.start_time <= currentDateTime < zonetiming.end_time:
+                            rebuildSchedule = True
 
-            # Reset the evaluating zones flag so someone else can evaluate it next time.
-            self.evaluatingZones = False
+                            # Create a decision event w/ current info
+                            decisionEvent = None
+                            decisionEvent = DecisionHistory(zone_id=zonetiming.zone.id, event_time=currentDateTime, start_time=zonetiming.start_time, end_time=zonetiming.end_time)
+                            # decisionEvent = DecisionHistory()
+                            shared.logger.debug(self, "Current Time within boundries")
+                            
+                            #Check conditions
+                            tempRuleMet = self.meetsTemperatureConditions(zonetiming.zone.temperature_rule, decisionEvent)
+                            
+                            if(decisionEvent.reason is None or decisionEvent.reason != EnumReasonCodes.FailedToGetWeatherData):
+                                rainRuleMet = self.meetsRainConditions(zonetiming.zone.rain_rule, decisionEvent)
+                            
+                            activateZone = tempRuleMet * rainRuleMet
+                            
+                            if activateZone:
+                                # Copy the zone timing object to the active running zones
+                                self.zone_controller.activateZone(zonetiming, decisionEvent, EnumReasonCodes.AllConditionsPassed)
+                            else:
+
+                                shared.logger.debug(self, "Going to log decision event")
+                                #Log an event, if one is available to be logged.
+                                self.decisionHistoryDBO.insertDecisionEvent(decisionEvent)
+                                self.decisionHistoryDBO.saveAndClose()
+
+                            # Since the current time can only fall in one schedule, we can stop evaluating
+                            # schedules for this zone
+                            break
+                finally:
+                    shared.logger.debug(self, "CheckAndActivateZones - Releasing lock: nextRunSchedule")
+                    shared.lockNextRunSchedule.release()
+                        
+                
+                if rebuildSchedule is True:
+                    shared.logger.debug(self, "A zone was evaluated. Schedule needs to be updated.")
+                    Scheduler.nextRunScheduleIsDirty = True
+            finally:
+                # Reset the evaluating zones flag so someone else can evaluate it next time.
+                self.evaluatingZones = False
     
 
 
@@ -193,9 +196,11 @@ class Engine():
             self.engineLastRan = datetime.now()
             self.checkAndActivateZones()
             self.checkAndDeactivateZones()
-        except:
+        except Exception as e:
             shared.logger.error(self, "Heartbeat caught an exception")
-            raise #Comment this out for prod
+            errMsg= "Exception: " + repr(e)
+            shared.logger.error(self, errMsg)
+            #raise #Comment this out for prod
             
         finally:
             # Run the heartbeat every minute
@@ -295,8 +300,11 @@ class Engine():
             # so we set the reset timers accordingly (30 if we hit the API, 1 if we didn't)
             if self.weather_snapshot.currentForecast is not None:
                 # After 30 minutes, the weather snapshot will be invalidated.
+                shared.logger.debug(self, "Retrieved weather profile. Setting dirty timer for 30 minutes")
                 threading.Timer(60*30, self.markWeatherProfileAsDirty).start()
             else:
+                shared.logger.debug(self, "failed to retrieve weather profile. Setting dirty timer for 1 minute")
+                
                 # After 1 minutes, the weather API will be retried
                 threading.Timer(60*1, self.markWeatherProfileAsDirty).start()
 
