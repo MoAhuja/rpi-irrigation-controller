@@ -17,8 +17,16 @@ function clearZoneData()
     allZones = "";
 
 }
+
+function loadZoneManagementPageTemplate()
+{
+    $("#content_manager").html(zone_management_page_template);
+}
+
 function loadZoneData(forceRefresh)
 {
+    console.log("loadZoneData called");
+
     if(forceRefresh == true || allZones == "")
     {
         $.ajax({
@@ -42,10 +50,13 @@ function loadZoneData(forceRefresh)
 // Load the static create zone screen
 function loadEditZoneScreen(zone_id)
 {
+    // Load the page template first
+    loadZoneManagementPageTemplate();
+
     scheduleCounter = 0;
     loadZoneData(false);
     zone = findZoneById(zone_id)
-    console.log("Editing zone: " + zone)
+    console.log("Editing zone: " + zone.zone_name)
 
     console.log("Load create zone called. Template = " + edit_zone_template)
     modifiedTemplate = edit_zone_template
@@ -168,10 +179,7 @@ $(document).ready(function(){
         $("#content_manager content").animate({ scrollTop: 0 }, "fast");
     }
 
-    function loadZoneManagementPageTemplate()
-    {
-        $("#content_manager").html(zone_management_page_template);
-    }
+    
 
     $.ajax({
         url: '/static/screens/portal/zone_manager/zone_management_page_template.html', // url where to submit the request
