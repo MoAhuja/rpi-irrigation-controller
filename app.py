@@ -3,6 +3,8 @@ from flask import render_template
 from flask import request
 from pprint import pprint
 from service.rest_mappers.InvalidUsage import InvalidUsage
+from flask_basicauth import BasicAuth
+
 
 #import pi.main
 from service.zone.zone_data_manager import ZoneDataManager
@@ -29,6 +31,12 @@ global app
 global engine
 
 app = Flask(__name__)
+app.config['BASIC_AUTH_USERNAME'] = 'mo'
+app.config['BASIC_AUTH_PASSWORD'] = 'test'
+
+basic_auth = BasicAuth(app)
+
+
 
 def appInit():
 	
@@ -48,24 +56,19 @@ def appInit():
 	
 appInit()
 
-@app.route('/')
-def index():
-	# return render_template('landing.html')
-	return app.send_static_file('screens/portal/index.html')
 
-@app.route('/portal/landing')
-def landing():
-	# Check query string for the zone ID. If so, we'll retrieve that zone data first and then load the page
-	# return render_template('landing.html')
-	return app.send_static_file('screens/portal/landing.html')	
+
+
 
 @app.route('/portal/create_zone')
+@basic_auth.required	
 def create_zone():
 	# Check query string for the zone ID. If so, we'll retrieve that zone data first and then load the page
 	# return render_template('landing.html')
 	return app.send_static_file('screens/portal/zone_manager/create_zone.html')
 
 @app.route('/portal/flexbox')
+@basic_auth.required
 def flexbox():
 	# Check query string for the zone ID. If so, we'll retrieve that zone data first and then load the page
 	# return render_template('landing.html')
@@ -74,10 +77,12 @@ def flexbox():
 
 
 @app.route('/service_hub/zones/status', methods=['GET'])
+@basic_auth.required
 def service_zones_status():
 	return ""
 
 @app.route('/service_hub/zones/activate', methods=['POST'])
+@basic_auth.required
 def service_zones_activate():
 	json_data = request.get_json(force=True)
 	zcrm = ZoneControllerRestMapper()
@@ -86,6 +91,7 @@ def service_zones_activate():
 	return result
 
 @app.route('/service_hub/zones/deactivate', methods=['POST'])
+@basic_auth.required
 def service_zones_deactivate():
 	json_data = request.get_json(force=True)
 	zcrm = ZoneControllerRestMapper()
@@ -94,6 +100,7 @@ def service_zones_deactivate():
 	return result
 
 @app.route('/service_hub/settings/kill', methods=['GET', 'POST'])
+@basic_auth.required
 def service_settings_kill_switch():
 	print("Kill switch post data:")
 	print(request.data)
@@ -112,6 +119,7 @@ def service_settings_kill_switch():
 	
 
 @app.route('/service_hub/settings/loglevel/console', methods=['GET', 'POST'])
+@basic_auth.required
 def service_settings_console_log_level():
 	srm = SettingsRestMapper()
 	if request.method == 'GET':
@@ -122,6 +130,7 @@ def service_settings_console_log_level():
 		return srm.setConsoleLogLevel(json_data)
 
 @app.route('/service_hub/settings/loglevel/database', methods=['GET', 'POST'])
+@basic_auth.required
 def service_settings_database_log_level():
 	srm = SettingsRestMapper()
 	if request.method == 'GET':
@@ -132,6 +141,7 @@ def service_settings_database_log_level():
 		return srm.setDatabaseLogLevel(json_data)
 
 @app.route('/service_hub/settings/location', methods=['GET', 'POST'])
+@basic_auth.required
 def service_settings_location():
 	srm = SettingsRestMapper()
 	if request.method == 'GET':
@@ -142,6 +152,7 @@ def service_settings_location():
 		return srm.setLocation(json_data)
 
 @app.route('/service_hub/settings/raindelay', methods=['GET', 'POST'])
+@basic_auth.required
 def service_settings_raindelay():
 	srm = SettingsRestMapper()
 	if request.method == 'GET':
@@ -152,6 +163,7 @@ def service_settings_raindelay():
 		return srm.setRainDelay(json_data)
 
 @app.route('/service_hub/zone/<int:zone_id>', methods=['DELETE', 'GET'])
+@basic_auth.required
 def service_zone_delete_or_get(zone_id):
 	mapper = ZoneDataRestMapper()
 
@@ -170,6 +182,7 @@ def service_zone_delete_or_get(zone_id):
 	return result
 
 @app.route('/service_hub/zone', methods=['POST'])
+@basic_auth.required
 def service_zone_create():
 
 	print(request.get_json(force=True))
@@ -186,6 +199,7 @@ def service_zone_create():
 
 
 @app.route('/service_hub/zone/edit', methods=['POST'])
+@basic_auth.required
 def service_edit_zone():
 
 	print(request.get_json(force=True))
@@ -196,12 +210,14 @@ def service_edit_zone():
 	return mapper.editZone(json_data)
 
 @app.route('/service_hub/zones', methods=['GET'])
+@basic_auth.required
 def service_get_zones():
 	resp =  Response(ZoneDataRestMapper().getAllZones(), mimetype='application/json')
 	resp.headers['Access-Control-Allow-Origin'] = '*'
 	return resp
 
 @app.route('/service_hub/engine/stop')
+@basic_auth.required
 def service_stop_engine():
 	global engine
 
@@ -209,6 +225,7 @@ def service_stop_engine():
 	return Response()
 
 @app.route('/service_hub/engine/start')
+@basic_auth.required
 def service_start_engine():
 	global engine
 	engine.stop()
@@ -217,6 +234,7 @@ def service_start_engine():
 	return Response()
 
 @app.route('/service_hub/dashboard', methods=['GET'])
+@basic_auth.required
 def service_get_dashboard():
 	resp = Response(DashboardRestMapper().getDashboard(engine), mimetype='application/json')
 	resp.headers['Access-Control-Allow-Origin'] = '*'
@@ -224,6 +242,7 @@ def service_get_dashboard():
 
 
 @app.route('/service_hub/logs', methods=['GET'])
+@basic_auth.required
 def service_get_all_logs():
 
 	# Check if a log level was specified
@@ -261,6 +280,7 @@ def service_get_all_logs():
 		return resp
 
 @app.route('/service_hub/decisionhistory', methods=['GET'])
+@basic_auth.required
 def service_get_all_decisions():
 	# Check if a log level was specified
 	zone = request.args.get('zone')
@@ -274,6 +294,7 @@ def service_get_all_decisions():
 	return resp
 
 @app.route('/service_hub/settings/notification/config', methods=['GET', 'POST'])
+@basic_auth.required
 def service_settings_notification_config():
 	srm = SettingsRestMapper()
 	if request.method == 'GET':
@@ -289,6 +310,7 @@ def service_settings_notification_config():
 	return resp
 
 @app.route('/service_hub/settings/display/theme', methods=['GET', 'POST'])
+@basic_auth.required
 def service_settings_display_theme_config():
 	srm = SettingsRestMapper()
 	if request.method == 'GET':
@@ -305,6 +327,7 @@ def service_settings_display_theme_config():
 
 
 @app.route('/service_hub/settings/notification/pushbullet/user', methods=['POST'])
+@basic_auth.required
 def service_settings_pushbullet_user():
 	rm = NotificationUsersRestMapper()
 	
@@ -316,6 +339,7 @@ def service_settings_pushbullet_user():
 	return resp
 
 @app.route('/service_hub/settings/notification/pushbullet/users', methods=['GET'])
+@basic_auth.required
 def service_settings_pushbullet_users():
 	rm = NotificationUsersRestMapper()
 
@@ -326,6 +350,7 @@ def service_settings_pushbullet_users():
 	return resp	
 
 @app.route('/service_hub/settings/notification/pushbullet/user/<string:name>', methods=['DELETE'])
+@basic_auth.required
 def service_settings_pushbullet_user_delete(name):
 	rm = NotificationUsersRestMapper()
 
@@ -337,6 +362,7 @@ def service_settings_pushbullet_user_delete(name):
 	return resp	
 
 @app.route('/service_hub/relay', methods=['POST'])
+@basic_auth.required
 def create_relay_to_pin_mapping():
 	mapper = RelayRestMapper()
 	# if request.method == 'GET':
@@ -352,6 +378,7 @@ def create_relay_to_pin_mapping():
 	return resp
 
 @app.route('/service_hub/relays', methods=['GET'])
+@basic_auth.required
 def get_relay_mappings():
 	mapper = RelayRestMapper()
 	resp = Response(mapper.getRelays(), mimetype='application/json')
@@ -360,6 +387,7 @@ def get_relay_mappings():
 	return resp
 
 @app.route('/service_hub/relays/<int:relay_id>', methods=['DELETE'])
+@basic_auth.required
 def delete_relay_mapping(relay_id):
 	mapper = RelayRestMapper()
 	resp = Response(mapper.deleteRelayMappingByRelay(relay_id), mimetype='application/json')
@@ -368,6 +396,7 @@ def delete_relay_mapping(relay_id):
 	return resp
 
 @app.route('/service_hub/weather/<string:country>/<string:city>', methods=['GET'])
+@basic_auth.required
 def get_weather_forecast(country, city):
 	print(country)
 	print(city)
@@ -378,6 +407,7 @@ def get_weather_forecast(country, city):
 	return resp
 
 @app.route('/service_hub/updater/history', methods=['GET'])
+@basic_auth.required
 def get_app_update_history():
 	mapper = AppUpdaterRestMapper()
 	resp = Response(mapper.getUpdateHistory(), mimetype='application/json')
@@ -386,6 +416,7 @@ def get_app_update_history():
 	return resp
 
 @app.route('/service_hub/updater/update', methods=['GET'])
+@basic_auth.required
 def update_app():
 	mapper = AppUpdaterRestMapper()
 	resp = Response(mapper.updateApp(), mimetype='application/json')
