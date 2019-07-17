@@ -113,10 +113,11 @@ class Scheduler():
             nextRunDatetime = datetime.now() + timedelta(days=365)
             
 
-            shared.logger.debug(self, "BuildNextRunSchedule - Waiting for lock: nextRunSchedule")
-            shared.lockNextRunSchedule.acquire()
-
+            
             try:
+                shared.logger.debug(self, "BuildNextRunSchedule - Waiting for lock: nextRunSchedule")
+                shared.lockNextRunSchedule.acquire()
+
                 # Cycle through each schedule
                 for sch in zone.schedules:
 

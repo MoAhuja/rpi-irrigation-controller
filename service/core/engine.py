@@ -98,19 +98,19 @@ class Engine():
             shared.logger.info(self, "Kill Switch Enabled - Not going to perform zone schedule evaluation")
             return
 
-        #Get a lock for the active zones since we don't want them to change while we are reading them
-        shared.logger.debug(self, "CheckAndActivateZones - Waiting for lock: nextRunSchedule")
-        shared.lockNextRunSchedule.acquire()
-        shared.logger.debug(self, "CheckAndActivateZones - Waiting for lock: activeZones")
-        shared.lockActiveZones.acquire()
+        
                 
         
         try:
 
-            shared.logger.debug(self,"Evaluating zones")
-            # Set a flag indicating the zones are being evaluated
-            self.evaluatingZones = True
+            #Get a lock for the active zones since we don't want them to change while we are reading them
+            shared.logger.debug(self, "CheckAndActivateZones - Waiting for lock: nextRunSchedule")
+            shared.lockNextRunSchedule.acquire()
+            shared.logger.debug(self, "CheckAndActivateZones - Waiting for lock: activeZones")
+            shared.lockActiveZones.acquire()
 
+            shared.logger.debug(self,"Evaluating zones")
+            
             # Load the zones that we need to monitor
             self.scheduler.loadNextRunSchedule()
 

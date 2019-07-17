@@ -1,12 +1,12 @@
 
-from threading import Lock
+from threading import RLock
 from service.utilities.logger import Logger
 
 logger = Logger()
 
 # Locks
-lockNextRunSchedule = Lock()
-lockActiveZones = Lock()
+lockNextRunSchedule = RLock()
+lockActiveZones = RLock()
 
 
 
