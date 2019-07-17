@@ -206,7 +206,7 @@ class Engine():
             
         finally:
             # Run the heartbeat every minute
-            shared.logger.debug(self, "Scheduling timer for 1 minute from now")
+            shared.logger.debug(self, "Scheduling heartbeat timer 1 minute from now")
             self.timer = threading.Timer(60, self.heartbeat)
             self.timer.start()
         
@@ -219,14 +219,14 @@ class Engine():
         # shared.logger.debug(self,vars(temperature_bo))
 
         if temperature_bo.enabled == True:
-            # current_temp = getCurrentTemp()
+            current_temp = self.getCurrentTemp()
             shared.logger.debug(self,"Temperature Check Enabled. Evaluation if --> " + str(temperature_bo.lower_limit ) + "<=" + str(self.getCurrentTemp()) + " <= " + str(temperature_bo.upper_limit))
             decisionEvent.temperature_enabled = True
             decisionEvent.temperature_lower_limit = temperature_bo.lower_limit
             decisionEvent.temperature_upper_limit = temperature_bo.upper_limit
-            decisionEvent.current_temperature = self.getCurrentTemp()
+            decisionEvent.current_temperature = current_temp
             
-            if self.getCurrentTemp() == 9999:
+            if current_temp == 9999:
                 shared.logger.debug(self,"Temperature is 9999. Will not activate due to API failure.")
                 
                 decisionEvent.reason = EnumReasonCodes.FailedToGetWeatherData
@@ -235,12 +235,12 @@ class Engine():
                 decisionEvent.decision = EnumDecisionCodes.DontActivateZone
                 shared.logger.debug(self,"Set decision as do not activate")
                 return False
-            elif  self.getCurrentTemp() <temperature_bo.lower_limit:
+            elif current_temp <temperature_bo.lower_limit:
                 shared.logger.debug(self,"Temperature is BELOW lower limit. Will not activate.")
                 decisionEvent.reason = EnumReasonCodes.TemperatureBelowMin
                 decisionEvent.decision = EnumDecisionCodes.DontActivateZone
                 return False
-            elif  self.getCurrentTemp() > temperature_bo.upper_limit:
+            elif current_temp > temperature_bo.upper_limit:
                 shared.logger.debug(self,"Temperature is ABOVE max limit. Will not activate")
                 decisionEvent.reason = EnumReasonCodes.TemperatureAboveMax
                 decisionEvent.decision = EnumDecisionCodes.DontActivateZone
@@ -253,26 +253,28 @@ class Engine():
     def meetsRainConditions(self, rain_rule, decisionEvent):
 
         if rain_rule.enabled == True:
-            shared.logger.debug(self,"Rain Check Enabled. 3 hour check . Is " + str(self.getShortTermRain()) + "<= " + str(rain_rule.short_term_limit ))
-            shared.logger.debug(self,"Rain Check Enabled. 24 hour check . Is " + str(self.getDailyRain()) + "<= " + str(rain_rule.daily_limit ))
+            dailyRain = self.getDailyRain()
+            shortTermRain = self.getShortTermRain()
+            shared.logger.debug(self,"Rain Check Enabled. 3 hour check. Water if " + str(self.getShortTermRain()) + " <= " + str(rain_rule.short_term_limit ))
+            shared.logger.debug(self,"Rain Check Enabled. 24 hour check. Water if " + str(self.getDailyRain()) + " <= " + str(rain_rule.daily_limit ))
             
             decisionEvent.rain_enabled = True
             decisionEvent.rain_short_term_limit = rain_rule.short_term_limit
             decisionEvent.rain_daily_limit = rain_rule.daily_limit
-            decisionEvent.current_3hour_forecast = self.getShortTermRain()
-            decisionEvent.current_daily_forecast = self.getDailyRain()
+            decisionEvent.current_3hour_forecast = shortTermRain
+            decisionEvent.current_daily_forecast = dailyRain
 
-            if self.getShortTermRain() == 9999 or self.getDailyRain() == 9999:
+            if shortTermRain == 9999 or self.getDailyRain() == 9999:
                 decisionEvent.reason = EnumReasonCodes.FailedToGetWeatherData
                 decisionEvent.decision = EnumDecisionCodes.DontActivateZone
                 return False
-            elif self.getShortTermRain() > rain_rule.short_term_limit:
+            elif shortTermRain > rain_rule.short_term_limit:
 
                 shared.logger.debug(self,"Short term rain rule FAILED. Will not activate. " + str(self.getShortTermRain()) + " > " + str(rain_rule.short_term_limit))
                 decisionEvent.reason = EnumReasonCodes.ShortTermRainExpected
                 decisionEvent.decision = EnumDecisionCodes.DontActivateZone
                 return False
-            elif self.getDailyRain() > rain_rule.daily_limit:
+            elif dailyRain > rain_rule.daily_limit:
                 shared.logger.debug(self,"Daily rain rule FAILED. Will not activate " + str(self.getDailyRain()) + " > " + str(rain_rule.daily_limit))
                 decisionEvent.reason = EnumReasonCodes.LongTermRainExpected
                 decisionEvent.decision = EnumDecisionCodes.DontActivateZone
@@ -287,10 +289,10 @@ class Engine():
         return True
 
     def getWeatherSnapshot(self):
-        shared.logger.debug(self, "getWeatherSnapshot invoked")
-
+        
         if self.weather_snapshot is None or self.weather_snapshot_is_old:
-            
+            shared.logger.debug(self, "getting new weather snapshot")
+
             # Create a settings retriever
             city = self.settingsManager.getCity()
             country = self.settingsManager.getCountry()
