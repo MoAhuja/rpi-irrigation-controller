@@ -65,11 +65,11 @@ class Engine():
         shared.logger.debug(self,"Checking if any zones need to be deactivated")
         currentTime = datetime.now()
 
-        # Lock because we don't want the active zones to change while we are iterating over them
-        shared.logger.debug(self, "CheckAndDeactivateZones - Waiting to acquire lock: lockActiveZones")
-        shared.lockActiveZones.acquire()
-
+        
         try:
+            # Lock because we don't want the active zones to change while we are iterating over them
+            shared.logger.debug(self, "CheckAndDeactivateZones - Waiting to acquire lock: lockActiveZones")
+            shared.lockActiveZones.acquire()
 
             for key, activeZone in self.zone_controller.activeZones.items():
                 
