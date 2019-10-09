@@ -185,6 +185,11 @@ simple_settings label  {
     
 }
 
+simple_settings input[type="text"] {
+    width: 20em;
+    grid-column: 2 / span 2;
+}
+
 line {
     border-bottom: 1px solid #F5F5F5;
     grid-column: 1 /  span 3;

@@ -18,6 +18,7 @@ label.checkboxframe {
 	display: block;
 	border-radius: 100px;
 	position: relative;
+	justify-self:end;
 	/* min-width: 0px !important; */
 }
 

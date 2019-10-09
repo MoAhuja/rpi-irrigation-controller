@@ -307,7 +307,7 @@ $(document).ready(function()
         enableSaveButton();
     });
 
-    $('body').on('click', '#save_system_settings', function() {
+    $('body').on('click', '#save_system_control_settings', function() {
         // saveSystem settings
         saveSystemSettings();
     });
@@ -437,12 +437,12 @@ $(document).ready(function()
 
     function enableSaveButton()
     {
-        $("#save_system_settings").prop('disabled', false);
+        $("#save_system_control_settings").prop('disabled', false);
     }
 
     function disableSaveButton()
     {
-        $("#save_system_settings").prop('disabled', true);
+        $("#save_system_control_settings").prop('disabled', true);
     }
     
     
