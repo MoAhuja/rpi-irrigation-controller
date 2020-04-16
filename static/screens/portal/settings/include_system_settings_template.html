@@ -1,0 +1,56 @@
+
+<!-- <settings> -->
+
+    <group>
+            <row class="title">
+                <h3>System Control</h3>
+                <button  class="ghbutton big"  id="save_system_control_settings" disabled>Save</button>
+            </row>
+            
+           
+            <simple_settings>
+                    
+                <!-- Enable Disable Setting -->
+                <label>Lawn Watcher Enabled</label>
+                <input type="checkbox" class="fancycheckbox" name="kill_switch" id="kill_switch" value="True" #KILL_SWITCH_CHECKED#>
+                <label for="kill_switch" class="checkboxframe"></label>
+                <line></line>
+
+                <label for="rain_delay">Rain Delay</label>
+                <input type="text" name="rain_delay" id="rain_delay" value="#RAIN_DELAY#">
+                
+            </simple_settings>
+    </group>
+
+
+    <group>
+        <row class="title">
+            <h3>Weather</h3>
+            <button  class="ghbutton big"  id="save_weather_settings" disabled>Save</button>
+        </row>
+        
+        <simple_settings>
+                
+            <!-- Enable Disable Setting -->
+            <label for="city">City</label>
+            <input type="text" name="city" id="city" value="#CITY#">
+            <line></line>
+
+            <label for="country">Country</label>
+            <input type="text" name="country" id="country" value="#COUNTRY#">
+            <line></line>
+
+
+            <label for="pyowm_api_key">PYOWM API Key</label>
+            <input type="text" name="pyowm_api_key" id="pyowm_api_key" value="#PYOWM_API_KEY#">
+            <line></line>
+
+            
+        </simple_settings>
+</group>
+
+    
+        
+    </form>
+    </group>
+<!-- </settings> -->
