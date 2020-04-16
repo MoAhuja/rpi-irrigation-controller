@@ -249,9 +249,23 @@ Current App To Do:
       ✔ Fix dashboard event timme being 4 hours off @done(19-07-08 08:37)
       ✔ The nextSchedulerLock failed to acquire. Add more diagnostics around acquiring a lock and find a way to make it timeout @done(19-07-17 08:55)
         ✔ Problem looks like acquire is run in engine -> scheduler, which are nested. @done(19-07-17 08:55)
-
-
-
+      ☐ DialogFlow Integrations
+        ☐ Activate zone 6 for 30 minutes | "Backyard has been activated and will stop at 6:30 pm"
+        ☐ Activate Backyard for 30 minutes | "Backyard has been activated and will stop at 6:30 pm"
+        ☐ Stop all zones | "All zones have been stopped", "No zones are running"
+        ☐ Turn on kill switch | "Kill switch is already on" | "Kill switch has been turned on"
+        ☐ Turn off kill switch | "Kill switch is not on", "Kill switch has been turned off"
+        ☐ Rain delay until [Date] | "Rain delay has been activated until October 6th, 2019"
+        ☐ Which zones are running? | "Front Yard is will run until 6:30pm. Backyard will run until 3pm" 
+        ☐ WHen will Zone 6 run until? | "Backyard is not running", "Backyard will run for another 7 minutes, until 6:30pm"
+        ☐ When will zone #/Name run next? | "Backyard will run for 30 minutes on October 7th at 10pm"
+        ☐ When was zone #/Name last run? | "Backyard last ran on October 3rd, starting at 6:00am for 30 minutes"
+          ☐ Rain Conditions | "Short term Expected rain was 3mm, threshold was 5mm. Daily expected rain was 10 mm, threshold was 15mm"
+          ☐ Tempreature Conditions | "Temperature was 20 degrees, within the threshold of 5 and 30"
+        ☐ ZOne #/name summary | "Zone 6 is the Backyard. It is enabled"
+        ☐ Zone #/name details | 
+        ☐ Application Version
+        ☐ Update Application
       
 
 

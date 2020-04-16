@@ -7,7 +7,8 @@ from flask import Flask, jsonify, Response
 from flask import request
 import pprint
 from flask_basicauth import BasicAuth
-from service.df_agent import DialogFlowAgent
+from service.df_recipes_agent import DialogFlowRecipesAgent
+from json2html import *
 import json
 
 
@@ -22,20 +23,55 @@ app.config['BASIC_AUTH_PASSWORD'] = 'test'
 
 basic_auth = BasicAuth(app)
 
+requestResponseList = []
+
+
+@app.route('/service/debug', methods=['GET'])
+def debug():
+    global requestResponseList
+
+    htmlContent = ""
+
+    pprint.pprint(requestResponseList)
+
+    for reqResDict in requestResponseList:
+        htmlContent += "============= REQUEST ================== <br />"
+        htmlContent += "<pre id=\"json\">" + json2html.convert(json = reqResDict["req"]) + "</pre><br />"
+        htmlContent += "============= END REQUEST ================== <br />"
+
+        htmlContent += "============= RESPONSE ================== <br />"
+        htmlContent += "<pre id=\"json\">" + json2html.convert(json = reqResDict["res"]) + "</pre><br />"
+        htmlContent += "============= END RESPONSE ================== <br />"
+
+    pprint.pprint(requestResponseList)
+
+    return htmlContent
+
+
 @app.route('/service/test', methods=['POST'])
 @basic_auth.required
 def test():
-
+    print("Test")
+    global requestResponseList
     requestDataAsJson = request.get_json(force=True)
-    #pprint.pprint(requestDataAsJson)
-    dfagent = DialogFlowAgent()
+    ##pprint.pprint(requestDataAsJson)
+    dfagent = DialogFlowRecipesAgent()
 
     responseData = dfagent.handleIntent(json.dumps(requestDataAsJson))
-    pprint.pprint(responseData.get_final_response())
-    resp = Response(responseData.get_final_response(), mimetype='application/json')
-    resp.headers['Access-Control-Allow-Origin'] = '*'
+    pprint.pprint("============= REQUEST ==================")
+    pprint.pprint(requestDataAsJson)
+    pprint.pprint("============= END REQUEST ==================")
 
-    return resp
+    pprint.pprint("")
+    pprint.pprint("============= RESPONSE ==================")
+    # jsonResponse = json.dumps(responseData)
+    # print(jsonResponse)
+
+    # requestResponseList.append({"req": requestDataAsJson, "res": jsonResponse})
+
+
+
+    return responseData
 
 
 # def service_settings_display_theme_config():
@@ -54,7 +90,7 @@ def test():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True, host='0.0.0.0', port='5001')
+    app.run(debug=True, threaded=True, host='0.0.0.0', port=5001)
 
 
 

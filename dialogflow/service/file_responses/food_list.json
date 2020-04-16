@@ -1,0 +1,51 @@
+{
+  "payload": {
+    "google": {
+      "expectUserResponse": true,
+      "systemIntent": {
+        "intent": "actions.intent.OPTION",
+        "data": {
+          "@type": "type.googleapis.com/google.actions.v2.OptionValueSpec",
+          "listSelect": {
+            "title": "List Title",
+            "items": [
+              {
+                "optionInfo": {
+                  "key": "SELECTION_CHICKEN",
+                  "synonyms": ["synonym 1", "synonym 2", "synonym 3"]
+                },
+                "description": "Chicken meal",
+                "image": {
+                  "url": "https://storage.googleapis.com/actionsresources/logo_assistant_2x_64dp.png",
+                  "accessibilityText": "Image alternate text"
+                },
+                "title": "Chicken Noodles"
+              },
+              {
+                "optionInfo": {
+                  "key": "SELECTION_BEEF",
+                  "synonyms": ["Beefy", "Beefzilla"]
+                },
+                "description": "Beef udon noodles are yummy!",
+                "image": {
+                  "url": "https://storage.googleapis.com/actionsresources/logo_assistant_2x_64dp.png",
+                  "accessibilityText": "Beef noodles"
+                },
+                "title": "Beef Udon Noodles"
+              }
+            ]
+          }
+        }
+      },
+      "richResponse": {
+        "items": [
+          {
+            "simpleResponse": {
+              "textToSpeech": "This is a list example."
+            }
+          }
+        ]
+      }
+    }
+  }
+}
