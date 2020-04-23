@@ -4,6 +4,7 @@
 
 trigger:
 - feature/*
+- azure-pipelines
 
 resources:
 - repo: self
