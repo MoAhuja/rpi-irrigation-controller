@@ -172,46 +172,46 @@ class ZoneDataRestMapper(BaseRestMapper):
         # Validate each schedule
         for schedule in schedules:
 
-            
-            enabled = self.getKeyOrSetAsNone(schedule ,Schedule.FIELD_ENABLED)
-            if enabled is None:
-                enabled = False
-            start_time = self.getKeyOrThrowException(schedule, Schedule.FIELD_SCHEDULE_START_TIME, json_data)
-            end_time = self.getKeyOrThrowException(schedule, Schedule.FIELD_SCHEDULE_END_TIME, json_data)
-            schedule_type = self.getKeyOrThrowException(schedule,Schedule.FIELD_SCHEDULE_TYPE, json_data)
-            days = self.getKeyOrThrowException(schedule,Schedule.FIELD_SCHEDULE_DAYS, json_data)
+            if schedule is not None:
+                enabled = self.getKeyOrSetAsNone(schedule ,Schedule.FIELD_ENABLED)
+                if enabled is None:
+                    enabled = False
+                start_time = self.getKeyOrThrowException(schedule, Schedule.FIELD_SCHEDULE_START_TIME, json_data)
+                end_time = self.getKeyOrThrowException(schedule, Schedule.FIELD_SCHEDULE_END_TIME, json_data)
+                schedule_type = self.getKeyOrThrowException(schedule,Schedule.FIELD_SCHEDULE_TYPE, json_data)
+                days = self.getKeyOrThrowException(schedule,Schedule.FIELD_SCHEDULE_DAYS, json_data)
 
-            # Validate enabled
-            self.validateIsProvidedAndBool(enabled, Schedule.FIELD_ENABLED, json_data)
-            
-            # Validate schedule type
-            schedule_type = self.validateIsProvidedAndInt(schedule_type, Schedule.FIELD_SCHEDULE_TYPE, json_data)
-            # TODO:Validate it falls within 0,1 
-            # Validate times
-            self.validateIsProvidedAndString(start_time, Schedule.FIELD_SCHEDULE_START_TIME, json_data)
-            self.validateIsProvidedAndString(end_time, Schedule.FIELD_SCHEDULE_END_TIME, json_data)
+                # Validate enabled
+                self.validateIsProvidedAndBool(enabled, Schedule.FIELD_ENABLED, json_data)
+                
+                # Validate schedule type
+                schedule_type = self.validateIsProvidedAndInt(schedule_type, Schedule.FIELD_SCHEDULE_TYPE, json_data)
+                # TODO:Validate it falls within 0,1 
+                # Validate times
+                self.validateIsProvidedAndString(start_time, Schedule.FIELD_SCHEDULE_START_TIME, json_data)
+                self.validateIsProvidedAndString(end_time, Schedule.FIELD_SCHEDULE_END_TIME, json_data)
 
-            try:
-                Conversions.convertHumanReadableTimetoDBTime(start_time)
-            except:
-                self.raiseBadRequestException(Schedule.FIELD_SCHEDULE_START_TIME, self.ERROR_TYPE_INVALID_TIME,json_data, start_time)
+                try:
+                    Conversions.convertHumanReadableTimetoDBTime(start_time)
+                except:
+                    self.raiseBadRequestException(Schedule.FIELD_SCHEDULE_START_TIME, self.ERROR_TYPE_INVALID_TIME,json_data, start_time)
 
-            try:
-                Conversions.convertHumanReadableTimetoDBTime(end_time)
-            except:
-                self.raiseBadRequestException(Schedule.FIELD_SCHEDULE_END_TIME, self.ERROR_TYPE_INVALID_TIME,json_data, end_time)
+                try:
+                    Conversions.convertHumanReadableTimetoDBTime(end_time)
+                except:
+                    self.raiseBadRequestException(Schedule.FIELD_SCHEDULE_END_TIME, self.ERROR_TYPE_INVALID_TIME,json_data, end_time)
 
-            # Validate schedule type
-            self.validateIsProvidedAndInt(schedule_type, Schedule.FIELD_SCHEDULE_TYPE, json_data)
-            
-            if schedule_type not in [EnumScheduleType.DayAndTime.value, EnumScheduleType.TimeAndFrequency.value]:
-                self.raiseBadRequestException(Schedule.FIELD_SCHEDULE_TYPE, self.ERROR_TYPE_INVALID_SCHEDULE_TYPE, json_data, schedule_type)
+                # Validate schedule type
+                self.validateIsProvidedAndInt(schedule_type, Schedule.FIELD_SCHEDULE_TYPE, json_data)
+                
+                if schedule_type not in [EnumScheduleType.DayAndTime.value, EnumScheduleType.TimeAndFrequency.value]:
+                    self.raiseBadRequestException(Schedule.FIELD_SCHEDULE_TYPE, self.ERROR_TYPE_INVALID_SCHEDULE_TYPE, json_data, schedule_type)
 
-            # Validate days
-            for day in days:
-                day = self.validateIsProvidedAndInt(day, Schedule.FIELD_SCHEDULE_DAYS, json_data)
-                if day <0 or day >6:
-                    self.raiseBadRequestException(Schedule.FIELD_SCHEDULE_DAYS, self.ERROR_TYPE_INVALID_DAY_TYPE, json_data, day)
+                # Validate days
+                for day in days:
+                    day = self.validateIsProvidedAndInt(day, Schedule.FIELD_SCHEDULE_DAYS, json_data)
+                    if day <0 or day >6:
+                        self.raiseBadRequestException(Schedule.FIELD_SCHEDULE_DAYS, self.ERROR_TYPE_INVALID_DAY_TYPE, json_data, day)
 
         # # First we need to create a zone business object
         zone =  Zone.initializeWithJSON(json_data)
