@@ -76,7 +76,8 @@ class Zone(Base):
         cl.rain = RainRule.initializeWithJSON(jsonData[RainRule.FIELD_RAIN], cl)
         
         for schedule in jsonData[Schedule.FIELD_SCHEDULE]:
-            cl.schedules.append(Schedule.initializeWithJSON(schedule, cl))
+            if schedule is not None:
+                cl.schedules.append(Schedule.initializeWithJSON(schedule, cl))
 
         return cl
 
