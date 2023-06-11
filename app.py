@@ -433,9 +433,12 @@ def handle_invalid_usage(error):
     return response
 
 if __name__ == '__main__':
-	
+#	global app
+#	app = Flask('__main__')	
 	app.run(debug=True, threaded=True, host='0.0.0.0')
-
-	
+#	appInit()
+#else:
+#	gunicorn_app = Flask('lw') 
+#	appInit()
 
 
