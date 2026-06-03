@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
+    base: mode === 'production' ? '/app/' : '/',
     server: {
       proxy: {
         '/service_hub': {
