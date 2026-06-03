@@ -70,14 +70,12 @@ def serve_react(path):
 
 
 @app.route('/portal/create_zone')
-@basic_auth.required	
 def create_zone():
 	# Check query string for the zone ID. If so, we'll retrieve that zone data first and then load the page
 	# return render_template('landing.html')
 	return app.send_static_file('screens/portal/zone_manager/create_zone.html')
 
 @app.route('/portal/flexbox')
-@basic_auth.required
 def flexbox():
 	# Check query string for the zone ID. If so, we'll retrieve that zone data first and then load the page
 	# return render_template('landing.html')
