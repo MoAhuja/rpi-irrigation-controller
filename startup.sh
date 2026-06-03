@@ -17,7 +17,7 @@ gunicorn app:app -b 0.0.0.0:5000 \
   --name $NAME \
   --workers $NUM_WORKERS \
   --log-level="debug" \
-  --timeout 60 \
+  --timeout 0 \
   --access-logfile "/home/pi/debug.log" \
   --error-logfile "/home/pi/error.log" \
   --worker-class gevent
