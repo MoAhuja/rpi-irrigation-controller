@@ -17,8 +17,9 @@ import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import ScheduleIcon from '@mui/icons-material/Schedule';
+import { Switch, FormControlLabel } from '@mui/material';
 
-import { getDashboard, activateZone, deactivateZone } from '../api/client';
+import { getDashboard, activateZone, deactivateZone, setKillSwitch } from '../api/client';
 import ZoneCard from '../components/ZoneCard';
 import StartZoneDialog from '../components/StartZoneDialog';
 import ZoneHistoryDialog from '../components/ZoneHistoryDialog';
@@ -35,7 +36,7 @@ function formatDateTime(isoString) {
   });
 }
 
-export default function Dashboard() {
+export default function Dashboard({ refreshKey }) {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -70,7 +71,16 @@ export default function Dashboard() {
     // Auto-refresh every 30 seconds
     const interval = setInterval(fetchDashboard, 30000);
     return () => clearInterval(interval);
-  }, [fetchDashboard]);
+  }, [fetchDashboard, refreshKey]);
+
+  const handleKillSwitchToggle = async (enabled) => {
+    try {
+      await setKillSwitch(enabled);
+      fetchDashboard();
+    } catch (err) {
+      showToast('Failed to update kill switch', 'error');
+    }
+  };
 
   const handleStartClick = (zone) => {
     setStartDialog({ open: true, zone });
@@ -133,10 +143,24 @@ export default function Dashboard() {
                 fontSize="small"
                 color={systemSettings?.kill_switch ? 'error' : 'action'}
               />
-              <Typography variant="body2">
-                <strong>Kill Switch:</strong>{' '}
-                {systemSettings?.kill_switch ? 'ON' : 'OFF'}
-              </Typography>
+              <FormControlLabel
+                sx={{ m: 0 }}
+                control={
+                  <Switch
+                    size="small"
+                    color="error"
+                    checked={systemSettings?.kill_switch ?? false}
+                    onChange={(e) => handleKillSwitchToggle(e.target.checked)}
+                    sx={{ mx: 0.5 }}
+                  />
+                }
+                label={
+                  <Typography variant="body2">
+                    <strong>Kill Switch:</strong>{' '}
+                    {systemSettings?.kill_switch ? 'ON' : 'OFF'}
+                  </Typography>
+                }
+              />
             </Box>
             <Box display="flex" alignItems="center" gap={0.5}>
               <WaterDropIcon fontSize="small" color="action" />
