@@ -22,6 +22,7 @@ import { getDashboard, activateZone, deactivateZone } from '../api/client';
 import ZoneCard from '../components/ZoneCard';
 import StartZoneDialog from '../components/StartZoneDialog';
 import ZoneHistoryDialog from '../components/ZoneHistoryDialog';
+import EditZoneDrawer from '../components/EditZoneDrawer';
 
 function formatDateTime(isoString) {
   if (!isoString) return 'N/A';
@@ -44,6 +45,9 @@ export default function Dashboard() {
 
   // History dialog state
   const [historyDialog, setHistoryDialog] = useState({ open: false, zone: null });
+
+  // Edit drawer state
+  const [editDrawer, setEditDrawer] = useState({ open: false, zoneId: null });
 
   // Toast notifications
   const [toast, setToast] = useState({ open: false, message: '', severity: 'success' });
@@ -98,8 +102,7 @@ export default function Dashboard() {
   };
 
   const handleEdit = (zoneId) => {
-    // Placeholder — edit functionality to be built
-    showToast(`Edit zone #${zoneId} — coming soon`, 'info');
+    setEditDrawer({ open: true, zoneId });
   };
 
   const handleHistory = (zone) => {
@@ -214,6 +217,17 @@ export default function Dashboard() {
         open={historyDialog.open}
         zone={historyDialog.zone}
         onClose={() => setHistoryDialog({ open: false, zone: null })}
+      />
+
+      {/* Edit drawer */}
+      <EditZoneDrawer
+        open={editDrawer.open}
+        zoneId={editDrawer.zoneId}
+        onClose={() => setEditDrawer({ open: false, zoneId: null })}
+        onSaved={() => {
+          showToast('Zone saved successfully', 'success');
+          fetchDashboard();
+        }}
       />
 
       {/* Toast */}

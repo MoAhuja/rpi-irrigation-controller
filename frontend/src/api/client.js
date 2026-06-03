@@ -9,6 +9,10 @@ const client = axios.create({
 
 export const getDashboard = () => client.get('/service_hub/dashboard');
 
+export const getZone = (id) => client.get(`/service_hub/zone/${id}`);
+
+export const editZone = (data) => client.post('/service_hub/zone/edit', data);
+
 export const activateZone = (id, duration) =>
   client.post('/service_hub/zones/activate', { id, duration });
 
@@ -17,5 +21,7 @@ export const deactivateZone = (id) =>
 
 export const getZoneHistory = (zoneId) =>
   client.get(`/service_hub/decisionhistory?zone=${zoneId}`);
+
+export const getRelays = () => client.get('/service_hub/relays');
 
 export default client;
