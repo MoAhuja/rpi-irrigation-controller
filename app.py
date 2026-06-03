@@ -1,6 +1,8 @@
+import os
 from flask import Flask, jsonify, Response
 from flask import render_template
 from flask import request
+from flask import send_from_directory
 from pprint import pprint
 from service.rest_mappers.InvalidUsage import InvalidUsage
 from flask_basicauth import BasicAuth
@@ -56,8 +58,15 @@ def appInit():
 	
 appInit()
 
+REACT_BUILD = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'frontend', 'dist')
 
 
+@app.route('/app', defaults={'path': ''})
+@app.route('/app/<path:path>')
+def serve_react(path):
+	if path and os.path.exists(os.path.join(REACT_BUILD, path)):
+		return send_from_directory(REACT_BUILD, path)
+	return send_from_directory(REACT_BUILD, 'index.html')
 
 
 @app.route('/portal/create_zone')
