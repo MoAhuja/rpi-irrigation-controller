@@ -39,8 +39,12 @@ export default function ZoneCard({ zone, onStart, onStop, onEdit, onHistory }) {
       elevation={is_running ? 6 : 2}
       sx={{
         borderLeft: 6,
-        borderColor: is_running ? 'success.main' : enabled ? 'primary.main' : 'grey.600',
-        bgcolor: is_running ? 'rgba(102,187,106,0.08)' : enabled ? 'background.paper' : 'rgba(255,255,255,0.03)',
+        borderColor: is_running ? 'success.main' : enabled ? 'primary.main' : 'grey.400',
+        background: is_running
+          ? 'linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%)'
+          : enabled
+          ? '#ffffff'
+          : '#fafafa',
         transition: 'box-shadow 0.3s',
       }}
     >

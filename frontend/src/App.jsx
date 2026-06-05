@@ -8,12 +8,23 @@ import Admin from './pages/Admin';
 
 const theme = createTheme({
   palette: {
-    mode: 'dark',
-    primary: { main: '#66bb6a' },
-    success: { main: '#66bb6a' },
+    mode: 'light',
+    primary:   { main: '#2e7d32' },
+    secondary: { main: '#0288d1' },
+    success:   { main: '#388e3c' },
+    warning:   { main: '#f57c00' },
+    error:     { main: '#d32f2f' },
+    info:      { main: '#0288d1' },
     background: {
-      default: '#121212',
-      paper: '#1e1e1e',
+      default: '#f0f4f0',
+      paper: '#ffffff',
+    },
+  },
+  components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: { backgroundImage: 'none' },
+      },
     },
   },
 });
@@ -25,7 +36,7 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppBar position="static" color="primary" elevation={2}>
+      <AppBar position="static" elevation={3} sx={{ background: 'linear-gradient(90deg, #1b5e20 0%, #2e7d32 60%, #0277bd 100%)' }}>
         <Toolbar sx={{ gap: 2 }}>
           <GrassIcon />
           <Typography variant="h6" fontWeight={700} letterSpacing={0.5} sx={{ flexGrow: 1 }}>

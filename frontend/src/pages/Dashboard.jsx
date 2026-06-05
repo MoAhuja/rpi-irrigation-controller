@@ -128,7 +128,7 @@ export default function Dashboard({ refreshKey }) {
   return (
     <Box sx={{ p: { xs: 2, md: 3 }, bgcolor: 'background.default', minHeight: '100vh' }}>
       {/* System summary bar */}
-      <Paper elevation={3} sx={{ p: 2, mb: 3, borderRadius: 2, bgcolor: 'background.paper', borderTop: 3, borderColor: 'primary.main' }}>
+      <Paper elevation={2} sx={{ p: 2, mb: 3, borderRadius: 2, background: 'linear-gradient(135deg, #e8f5e9 0%, #e3f2fd 100%)', borderTop: 4, borderColor: 'primary.main' }}>
         <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={2}>
           <Stack direction="row" spacing={3} flexWrap="wrap">
             <Box display="flex" alignItems="center" gap={0.5}>
