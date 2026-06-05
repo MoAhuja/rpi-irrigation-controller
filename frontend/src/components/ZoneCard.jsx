@@ -43,8 +43,8 @@ export default function ZoneCard({ zone, onStart, onStop, onEdit, onHistory }) {
         background: is_running
           ? 'linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%)'
           : enabled
-          ? '#ffffff'
-          : '#fafafa',
+          ? 'linear-gradient(135deg, #f3f8ff 0%, #e8f4fd 100%)'
+          : 'linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%)',
         transition: 'box-shadow 0.3s',
       }}
     >
