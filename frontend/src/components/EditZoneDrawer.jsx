@@ -8,6 +8,11 @@ import {
   Button,
   Checkbox,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   Drawer,
   FormControl,
@@ -27,7 +32,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { getZone, editZone, getRelays } from '../api/client';
+import { getZone, editZone, deleteZone, getRelays } from '../api/client';
 
 const DAYS = [
   { label: 'Mon', value: 0 },
@@ -139,6 +144,8 @@ export default function EditZoneDrawer({ open, zoneId, onClose, onSaved }) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!open || !zoneId) return;
@@ -212,6 +219,23 @@ export default function EditZoneDrawer({ open, zoneId, onClose, onSaved }) {
       setError(`Save failed: ${msg}`);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    setError(null);
+    try {
+      await deleteZone(form.id);
+      setDeleteConfirmOpen(false);
+      onSaved();
+      onClose();
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message;
+      setError(`Delete failed: ${msg}`);
+      setDeleteConfirmOpen(false);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -467,18 +491,44 @@ export default function EditZoneDrawer({ open, zoneId, onClose, onSaved }) {
 
       {/* Footer */}
       <Divider />
-      <Box sx={{ px: 3, py: 2, display: 'flex', justifyContent: 'flex-end', gap: 1, flexShrink: 0 }}>
-        <Button onClick={onClose} disabled={saving}>
-          Cancel
-        </Button>
+      <Box sx={{ px: 3, py: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1, flexShrink: 0 }}>
         <Button
-          variant="contained"
-          onClick={handleSave}
+          color="error"
+          startIcon={<DeleteIcon />}
+          onClick={() => setDeleteConfirmOpen(true)}
           disabled={saving || loading || !form}
         >
-          {saving ? 'Saving…' : 'Save Changes'}
+          Delete Zone
         </Button>
+        <Box display="flex" gap={1}>
+          <Button onClick={onClose} disabled={saving}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleSave}
+            disabled={saving || loading || !form}
+          >
+            {saving ? 'Saving…' : 'Save Changes'}
+          </Button>
+        </Box>
       </Box>
+
+      {/* Delete confirmation dialog */}
+      <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
+        <DialogTitle>Delete zone?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Permanently delete <strong>{form?.zone_name}</strong>? This cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteConfirmOpen(false)} disabled={deleting}>Cancel</Button>
+          <Button color="error" variant="contained" onClick={handleDelete} disabled={deleting}>
+            {deleting ? 'Deleting…' : 'Delete'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Drawer>
   );
 }

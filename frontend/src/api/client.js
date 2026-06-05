@@ -11,6 +11,7 @@ export const getDashboard = () => client.get('/service_hub/dashboard');
 
 export const getZone = (id) => client.get(`/service_hub/zone/${id}`);
 export const editZone = (data) => client.post('/service_hub/zone/edit', data);
+export const deleteZone = (id) => client.delete(`/service_hub/zone/${id}`);
 
 export const activateZone = (id, duration) =>
   client.post('/service_hub/zones/activate', { id, duration });
