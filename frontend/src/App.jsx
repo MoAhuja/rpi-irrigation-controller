@@ -8,9 +8,13 @@ import Admin from './pages/Admin';
 
 const theme = createTheme({
   palette: {
-    mode: 'light',
-    primary: { main: '#2e7d32' },
-    success: { main: '#388e3c' },
+    mode: 'dark',
+    primary: { main: '#66bb6a' },
+    success: { main: '#66bb6a' },
+    background: {
+      default: '#121212',
+      paper: '#1e1e1e',
+    },
   },
 });
 

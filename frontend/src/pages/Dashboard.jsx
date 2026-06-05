@@ -126,9 +126,9 @@ export default function Dashboard({ refreshKey }) {
   const systemSettings = dashboardData?.system_settings;
 
   return (
-    <Box sx={{ p: { xs: 2, md: 3 } }}>
+    <Box sx={{ p: { xs: 2, md: 3 }, bgcolor: 'background.default', minHeight: '100vh' }}>
       {/* System summary bar */}
-      <Paper elevation={1} sx={{ p: 2, mb: 3, borderRadius: 2 }}>
+      <Paper elevation={3} sx={{ p: 2, mb: 3, borderRadius: 2, bgcolor: 'background.paper', borderTop: 3, borderColor: 'primary.main' }}>
         <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={2}>
           <Stack direction="row" spacing={3} flexWrap="wrap">
             <Box display="flex" alignItems="center" gap={0.5}>
