@@ -8,7 +8,6 @@ import {
   IconButton,
   Paper,
   Snackbar,
-  Stack,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -129,59 +128,77 @@ export default function Dashboard({ refreshKey }) {
     <Box sx={{ p: { xs: 2, md: 3 }, bgcolor: 'background.default', minHeight: '100vh' }}>
       {/* System summary bar */}
       <Paper elevation={2} sx={{ p: 2, mb: 3, borderRadius: 2, background: 'linear-gradient(135deg, #e8f5e9 0%, #e3f2fd 100%)', borderTop: 4, borderColor: 'primary.main' }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={2}>
-          <Stack direction="row" spacing={3} flexWrap="wrap">
-            <Box display="flex" alignItems="center" gap={0.5}>
-              <LocationOnIcon fontSize="small" color="action" />
-              <Typography variant="body2">
-                <strong>Location:</strong>{' '}
-                {systemSettings ? `${systemSettings.city}, ${systemSettings.country}` : '—'}
-              </Typography>
-            </Box>
-            <Box display="flex" alignItems="center" gap={0.5}>
-              <PauseCircleIcon
-                fontSize="small"
-                color={systemSettings?.kill_switch ? 'error' : 'action'}
-              />
-              <FormControlLabel
-                sx={{ m: 0 }}
-                control={
-                  <Switch
-                    size="small"
-                    color="error"
-                    checked={systemSettings?.kill_switch ?? false}
-                    onChange={(e) => handleKillSwitchToggle(e.target.checked)}
-                    sx={{ mx: 0.5 }}
-                  />
-                }
-                label={
-                  <Typography variant="body2">
-                    <strong>Kill Switch:</strong>{' '}
-                    {systemSettings?.kill_switch ? 'ON' : 'OFF'}
+        <Box display="flex" justifyContent="space-between" alignItems="flex-start" gap={1}>
+          <Grid container spacing={1.5} sx={{ flex: 1 }}>
+            {/* Location */}
+            <Grid size={{ xs: 6, sm: 3 }}>
+              <Box display="flex" alignItems="center" gap={1}>
+                <LocationOnIcon fontSize="small" color="primary" />
+                <Box>
+                  <Typography variant="caption" color="text.secondary" display="block">Location</Typography>
+                  <Typography variant="body2" fontWeight={600}>
+                    {systemSettings ? `${systemSettings.city}, ${systemSettings.country}` : '—'}
                   </Typography>
-                }
-              />
-            </Box>
-            <Box display="flex" alignItems="center" gap={0.5}>
-              <WaterDropIcon fontSize="small" color="action" />
-              <Typography variant="body2">
-                <strong>Rain Delay:</strong>{' '}
-                {systemSettings?.rain_delay
-                  ? formatDateTime(systemSettings.rain_delay)
-                  : 'OFF'}
-              </Typography>
-            </Box>
-            <Box display="flex" alignItems="center" gap={0.5}>
-              <ScheduleIcon fontSize="small" color="action" />
-              <Typography variant="body2">
-                <strong>Engine Last Ran:</strong>{' '}
-                {systemSettings ? formatDateTime(systemSettings.engine_last_ran) : '—'}
-              </Typography>
-            </Box>
-          </Stack>
+                </Box>
+              </Box>
+            </Grid>
+
+            {/* Kill Switch */}
+            <Grid size={{ xs: 6, sm: 3 }}>
+              <Box display="flex" alignItems="center" gap={1}>
+                <PauseCircleIcon fontSize="small" color={systemSettings?.kill_switch ? 'error' : 'action'} />
+                <Box>
+                  <Typography variant="caption" color="text.secondary" display="block">Kill Switch</Typography>
+                  <FormControlLabel
+                    sx={{ m: 0 }}
+                    control={
+                      <Switch
+                        size="small"
+                        color="error"
+                        checked={systemSettings?.kill_switch ?? false}
+                        onChange={(e) => handleKillSwitchToggle(e.target.checked)}
+                        sx={{ mr: 0.5 }}
+                      />
+                    }
+                    label={
+                      <Typography variant="body2" fontWeight={600} color={systemSettings?.kill_switch ? 'error.main' : 'text.primary'}>
+                        {systemSettings?.kill_switch ? 'ON' : 'OFF'}
+                      </Typography>
+                    }
+                  />
+                </Box>
+              </Box>
+            </Grid>
+
+            {/* Rain Delay */}
+            <Grid size={{ xs: 6, sm: 3 }}>
+              <Box display="flex" alignItems="center" gap={1}>
+                <WaterDropIcon fontSize="small" color={systemSettings?.rain_delay ? 'info' : 'action'} />
+                <Box>
+                  <Typography variant="caption" color="text.secondary" display="block">Rain Delay</Typography>
+                  <Typography variant="body2" fontWeight={600} color={systemSettings?.rain_delay ? 'info.main' : 'text.primary'}>
+                    {systemSettings?.rain_delay ? formatDateTime(systemSettings.rain_delay) : 'OFF'}
+                  </Typography>
+                </Box>
+              </Box>
+            </Grid>
+
+            {/* Engine Last Ran */}
+            <Grid size={{ xs: 6, sm: 3 }}>
+              <Box display="flex" alignItems="center" gap={1}>
+                <ScheduleIcon fontSize="small" color="action" />
+                <Box>
+                  <Typography variant="caption" color="text.secondary" display="block">Engine Last Ran</Typography>
+                  <Typography variant="body2" fontWeight={600}>
+                    {systemSettings ? formatDateTime(systemSettings.engine_last_ran) : '—'}
+                  </Typography>
+                </Box>
+              </Box>
+            </Grid>
+          </Grid>
 
           <Tooltip title="Refresh">
-            <IconButton onClick={fetchDashboard} disabled={loading}>
+            <IconButton onClick={fetchDashboard} disabled={loading} size="small">
               <RefreshIcon />
             </IconButton>
           </Tooltip>
