@@ -251,7 +251,8 @@ export default function Dashboard({ refreshKey }) {
       )}
 
       {/* Create Zone button */}
-      <Box display="flex" justifyContent="center" mt={5} pb={4}>
+      <Divider sx={{ mt: 5, mb: 4 }} />
+      <Box display="flex" justifyContent="center" pb={4}>
         <Button
           variant="contained"
           size="large"

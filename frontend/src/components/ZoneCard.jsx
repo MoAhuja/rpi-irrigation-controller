@@ -79,26 +79,26 @@ export default function ZoneCard({ zone, onStart, onStop, onEdit, onHistory }) {
           </Stack>
         </Box>
 
-        <Divider sx={{ my: 1 }} />
+        <Divider sx={{ my: 1.5 }} />
 
         {/* Schedule info */}
-        <Stack direction="row" spacing={3}>
-          <Box display="flex" alignItems="center" gap={1}>
-            <AccessTimeIcon fontSize="small" color="action" />
-            <Typography variant="body2">
-              <strong>Next run:</strong> {next_run ? formatDateTime(next_run.start) : 'N/A'}
+        <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+          <Box display="flex" alignItems="center" gap={1} sx={{ minWidth: 180 }}>
+            <AccessTimeIcon fontSize="small" color="action" sx={{ flexShrink: 0 }} />
+            <Typography variant="body2" noWrap>
+              <strong>Next:</strong> {next_run ? formatDateTime(next_run.start) : 'N/A'}
             </Typography>
           </Box>
-          <Box display="flex" alignItems="center" gap={1}>
-            <HistoryIcon fontSize="small" color="action" />
-            <Typography variant="body2">
-              <strong>Last run:</strong> {last_run ? formatDateTime(last_run.start) : 'N/A'}
+          <Box display="flex" alignItems="center" gap={1} sx={{ minWidth: 180 }}>
+            <HistoryIcon fontSize="small" color="action" sx={{ flexShrink: 0 }} />
+            <Typography variant="body2" noWrap>
+              <strong>Last:</strong> {last_run ? formatDateTime(last_run.start) : 'N/A'}
             </Typography>
           </Box>
         </Stack>
       </CardContent>
 
-      <CardActions sx={{ justifyContent: 'flex-end', px: 2, pb: 2, gap: 1 }}>
+      <CardActions sx={{ justifyContent: 'flex-end', px: 2.5, pb: 2.5, pt: 1, gap: 1 }}>
         <Tooltip title="Edit zone">
           <Button
             size="small"
