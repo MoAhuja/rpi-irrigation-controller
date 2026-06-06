@@ -31,12 +31,17 @@ class DashboardRestMapper(BaseRestMapper):
     FIELD_NEXT_RUN = "next_run"
     FIELD_IS_RUNNING = "is_running"
 
+    # Shared scheduler instance — avoids registering a new event listener per request
+    _scheduler = None
+
     def __init__(self):
         self.settingsManager = SettingsManager()
         self.zc = ZoneController()
         self.zdm = ZoneDataManager()
         self.decisionDBO = DecisionDBO()
-        self.scheduler = Scheduler()
+        if DashboardRestMapper._scheduler is None:
+            DashboardRestMapper._scheduler = Scheduler()
+        self.scheduler = DashboardRestMapper._scheduler
 
 
 
