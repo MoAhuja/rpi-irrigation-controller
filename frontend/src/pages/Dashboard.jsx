@@ -130,7 +130,7 @@ export default function Dashboard({ refreshKey }) {
   const systemSettings = dashboardData?.system_settings;
 
   return (
-    <Box sx={{ p: { xs: 2, md: 3 }, bgcolor: 'background.default', minHeight: '100vh' }}>
+    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 900, mx: 'auto' }}>
       {/* System summary bar */}
       <Paper elevation={2} sx={{ p: 2, mb: 3, borderRadius: 2, background: 'linear-gradient(135deg, #e8f5e9 0%, #e3f2fd 100%)', borderTop: 4, borderColor: 'primary.main' }}>
         <Box display="flex" justifyContent="space-between" alignItems="flex-start" gap={1}>
@@ -211,7 +211,7 @@ export default function Dashboard({ refreshKey }) {
       </Paper>
 
       {/* Zones header */}
-      <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+      <Box display="flex" alignItems="center" justifyContent="space-between" mb={2} mt={1}>
         <Typography variant="h6" fontWeight={600}>
           Zones
         </Typography>
@@ -219,7 +219,7 @@ export default function Dashboard({ refreshKey }) {
           {dashboardData?.zones?.filter((z) => z.is_running).length ?? 0} running
         </Typography>
       </Box>
-      <Divider sx={{ mb: 3 }} />
+      <Divider sx={{ mb: 2 }} />
 
       {/* Loading / Error / Zones grid */}
       {loading && !dashboardData && (
@@ -235,7 +235,7 @@ export default function Dashboard({ refreshKey }) {
       )}
 
       {dashboardData && (
-        <Grid container spacing={2}>
+        <Grid container spacing={2.5}>
           {dashboardData.zones.map((zone) => (
             <Grid size={12} key={zone.id}>
               <ZoneCard
@@ -251,13 +251,13 @@ export default function Dashboard({ refreshKey }) {
       )}
 
       {/* Create Zone button */}
-      <Box display="flex" justifyContent="center" mt={4} mb={2}>
+      <Box display="flex" justifyContent="center" mt={5} pb={4}>
         <Button
           variant="contained"
           size="large"
           startIcon={<AddIcon />}
           onClick={() => setCreateDrawer(true)}
-          sx={{ borderRadius: 3, px: 4 }}
+          sx={{ borderRadius: 3, px: 6, py: 1.5, fontSize: '1rem' }}
         >
           Create Zone
         </Button>

@@ -48,9 +48,9 @@ export default function ZoneCard({ zone, onStart, onStop, onEdit, onHistory }) {
         transition: 'box-shadow 0.3s',
       }}
     >
-      <CardContent>
+      <CardContent sx={{ p: 2.5 }}>
         {/* Header row */}
-        <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={1}>
+        <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={1.5}>
           <Box>
             <Typography variant="h6" fontWeight={600}>
               {name}
