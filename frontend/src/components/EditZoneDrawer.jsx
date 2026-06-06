@@ -32,7 +32,17 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { getZone, editZone, deleteZone, getRelays } from '../api/client';
+import { getZone, editZone, createZone, deleteZone, getRelays } from '../api/client';
+
+const BLANK_FORM = () => ({
+  zone_name: '',
+  zone_description: '',
+  enabled: true,
+  relay: null,
+  temperature: { enabled: false, min: 0, max: 40 },
+  rain: { enabled: false, shortTermExpectedRainAmount: 5, dailyExpectedRainAmount: 10 },
+  schedule: [],
+});
 
 const DAYS = [
   { label: 'Mon', value: 0 },
@@ -139,6 +149,7 @@ function ScheduleCard({ sched, index, onChange, onToggleDay, onRemove }) {
 }
 
 export default function EditZoneDrawer({ open, zoneId, onClose, onSaved }) {
+  const isCreate = !zoneId;
   const [form, setForm] = useState(null);
   const [relays, setRelays] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -148,17 +159,22 @@ export default function EditZoneDrawer({ open, zoneId, onClose, onSaved }) {
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-    if (!open || !zoneId) return;
-    setLoading(true);
+    if (!open) return;
     setError(null);
-    setForm(null);
-    Promise.all([getZone(zoneId), getRelays()])
-      .then(([zoneRes, relayRes]) => {
-        setForm(structuredClone(zoneRes.data));
-        setRelays(relayRes.data.relays ?? []);
-      })
-      .catch(() => setError('Failed to load zone data.'))
-      .finally(() => setLoading(false));
+    if (isCreate) {
+      setForm(BLANK_FORM());
+      getRelays().then((r) => setRelays(r.data.relays ?? [])).catch(() => {});
+    } else {
+      setLoading(true);
+      setForm(null);
+      Promise.all([getZone(zoneId), getRelays()])
+        .then(([zoneRes, relayRes]) => {
+          setForm(structuredClone(zoneRes.data));
+          setRelays(relayRes.data.relays ?? []);
+        })
+        .catch(() => setError('Failed to load zone data.'))
+        .finally(() => setLoading(false));
+    }
   }, [open, zoneId]);
 
   const setField = (path, value) => {
@@ -211,7 +227,11 @@ export default function EditZoneDrawer({ open, zoneId, onClose, onSaved }) {
     setSaving(true);
     setError(null);
     try {
-      await editZone(form);
+      if (isCreate) {
+        await createZone(form);
+      } else {
+        await editZone(form);
+      }
       onSaved();
       onClose();
     } catch (err) {
@@ -261,7 +281,7 @@ export default function EditZoneDrawer({ open, zoneId, onClose, onSaved }) {
       >
         <Box>
           <Typography variant="h6" fontWeight={700}>
-            Edit Zone
+            {isCreate ? 'Create Zone' : 'Edit Zone'}
           </Typography>
           {form && (
             <Typography variant="body2" sx={{ opacity: 0.85 }}>
@@ -492,14 +512,16 @@ export default function EditZoneDrawer({ open, zoneId, onClose, onSaved }) {
       {/* Footer */}
       <Divider />
       <Box sx={{ px: 3, py: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1, flexShrink: 0 }}>
-        <Button
-          color="error"
-          startIcon={<DeleteIcon />}
-          onClick={() => setDeleteConfirmOpen(true)}
-          disabled={saving || loading || !form}
-        >
-          Delete Zone
-        </Button>
+        {!isCreate ? (
+          <Button
+            color="error"
+            startIcon={<DeleteIcon />}
+            onClick={() => setDeleteConfirmOpen(true)}
+            disabled={saving || loading || !form}
+          >
+            Delete Zone
+          </Button>
+        ) : <Box />}
         <Box display="flex" gap={1}>
           <Button onClick={onClose} disabled={saving}>
             Cancel
@@ -509,7 +531,7 @@ export default function EditZoneDrawer({ open, zoneId, onClose, onSaved }) {
             onClick={handleSave}
             disabled={saving || loading || !form}
           >
-            {saving ? 'Saving…' : 'Save Changes'}
+            {saving ? (isCreate ? 'Creating…' : 'Saving…') : (isCreate ? 'Create Zone' : 'Save Changes')}
           </Button>
         </Box>
       </Box>

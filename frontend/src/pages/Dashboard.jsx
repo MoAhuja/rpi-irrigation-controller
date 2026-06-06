@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   Box,
+  Button,
   CircularProgress,
   Divider,
   Grid,
@@ -12,6 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import AddIcon from '@mui/icons-material/Add';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PauseCircleIcon from '@mui/icons-material/PauseCircle';
@@ -48,6 +50,9 @@ export default function Dashboard({ refreshKey }) {
 
   // Edit drawer state
   const [editDrawer, setEditDrawer] = useState({ open: false, zoneId: null });
+
+  // Create drawer state
+  const [createDrawer, setCreateDrawer] = useState(false);
 
   // Toast notifications
   const [toast, setToast] = useState({ open: false, message: '', severity: 'success' });
@@ -245,6 +250,19 @@ export default function Dashboard({ refreshKey }) {
         </Grid>
       )}
 
+      {/* Create Zone button */}
+      <Box display="flex" justifyContent="center" mt={4} mb={2}>
+        <Button
+          variant="contained"
+          size="large"
+          startIcon={<AddIcon />}
+          onClick={() => setCreateDrawer(true)}
+          sx={{ borderRadius: 3, px: 4 }}
+        >
+          Create Zone
+        </Button>
+      </Box>
+
       {/* Start duration dialog */}
       <StartZoneDialog
         open={startDialog.open}
@@ -267,6 +285,17 @@ export default function Dashboard({ refreshKey }) {
         onClose={() => setEditDrawer({ open: false, zoneId: null })}
         onSaved={() => {
           showToast('Zone saved successfully', 'success');
+          fetchDashboard();
+        }}
+      />
+
+      {/* Create drawer */}
+      <EditZoneDrawer
+        open={createDrawer}
+        zoneId={null}
+        onClose={() => setCreateDrawer(false)}
+        onSaved={() => {
+          showToast('Zone created successfully', 'success');
           fetchDashboard();
         }}
       />
