@@ -258,7 +258,15 @@ export default function Dashboard({ refreshKey }) {
           size="large"
           startIcon={<AddIcon />}
           onClick={() => setCreateDrawer(true)}
-          sx={{ borderRadius: 3, px: 6, py: 1.5, fontSize: '1rem' }}
+          sx={{
+            borderRadius: 8,
+            px: 6,
+            py: 1.5,
+            fontSize: '1rem',
+            boxShadow: 6,
+            '&:hover': { boxShadow: 12, transform: 'translateY(-2px)' },
+            transition: 'box-shadow 0.2s, transform 0.2s',
+          }}
         >
           Create Zone
         </Button>
