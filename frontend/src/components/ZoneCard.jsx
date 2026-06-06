@@ -93,7 +93,7 @@ export default function ZoneCard({ zone, killSwitch, onStart, onStop, onEdit, on
           <Box display="flex" alignItems="center" gap={1} sx={{ minWidth: 180 }}>
             <AccessTimeIcon fontSize="small" color="action" sx={{ flexShrink: 0 }} />
             <Typography variant="body2" noWrap>
-              <strong>Next:</strong> {next_run ? formatDateTime(next_run.start) : 'N/A'}
+              <strong>Next:</strong> {killSwitch ? 'N/A' : next_run ? formatDateTime(next_run.start) : 'N/A'}
             </Typography>
           </Box>
           <Box display="flex" alignItems="center" gap={1} sx={{ minWidth: 180 }}>
