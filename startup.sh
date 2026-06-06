@@ -3,7 +3,7 @@
 NAME="app"
 ROOTDIR=/home/pi/lawnwatcher
 CODEDIR=/home/pi/lawnwatcher/rpi-irrigation-controller
-NUM_WORKERS=4
+NUM_WORKERS=1
 
 echo "Starting $NAME"
 
