@@ -10,6 +10,7 @@ lerna-debug.log*
 node_modules
 .env
 dist-ssr
+# dist is intentionally tracked — use git add -f frontend/dist to stage new build files
 *.local
 
 # Editor directories and files
