@@ -80,7 +80,7 @@ export default function Dashboard({ refreshKey }) {
   const handleKillSwitchToggle = async (enabled) => {
     try {
       await setKillSwitch(enabled);
-      fetchDashboard();
+      await fetchDashboard();
     } catch (err) {
       showToast('Failed to update kill switch', 'error');
     }
