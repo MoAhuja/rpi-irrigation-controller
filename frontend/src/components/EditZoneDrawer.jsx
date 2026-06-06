@@ -402,7 +402,7 @@ export default function EditZoneDrawer({ open, zoneId, onClose, onSaved }) {
                       label="Min Temp"
                       type="number"
                       value={form.temperature.min ?? ''}
-                      onChange={(e) => setField('temperature.min', Number(e.target.value))}
+                      onChange={(e) => setField('temperature.min', e.target.value === '' ? '' : Number(e.target.value))}
                       size="small"
                       fullWidth
                       disabled={!form.temperature.enabled}
@@ -414,7 +414,7 @@ export default function EditZoneDrawer({ open, zoneId, onClose, onSaved }) {
                       label="Max Temp"
                       type="number"
                       value={form.temperature.max ?? ''}
-                      onChange={(e) => setField('temperature.max', Number(e.target.value))}
+                      onChange={(e) => setField('temperature.max', e.target.value === '' ? '' : Number(e.target.value))}
                       size="small"
                       fullWidth
                       disabled={!form.temperature.enabled}
@@ -450,7 +450,7 @@ export default function EditZoneDrawer({ open, zoneId, onClose, onSaved }) {
                       type="number"
                       value={form.rain.shortTermExpectedRainAmount ?? ''}
                       onChange={(e) =>
-                        setField('rain.shortTermExpectedRainAmount', Number(e.target.value))
+                        setField('rain.shortTermExpectedRainAmount', e.target.value === '' ? '' : Number(e.target.value))
                       }
                       size="small"
                       fullWidth
@@ -465,7 +465,7 @@ export default function EditZoneDrawer({ open, zoneId, onClose, onSaved }) {
                       type="number"
                       value={form.rain.dailyExpectedRainAmount ?? ''}
                       onChange={(e) =>
-                        setField('rain.dailyExpectedRainAmount', Number(e.target.value))
+                        setField('rain.dailyExpectedRainAmount', e.target.value === '' ? '' : Number(e.target.value))
                       }
                       size="small"
                       fullWidth
