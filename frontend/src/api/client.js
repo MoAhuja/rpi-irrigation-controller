@@ -1,10 +1,17 @@
 import axios from 'axios';
 
-// Auth is handled by the Vite proxy in development.
-// In production, configure a reverse proxy with Basic Auth on the server.
+// In development, auth is injected by the Vite proxy.
+// In production, credentials are baked in at build time from .env
+const authHeader = import.meta.env.VITE_API_USERNAME
+  ? 'Basic ' + btoa(`${import.meta.env.VITE_API_USERNAME}:${import.meta.env.VITE_API_PASSWORD}`)
+  : undefined;
+
 const client = axios.create({
   baseURL: '',
-  headers: { 'Content-Type': 'application/json' },
+  headers: {
+    'Content-Type': 'application/json',
+    ...(authHeader ? { Authorization: authHeader } : {}),
+  },
 });
 
 export const getDashboard = () => client.get('/service_hub/dashboard');
