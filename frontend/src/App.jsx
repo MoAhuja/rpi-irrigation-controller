@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react';
-import { AppBar, Box, CssBaseline, Tab, Tabs, ThemeProvider, Toolbar, Typography, createTheme } from '@mui/material';
+import { AppBar, Box, CssBaseline, Tab, Tabs, ThemeProvider, Toolbar, Tooltip, Typography, createTheme, useMediaQuery } from '@mui/material';
 import GrassIcon from '@mui/icons-material/Grass';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -32,6 +32,7 @@ const theme = createTheme({
 export default function App() {
   const [tab, setTab] = useState(0);
   const [dashboardRefreshKey, setDashboardRefreshKey] = useState(0);
+  const isMobile = useMediaQuery('(max-width:600px)');
 
   return (
     <ThemeProvider theme={theme}>
@@ -49,8 +50,21 @@ export default function App() {
             TabIndicatorProps={{ style: { backgroundColor: 'white' } }}
             sx={{ minHeight: 64 }}
           >
-            <Tab icon={<DashboardIcon fontSize="small" />} iconPosition="start" label="Dashboard" sx={{ minHeight: 64, color: 'rgba(255,255,255,0.85)' }} />
-            <Tab icon={<SettingsIcon fontSize="small" />} iconPosition="start" label="Admin" sx={{ minHeight: 64, color: 'rgba(255,255,255,0.85)' }} />
+            {isMobile ? (
+              <>
+                <Tooltip title="Dashboard">
+                  <Tab icon={<DashboardIcon />} sx={{ minHeight: 64, minWidth: 48, color: 'rgba(255,255,255,0.85)' }} />
+                </Tooltip>
+                <Tooltip title="Admin">
+                  <Tab icon={<SettingsIcon />} sx={{ minHeight: 64, minWidth: 48, color: 'rgba(255,255,255,0.85)' }} />
+                </Tooltip>
+              </>
+            ) : (
+              <>
+                <Tab icon={<DashboardIcon fontSize="small" />} iconPosition="start" label="Dashboard" sx={{ minHeight: 64, color: 'rgba(255,255,255,0.85)' }} />
+                <Tab icon={<SettingsIcon fontSize="small" />} iconPosition="start" label="Admin" sx={{ minHeight: 64, color: 'rgba(255,255,255,0.85)' }} />
+              </>
+            )}
           </Tabs>
         </Toolbar>
       </AppBar>
