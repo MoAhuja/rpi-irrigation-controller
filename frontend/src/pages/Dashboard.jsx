@@ -240,6 +240,7 @@ export default function Dashboard({ refreshKey }) {
             <Grid size={12} key={zone.id}>
               <ZoneCard
                 zone={zone}
+                killSwitch={systemSettings?.kill_switch ?? false}
                 onStart={handleStartClick}
                 onStop={handleStop}
                 onEdit={handleEdit}

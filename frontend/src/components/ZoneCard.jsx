@@ -31,7 +31,7 @@ function formatDateTime(isoString) {
   });
 }
 
-export default function ZoneCard({ zone, onStart, onStop, onEdit, onHistory }) {
+export default function ZoneCard({ zone, killSwitch, onStart, onStop, onEdit, onHistory }) {
   const { id, name, description, enabled, is_running, last_run, next_run } = zone;
 
   return (
@@ -39,13 +39,16 @@ export default function ZoneCard({ zone, onStart, onStop, onEdit, onHistory }) {
       elevation={is_running ? 6 : 2}
       sx={{
         borderLeft: 6,
-        borderColor: is_running ? 'success.main' : enabled ? 'primary.main' : 'grey.400',
+        borderColor: is_running ? 'success.main' : killSwitch ? 'warning.main' : enabled ? 'primary.main' : 'grey.400',
         background: is_running
           ? 'linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%)'
+          : killSwitch
+          ? 'linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%)'
           : enabled
           ? 'linear-gradient(135deg, #f3f8ff 0%, #e8f4fd 100%)'
           : 'linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%)',
         transition: 'box-shadow 0.3s',
+        opacity: killSwitch && !is_running ? 0.85 : 1,
       }}
     >
       <CardContent sx={{ p: 2.5 }}>
@@ -59,7 +62,11 @@ export default function ZoneCard({ zone, onStart, onStop, onEdit, onHistory }) {
               {description}
             </Typography>
           </Box>
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+            {/* Kill switch blocked indicator */}
+            {killSwitch && !is_running && (
+              <Chip size="small" label="Blocked" color="warning" variant="filled" />
+            )}
             {/* Enabled status — always visible */}
             <Chip
               size="small"
