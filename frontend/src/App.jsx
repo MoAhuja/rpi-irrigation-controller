@@ -50,21 +50,22 @@ export default function App() {
             TabIndicatorProps={{ style: { backgroundColor: 'white' } }}
             sx={{ minHeight: 64 }}
           >
-            {isMobile ? (
-              <>
-                <Tooltip title="Dashboard">
-                  <Tab icon={<DashboardIcon />} sx={{ minHeight: 64, minWidth: 48, color: 'rgba(255,255,255,0.85)' }} />
-                </Tooltip>
-                <Tooltip title="Admin">
-                  <Tab icon={<SettingsIcon />} sx={{ minHeight: 64, minWidth: 48, color: 'rgba(255,255,255,0.85)' }} />
-                </Tooltip>
-              </>
-            ) : (
-              <>
-                <Tab icon={<DashboardIcon fontSize="small" />} iconPosition="start" label="Dashboard" sx={{ minHeight: 64, color: 'rgba(255,255,255,0.85)' }} />
-                <Tab icon={<SettingsIcon fontSize="small" />} iconPosition="start" label="Admin" sx={{ minHeight: 64, color: 'rgba(255,255,255,0.85)' }} />
-              </>
-            )}
+            <Tooltip title={isMobile ? 'Dashboard' : ''}>
+              <Tab
+                icon={<DashboardIcon fontSize="small" />}
+                iconPosition={isMobile ? 'top' : 'start'}
+                label={isMobile ? undefined : 'Dashboard'}
+                sx={{ minHeight: 64, minWidth: isMobile ? 48 : undefined, color: 'rgba(255,255,255,0.85)' }}
+              />
+            </Tooltip>
+            <Tooltip title={isMobile ? 'Admin' : ''}>
+              <Tab
+                icon={<SettingsIcon fontSize="small" />}
+                iconPosition={isMobile ? 'top' : 'start'}
+                label={isMobile ? undefined : 'Admin'}
+                sx={{ minHeight: 64, minWidth: isMobile ? 48 : undefined, color: 'rgba(255,255,255,0.85)' }}
+              />
+            </Tooltip>
           </Tabs>
         </Toolbar>
       </AppBar>
